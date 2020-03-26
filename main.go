@@ -36,10 +36,25 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	log.Infof("Generated map of Terraform AWS resource types: %d", len(resourceTypes))
+	log.Infof("Generated list of Terraform AWS resource types: %d", len(resourceTypes))
+
+	resourceFileNames := map[string]string{}
+	for _, rType := range resourceTypes {
+		fileName, err := GetResourceFileName(rType)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		resourceFileNames[rType] = fileName
+	}
+
+	err = writeResourceFileNames("gen", resourceFileNames)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Infof("Generated map of file names that implement a resource type: %d", len(resourceFileNames))
 }
 
-func writeResourceTypes(outputPath string, terraformTypes []string) error {
+func writeResourceTypes(outputPath string, resourceTypes []string) error {
 	err := os.MkdirAll(outputPath, 0775)
 	if err != nil {
 		return fmt.Errorf("failed to create directory: %s", err)
@@ -50,10 +65,30 @@ func writeResourceTypes(outputPath string, terraformTypes []string) error {
 		codeLayout,
 		"",
 		"gen",
-		ResourceTypesGoCode(terraformTypes),
+		ResourceTypesGoCode(resourceTypes),
 	)
 	if err != nil {
-		return fmt.Errorf("failed to write map of resource types to file: %s", err)
+		return fmt.Errorf("failed to write list of resource types to file: %s", err)
+	}
+
+	return nil
+}
+
+func writeResourceFileNames(outputPath string, resourceFileNames map[string]string) error {
+	err := os.MkdirAll(outputPath, 0775)
+	if err != nil {
+		return fmt.Errorf("failed to create directory: %s", err)
+	}
+
+	err = writeGoFile(
+		filepath.Join(outputPath, "resourceFileNames.go"),
+		codeLayout,
+		"",
+		"gen",
+		ResourceFileNamesGoCode(resourceFileNames),
+	)
+	if err != nil {
+		return fmt.Errorf("failed to write map of resource file names to file: %s", err)
 	}
 
 	return nil
@@ -68,6 +103,17 @@ func ResourceTypesGoCode(terraformTypes []string) string {
 	}
 
 	return strings.TrimSpace(buf.String())
+}
+
+// ResourceFileNamesGoCode generates the Go code for the map of Terraform resource file names.
+func ResourceFileNamesGoCode(resourceFileNames map[string]string) string {
+	var buf bytes.Buffer
+	err := resourceFileNamesTmpl.Execute(&buf, resourceFileNames)
+	if err != nil {
+		panic(err)
+	}
+
+	return strings.TrimSpace(buf.String())
 
 }
 
@@ -75,6 +121,13 @@ var resourceTypesTmpl = template.Must(template.New("resourceTypes").Parse(`
 // ResourceTypes is a list of all resource types supported by the Terraform AWS Provider.
 var ResourceTypes = []string{
 {{range .}}"{{.}}",
+{{end}}}
+`))
+
+var resourceFileNamesTmpl = template.Must(template.New("resourceFileNames").Parse(`
+// ResourceFileNames stores the name of the file that implements the resource type in the Terraform AWS Provider.
+var ResourceFileNames = map[string]string{
+{{range $key, $value := .}}"{{$key}}": "{{$value}}",
 {{end}}}
 `))
 
@@ -131,13 +184,13 @@ func ResourceTypes() []string {
 	return result
 }
 
-// GetResourceTypeFileName returns the name of the file that implements the resource of the given resource type.
-func GetResourceTypeFileName(resourceType string) *string {
+// GetResourceFileName returns the name of the file that implements the resource of the given resource type.
+func GetResourceFileName(resourceType string) (string, error) {
 	node, err := parser.ParseFile(token.NewFileSet(),
 		"/home/jan/git/github.com/yoyolabsio/terraform-provider-aws/aws/provider.go",
 		nil, 0)
 	if err != nil {
-		log.Fatalf(err.Error())
+		return "", err
 	}
 
 	var result *string
@@ -198,5 +251,10 @@ func GetResourceTypeFileName(resourceType string) *string {
 		}
 		return true
 	})
-	return result
+
+	if result != nil {
+		return *result, nil
+	}
+
+	return "", fmt.Errorf("no file found that implements resource type")
 }
