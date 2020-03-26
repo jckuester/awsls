@@ -36,6 +36,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
 	log.Infof("Generated list of Terraform AWS resource types: %d", len(resourceTypes))
 
 	resourceFileNames := map[string]string{}
@@ -51,7 +52,24 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
 	log.Infof("Generated map of file names that implement a resource type: %d", len(resourceFileNames))
+
+	resourceIDs := map[string]string{}
+	for rType, fileName := range resourceFileNames {
+		resourceID, err := GetResourceID(fileName)
+		if err != nil {
+			continue
+		}
+		resourceIDs[rType] = resourceID
+	}
+
+	err = writeResourceIDs("gen", resourceIDs)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	log.Infof("Generated map of resource ID for each resource type: %d", len(resourceIDs))
 }
 
 func writeResourceTypes(outputPath string, resourceTypes []string) error {
@@ -94,6 +112,26 @@ func writeResourceFileNames(outputPath string, resourceFileNames map[string]stri
 	return nil
 }
 
+func writeResourceIDs(outputPath string, resourceIDs map[string]string) error {
+	err := os.MkdirAll(outputPath, 0775)
+	if err != nil {
+		return fmt.Errorf("failed to create directory: %s", err)
+	}
+
+	err = writeGoFile(
+		filepath.Join(outputPath, "resourceIDs.go"),
+		codeLayout,
+		"",
+		"gen",
+		ResourceIDsGoCode(resourceIDs),
+	)
+	if err != nil {
+		return fmt.Errorf("failed to write map of resource IDs to file: %s", err)
+	}
+
+	return nil
+}
+
 // ResourceTypesGoCode generates the Go code for the list of Terraform resource types.
 func ResourceTypesGoCode(terraformTypes []string) string {
 	var buf bytes.Buffer
@@ -117,6 +155,18 @@ func ResourceFileNamesGoCode(resourceFileNames map[string]string) string {
 
 }
 
+// ResourceIDsGoCode generates the Go code for the map of Terraform resource IDs.
+func ResourceIDsGoCode(resourceIDs map[string]string) string {
+	var buf bytes.Buffer
+	err := resourceIDsTmpl.Execute(&buf, resourceIDs)
+	if err != nil {
+		panic(err)
+	}
+
+	return strings.TrimSpace(buf.String())
+
+}
+
 var resourceTypesTmpl = template.Must(template.New("resourceTypes").Parse(`
 // ResourceTypes is a list of all resource types supported by the Terraform AWS Provider.
 var ResourceTypes = []string{
@@ -127,6 +177,13 @@ var ResourceTypes = []string{
 var resourceFileNamesTmpl = template.Must(template.New("resourceFileNames").Parse(`
 // ResourceFileNames stores the name of the file that implements the resource type in the Terraform AWS Provider.
 var ResourceFileNames = map[string]string{
+{{range $key, $value := .}}"{{$key}}": "{{$value}}",
+{{end}}}
+`))
+
+var resourceIDsTmpl = template.Must(template.New("resourceIDs").Parse(`
+// ResourceIDs stores the name of the struct field of the AWS API used as ID for each Terraform resource type.
+var ResourceIDs = map[string]string{
 {{range $key, $value := .}}"{{$key}}": "{{$value}}",
 {{end}}}
 `))
@@ -257,4 +314,94 @@ func GetResourceFileName(resourceType string) (string, error) {
 	}
 
 	return "", fmt.Errorf("no file found that implements resource type")
+}
+
+func GetResourceID(fileName string) (string, error) {
+	fset := token.NewFileSet()
+
+	node, err := parser.ParseFile(fset,
+		"/home/jan/git/github.com/yoyolabsio/terraform-provider-aws/aws/"+fileName,
+		nil, 0)
+	if err != nil {
+		return "", err
+	}
+
+	var result *string
+
+	ast.Inspect(node, func(n ast.Node) bool {
+		// find d.SetId(...) function calls
+		fn, ok := n.(*ast.CallExpr)
+		if ok {
+			if fun, ok := fn.Fun.(*ast.SelectorExpr); ok {
+				funcName := fun.Sel.Name
+				if funcName == "SetId" {
+					// setId has only one argument
+					switch x := fn.Args[0].(type) {
+					case *ast.Ident:
+						// handle the following kind of expressions:
+						//   id := *res.ImageId
+						//   d.SetId(id)
+
+						ast.Inspect(node, func(n ast.Node) bool {
+							ass, ok := n.(*ast.AssignStmt)
+							if !ok {
+								return true
+							}
+
+							if ass.Tok != token.DEFINE {
+								return true
+							}
+
+							leftAss, ok := ass.Lhs[0].(ast.Expr)
+							if !ok {
+								return true
+							}
+
+							ident, ok := leftAss.(*ast.Ident)
+							if !ok {
+								return true
+							}
+
+							if ident.Name != x.Name {
+								return true
+							}
+
+							rightAss, ok := ass.Rhs[0].(ast.Expr)
+							if !ok {
+								return true
+							}
+
+							switch x := rightAss.(type) {
+							case *ast.StarExpr:
+								identRight, ok := x.X.(*ast.SelectorExpr)
+								if !ok {
+									return true
+								}
+
+								result = &identRight.Sel.Name
+							}
+
+							return true
+						})
+					case *ast.StarExpr:
+						// handle the following kind of expressions: d.SetId(*vpc.VpcId)
+						ident, ok := x.X.(*ast.SelectorExpr)
+						if !ok {
+							return true
+						}
+
+						result = &ident.Sel.Name
+					}
+				}
+			}
+		}
+
+		return true
+	})
+
+	if result != nil {
+		return *result, nil
+	}
+
+	return "", fmt.Errorf("no ID found for resource type")
 }
