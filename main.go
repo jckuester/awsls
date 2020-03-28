@@ -359,6 +359,8 @@ func GetResourceID(fileName string) (string, error) {
 				if funcName == "SetId" {
 					// setId has only one argument
 					switch x := fn.Args[0].(type) {
+					case *ast.BasicLit:
+						// ignore d.SetId("")
 					case *ast.Ident:
 						// handle the following kind of expressions:
 						//   id := *res.ImageId
@@ -408,6 +410,25 @@ func GetResourceID(fileName string) (string, error) {
 					case *ast.StarExpr:
 						// handle the following kind of expressions: d.SetId(*vpc.VpcId)
 						ident, ok := x.X.(*ast.SelectorExpr)
+						if !ok {
+							return true
+						}
+
+						result = &ident.Sel.Name
+					case *ast.CallExpr:
+						// handle the following kind of expressions:
+						//	d.SetId(aws.StringValue(output.CertificateAuthorityArn))
+						fn, ok := x.Fun.(*ast.SelectorExpr)
+						if !ok {
+							return true
+						}
+
+						if fn.Sel.Name != "StringValue" {
+							return true
+						}
+
+						// handle the following kind of expressions: d.SetId(*vpc.VpcId)
+						ident, ok := x.Args[0].(*ast.SelectorExpr)
 						if !ok {
 							return true
 						}
