@@ -12,6 +12,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/jckuester/terratools/gen"
+
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -30,55 +32,56 @@ func main() {
 	log.SetHandler(cli.Default)
 	log.SetLevel(log.DebugLevel)
 
-	resourceTypes := ResourceTypes()
+	/*
+		resourceTypes := ResourceTypes()
 
-	err := writeResourceTypes("gen", resourceTypes)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	log.Infof("Generated list of Terraform AWS resource types: %d", len(resourceTypes))
-
-	resourceFileNames := map[string]string{}
-	for _, rType := range resourceTypes {
-		fileName, err := GetResourceFileName(rType)
+		err := writeResourceTypes("gen", resourceTypes)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
-		resourceFileNames[rType] = fileName
-	}
 
-	err = writeResourceFileNames("gen", resourceFileNames)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+		log.Infof("Generated list of Terraform AWS resource types: %d", len(resourceTypes))
 
-	log.Infof("Generated map of resource type -> name of file that implements resource: %d", len(resourceFileNames))
-
-	resourceService := map[string]string{}
-	for _, rType := range resourceTypes {
-		rFileName, ok := resourceFileNames[rType]
-		if !ok {
-			log.Fatal("cannot find filename for resource type")
+		resourceFileNames := map[string]string{}
+		for _, rType := range resourceTypes {
+			fileName, err := GetResourceFileName(rType)
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+			resourceFileNames[rType] = fileName
 		}
 
-		service, err := ResourceService(rType, rFileName)
+		err = writeResourceFileNames("gen", resourceFileNames)
 		if err != nil {
-			log.WithError(err).WithField("resource", rType).Warn("could not identify AWS service for resource")
-			continue
+			log.Fatal(err.Error())
 		}
-		resourceService[rType] = service
-	}
 
-	err = writeResourceServices("gen", resourceService)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+		log.Infof("Generated map of resource type -> name of file that implements resource: %d", len(resourceFileNames))
 
-	log.Infof("Generated map of resource type -> AWS service: %d/%d", len(resourceService), len(ResourceTypes()))
+		resourceService := map[string]string{}
+		for _, rType := range resourceTypes {
+			rFileName, ok := resourceFileNames[rType]
+			if !ok {
+				log.Fatal("cannot find filename for resource type")
+			}
 
+			service, err := ResourceService(rType, rFileName)
+			if err != nil {
+				log.WithError(err).WithField("resource", rType).Warn("could not identify AWS service for resource")
+				continue
+			}
+			resourceService[rType] = service
+		}
+
+		err = writeResourceServices("gen", resourceService)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		log.Infof("Generated map of resource type -> AWS service: %d/%d", len(resourceService), len(ResourceTypes()))
+	*/
 	resourceIDs := map[string]string{}
-	for rType, fileName := range resourceFileNames {
+	for rType, fileName := range gen.ResourceFileNames {
 		resourceID, err := GetResourceID(fileName)
 		if err != nil {
 			continue
@@ -86,7 +89,7 @@ func main() {
 		resourceIDs[rType] = resourceID
 	}
 
-	err = writeResourceIDs("gen", resourceIDs)
+	err := writeResourceIDs("gen", resourceIDs)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -362,10 +365,16 @@ func GetResourceID(fileName string) (string, error) {
 					case *ast.BasicLit:
 						// ignore d.SetId("")
 					case *ast.Ident:
+						if strings.Contains(strings.ToLower(x.Name), "name") {
+							// if the identifier contains "name", we know it's the
+							// name identifying a resource but figure out the real AWS struct field name
+							// at a later stage
+							result = aws.String("NAME_PLACEHOLDER")
+						}
+
 						// handle the following kind of expressions:
 						//   id := *res.ImageId
 						//   d.SetId(id)
-
 						ast.Inspect(node, func(n ast.Node) bool {
 							ass, ok := n.(*ast.AssignStmt)
 							if !ok {
