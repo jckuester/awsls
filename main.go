@@ -362,8 +362,9 @@ func GetResourceID(fileName string) (string, error) {
 				if funcName == "SetId" {
 					// setId has only one argument
 					switch x := fn.Args[0].(type) {
+
 					case *ast.BasicLit:
-						// ignore d.SetId("")
+					// ignore d.SetId("")
 					case *ast.Ident:
 						if strings.Contains(strings.ToLower(x.Name), "name") {
 							// if the identifier contains "name", we know it's the
@@ -417,32 +418,59 @@ func GetResourceID(fileName string) (string, error) {
 							return true
 						})
 					case *ast.StarExpr:
-						// handle the following kind of expressions: d.SetId(*vpc.VpcId)
+						// handle the following kind of expressions:
+						//   d.SetId(*vpc.VpcId)
 						ident, ok := x.X.(*ast.SelectorExpr)
 						if !ok {
 							return true
 						}
 
 						result = &ident.Sel.Name
+
+					case *ast.TypeAssertExpr:
+						// handle the following kind of expressions:
+						//   d.SetId(d.Get("name").(string))
+						call, ok := x.X.(*ast.CallExpr)
+						if !ok {
+							return true
+						}
+
+						fn, ok := call.Fun.(*ast.SelectorExpr)
+						if !ok {
+							return true
+						}
+
+						if fn.Sel.Name == "Get" {
+							ident, ok := call.Args[0].(*ast.BasicLit)
+							if !ok {
+								return true
+							}
+
+							if strings.Contains(strings.ToLower(ident.Value), "name") {
+								result = aws.String("NAME_PLACEHOLDER")
+								return true
+							}
+							log.Warnf("%s", ident)
+						}
+
 					case *ast.CallExpr:
 						// handle the following kind of expressions:
-						//	d.SetId(aws.StringValue(output.CertificateAuthorityArn))
+						//   d.SetId(aws.StringValue(output.CertificateAuthorityArn))
 						fn, ok := x.Fun.(*ast.SelectorExpr)
 						if !ok {
 							return true
 						}
 
-						if fn.Sel.Name != "StringValue" {
+						if fn.Sel.Name == "StringValue" {
+							selExpr, ok := x.Args[0].(*ast.SelectorExpr)
+							if !ok {
+								return true
+							}
+
+							result = &selExpr.Sel.Name
+
 							return true
 						}
-
-						// handle the following kind of expressions: d.SetId(*vpc.VpcId)
-						ident, ok := x.Args[0].(*ast.SelectorExpr)
-						if !ok {
-							return true
-						}
-
-						result = &ident.Sel.Name
 					}
 				}
 			}
