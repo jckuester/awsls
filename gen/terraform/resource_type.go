@@ -14,6 +14,7 @@ import (
 	"text/template"
 
 	"github.com/apex/log"
+	"github.com/jckuester/terratools/gen/util"
 )
 
 // ResourceTypes returns a list of all resource types implemented by the Terraform AWS Provider.
@@ -71,9 +72,9 @@ func WriteResourceTypes(outputPath string, resourceTypes []string) error {
 		return fmt.Errorf("failed to create directory: %s", err)
 	}
 
-	err = writeGoFile(
+	err = util.WriteGoFile(
 		filepath.Join(outputPath, "resource_types.go"),
-		codeLayout,
+		util.CodeLayout,
 		"",
 		"resource",
 		ResourceTypesGoCode(resourceTypes),

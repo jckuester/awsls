@@ -1,3 +1,5 @@
+// +build codegen
+
 package terraform
 
 import (
@@ -9,6 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/jckuester/terratools/gen/util"
 )
 
 // ManualResourceServiceMap are resources for which its corresponding service couldn't be automatically identified.
@@ -96,9 +100,9 @@ func WriteResourceServices(outputPath string, resourceServices map[string]string
 		return fmt.Errorf("failed to create directory: %s", err)
 	}
 
-	err = writeGoFile(
+	err = util.WriteGoFile(
 		filepath.Join(outputPath, "resourceServices.go"),
-		codeLayout,
+		util.CodeLayout,
 		"",
 		"resource",
 		ResourceServicesGoCode(resourceServices),

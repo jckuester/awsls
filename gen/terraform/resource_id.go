@@ -1,3 +1,5 @@
+// +build codegen
+
 package terraform
 
 import (
@@ -10,6 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/jckuester/terratools/gen/util"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 )
@@ -164,9 +168,9 @@ func WriteResourceIDs(outputPath string, resourceIDs map[string]string) error {
 		return fmt.Errorf("failed to create directory: %s", err)
 	}
 
-	err = writeGoFile(
+	err = util.WriteGoFile(
 		filepath.Join(outputPath, "resource_ids.go"),
-		codeLayout,
+		util.CodeLayout,
 		"",
 		"resource",
 		ResourceIDsGoCode(resourceIDs),
