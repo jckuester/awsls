@@ -8,23 +8,13 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
 
 	"github.com/apex/log"
-	"github.com/aws/aws-sdk-go/private/util"
 )
-
-const codeLayout = `// Code is generated. DO NOT EDIT.
-
-%s
-package %s
-
-%s
-`
 
 // ResourceTypes returns a list of all resource types implemented by the Terraform AWS Provider.
 func ResourceTypes() []string {
@@ -104,10 +94,6 @@ func ResourceTypesGoCode(terraformTypes []string) string {
 	}
 
 	return strings.TrimSpace(buf.String())
-}
-
-func writeGoFile(file string, layout string, args ...interface{}) error {
-	return ioutil.WriteFile(file, []byte(util.GoFmt(fmt.Sprintf(layout, args...))), 0664)
 }
 
 var resourceTypesTmpl = template.Must(template.New("resourceTypes").Parse(`
