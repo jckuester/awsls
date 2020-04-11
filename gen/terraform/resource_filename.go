@@ -14,10 +14,10 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 )
 
-// ResourceFileNames returns for each resource type
+// ResourceFileNames returns for each Terraform resource type
 // the name of the file in the Terraform AWS Provider code that implements it.
-func ResourceFileNames(resourceTypes []string) (map[string]string, error) {
-	files, err := ioutil.ReadDir("/home/jan/git/github.com/yoyolabsio/terraform-provider-aws/aws")
+func ResourceFileNames(providerRepoPath string, resourceTypes []string) (map[string]string, error) {
+	files, err := ioutil.ReadDir(fmt.Sprintf("%s/%s", providerRepoPath, "aws"))
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func ResourceFileNames(resourceTypes []string) (map[string]string, error) {
 			!strings.HasSuffix(f.Name(), "_test.go") &&
 			!strings.HasSuffix(f.Name(), "_migrate.go") {
 			node, err := parser.ParseFile(token.NewFileSet(),
-				"/home/jan/git/github.com/yoyolabsio/terraform-provider-aws/aws/"+f.Name(),
+				fmt.Sprintf("%s/aws/%s", providerRepoPath, f.Name()),
 				nil, 0)
 			if err != nil {
 				return nil, err
@@ -56,7 +56,7 @@ func ResourceFileNames(resourceTypes []string) (map[string]string, error) {
 	result := map[string]string{}
 
 	for _, rType := range resourceTypes {
-		resourceFileName, err := resourceFileName(rType, funcDeclsPerFile)
+		resourceFileName, err := resourceFileName(providerRepoPath, rType, funcDeclsPerFile)
 		if err != nil {
 			log.WithField("resource", rType).Warn(err.Error())
 			continue
@@ -68,9 +68,9 @@ func ResourceFileNames(resourceTypes []string) (map[string]string, error) {
 	return result, nil
 }
 
-func resourceFileName(resourceType string, declarationsByFile map[string][]string) (string, error) {
+func resourceFileName(providerRepoPath, resourceType string, declarationsByFile map[string][]string) (string, error) {
 	node, err := parser.ParseFile(token.NewFileSet(),
-		"/home/jan/git/github.com/yoyolabsio/terraform-provider-aws/aws/provider.go",
+		fmt.Sprintf("%s/aws/provider.go", providerRepoPath),
 		nil, 0)
 	if err != nil {
 		return "", err

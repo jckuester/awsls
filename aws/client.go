@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/acm"
 	"github.com/aws/aws-sdk-go-v2/service/acmpca"
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
+	"github.com/aws/aws-sdk-go-v2/service/apigatewayv2"
 	"github.com/aws/aws-sdk-go-v2/service/applicationautoscaling"
 	"github.com/aws/aws-sdk-go-v2/service/appmesh"
 	"github.com/aws/aws-sdk-go-v2/service/appsync"
@@ -28,6 +29,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/codecommit"
 	"github.com/aws/aws-sdk-go-v2/service/codedeploy"
 	"github.com/aws/aws-sdk-go-v2/service/codepipeline"
+	"github.com/aws/aws-sdk-go-v2/service/codestarnotifications"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentity"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/configservice"
@@ -68,6 +70,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kafka"
 	"github.com/aws/aws-sdk-go-v2/service/kinesis"
 	"github.com/aws/aws-sdk-go-v2/service/kinesisanalytics"
+	"github.com/aws/aws-sdk-go-v2/service/kinesisvideo"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
 	"github.com/aws/aws-sdk-go-v2/service/licensemanager"
@@ -119,6 +122,7 @@ type Client struct {
 	acmconn                       *acm.Client
 	acmpcaconn                    *acmpca.Client
 	apigatewayconn                *apigateway.Client
+	apigatewayv2conn              *apigatewayv2.Client
 	applicationautoscalingconn    *applicationautoscaling.Client
 	appmeshconn                   *appmesh.Client
 	appsyncconn                   *appsync.Client
@@ -139,6 +143,7 @@ type Client struct {
 	codecommitconn                *codecommit.Client
 	codedeployconn                *codedeploy.Client
 	codepipelineconn              *codepipeline.Client
+	codestarnotificationsconn     *codestarnotifications.Client
 	cognitoidentityconn           *cognitoidentity.Client
 	cognitoidentityproviderconn   *cognitoidentityprovider.Client
 	configserviceconn             *configservice.Client
@@ -179,6 +184,7 @@ type Client struct {
 	kafkaconn                     *kafka.Client
 	kinesisconn                   *kinesis.Client
 	kinesisanalyticsconn          *kinesisanalytics.Client
+	kinesisvideoconn              *kinesisvideo.Client
 	kmsconn                       *kms.Client
 	lambdaconn                    *lambda.Client
 	licensemanagerconn            *licensemanager.Client
@@ -236,6 +242,7 @@ func NewClient() *Client {
 		acmconn:                       acm.New(cfg),
 		acmpcaconn:                    acmpca.New(cfg),
 		apigatewayconn:                apigateway.New(cfg),
+		apigatewayv2conn:              apigatewayv2.New(cfg),
 		applicationautoscalingconn:    applicationautoscaling.New(cfg),
 		appmeshconn:                   appmesh.New(cfg),
 		appsyncconn:                   appsync.New(cfg),
@@ -256,6 +263,7 @@ func NewClient() *Client {
 		codecommitconn:                codecommit.New(cfg),
 		codedeployconn:                codedeploy.New(cfg),
 		codepipelineconn:              codepipeline.New(cfg),
+		codestarnotificationsconn:     codestarnotifications.New(cfg),
 		cognitoidentityconn:           cognitoidentity.New(cfg),
 		cognitoidentityproviderconn:   cognitoidentityprovider.New(cfg),
 		configserviceconn:             configservice.New(cfg),
@@ -296,6 +304,7 @@ func NewClient() *Client {
 		kafkaconn:                     kafka.New(cfg),
 		kinesisconn:                   kinesis.New(cfg),
 		kinesisanalyticsconn:          kinesisanalytics.New(cfg),
+		kinesisvideoconn:              kinesisvideo.New(cfg),
 		kmsconn:                       kms.New(cfg),
 		lambdaconn:                    lambda.New(cfg),
 		licensemanagerconn:            licensemanager.New(cfg),

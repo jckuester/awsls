@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jckuester/terratools/gen/util"
+	"github.com/jckuester/awsls/gen/util"
 )
 
 // WriteClient writes Go code to initialize all AWS API Clients

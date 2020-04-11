@@ -13,16 +13,37 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/jckuester/terratools/gen/util"
+	"github.com/apex/log"
+
+	"github.com/jckuester/awsls/gen/util"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 )
 
-func GetResourceID(fileName string) (string, error) {
+func GenerateResourceIDMap(providerRepoPath, outputPath string, resourceFileNames map[string]string) (map[string]string, error) {
+	resourceIDs := map[string]string{}
+	for rType, fileName := range resourceFileNames {
+		resourceID, err := GetResourceID(providerRepoPath, fileName)
+		if err != nil {
+			continue
+		}
+		resourceIDs[rType] = resourceID
+	}
+
+	err := writeResourceIDs(outputPath, resourceIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	log.WithField("length", len(resourceIDs)).Infof("Generated map of resource type -> resource ID")
+
+	return resourceIDs, nil
+}
+func GetResourceID(providerRepoPath, fileName string) (string, error) {
 	fset := token.NewFileSet()
 
 	node, err := parser.ParseFile(fset,
-		"/home/jan/git/github.com/yoyolabsio/terraform-provider-aws/aws/"+fileName,
+		fmt.Sprintf("%s/aws/%s", providerRepoPath, fileName),
 		nil, 0)
 	if err != nil {
 		return "", err
@@ -162,7 +183,7 @@ func GetResourceID(fileName string) (string, error) {
 	return "", fmt.Errorf("no ID found for resource type")
 }
 
-func WriteResourceIDs(outputPath string, resourceIDs map[string]string) error {
+func writeResourceIDs(outputPath string, resourceIDs map[string]string) error {
 	err := os.MkdirAll(outputPath, 0775)
 	if err != nil {
 		return fmt.Errorf("failed to create directory: %s", err)
@@ -173,17 +194,16 @@ func WriteResourceIDs(outputPath string, resourceIDs map[string]string) error {
 		util.CodeLayout,
 		"",
 		"resource",
-		ResourceIDsGoCode(resourceIDs),
+		resourceIDsGoCode(resourceIDs),
 	)
 	if err != nil {
-		return fmt.Errorf("failed to write map of resource IDs to file: %s", err)
+		return fmt.Errorf("failed to write Go code to file: %s", err)
 	}
 
 	return nil
 }
 
-// ResourceIDsGoCode generates the Go code for the map of Terraform resource IDs.
-func ResourceIDsGoCode(resourceIDs map[string]string) string {
+func resourceIDsGoCode(resourceIDs map[string]string) string {
 	var buf bytes.Buffer
 	err := resourceIDsTmpl.Execute(&buf, resourceIDs)
 	if err != nil {
@@ -195,8 +215,8 @@ func ResourceIDsGoCode(resourceIDs map[string]string) string {
 }
 
 var resourceIDsTmpl = template.Must(template.New("resourceIDs").Parse(`
-// ResourceIDs stores the name of the struct field of the AWS API used as ID for each Terraform resource type.
-var ResourceIDs = map[string]string{
+// IDs stores the name of the struct field of the AWS API used as ID for each Terraform resource type.
+var IDs = map[string]string{
 {{range $key, $value := .}}"{{$key}}": "{{$value}}",
 {{end}}}
 `))

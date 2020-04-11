@@ -14,16 +14,33 @@ import (
 	"text/template"
 
 	"github.com/apex/log"
-	"github.com/jckuester/terratools/gen/util"
+	"github.com/jckuester/awsls/gen/util"
 )
 
+// GenerateResourceTypeList generates code of a list of Terraform resource types
+// and writes the code to directory outputPath.
+func GenerateResourceTypeList(providerRepoPath, outputPath string) ([]string, error) {
+	resourceTypes, err := ResourceTypes(providerRepoPath)
+	if err != nil {
+		return nil, err
+	}
+
+	err = writeResourceTypes(outputPath, resourceTypes)
+	if err != nil {
+		return nil, err
+	}
+
+	log.WithField("length", len(resourceTypes)).Infof("Generated list of Terraform AWS resource types")
+	return resourceTypes, nil
+}
+
 // ResourceTypes returns a list of all resource types implemented by the Terraform AWS Provider.
-func ResourceTypes() []string {
+func ResourceTypes(providerRepoPath string) ([]string, error) {
 	node, err := parser.ParseFile(token.NewFileSet(),
-		"/home/jan/git/github.com/yoyolabsio/terraform-provider-aws/aws/provider.go",
+		fmt.Sprintf("%s/%s", providerRepoPath, "aws/provider.go"),
 		nil, 0)
 	if err != nil {
-		log.Fatalf(err.Error())
+		return nil, err
 	}
 
 	var result []string
@@ -63,13 +80,18 @@ func ResourceTypes() []string {
 		return true
 	})
 
-	return result
+	return result, nil
 }
 
-func WriteResourceTypes(outputPath string, resourceTypes []string) error {
+func writeResourceTypes(outputPath string, resourceTypes []string) error {
 	err := os.MkdirAll(outputPath, 0775)
 	if err != nil {
 		return fmt.Errorf("failed to create directory: %s", err)
+	}
+
+	code, err := resourceTypesGoCode(resourceTypes)
+	if err != nil {
+		return fmt.Errorf("failed to generate Go code: %s", err)
 	}
 
 	err = util.WriteGoFile(
@@ -77,29 +99,29 @@ func WriteResourceTypes(outputPath string, resourceTypes []string) error {
 		util.CodeLayout,
 		"",
 		"resource",
-		ResourceTypesGoCode(resourceTypes),
+		code,
 	)
+
 	if err != nil {
-		return fmt.Errorf("failed to write list of resource types to file: %s", err)
+		return fmt.Errorf("failed to write Go code to file: %s", err)
 	}
 
 	return nil
 }
 
-// ResourceTypesGoCode generates the Go code for the list of Terraform resource types.
-func ResourceTypesGoCode(terraformTypes []string) string {
+func resourceTypesGoCode(terraformTypes []string) (string, error) {
 	var buf bytes.Buffer
 	err := resourceTypesTmpl.Execute(&buf, terraformTypes)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
-	return strings.TrimSpace(buf.String())
+	return strings.TrimSpace(buf.String()), nil
 }
 
 var resourceTypesTmpl = template.Must(template.New("resourceTypes").Parse(`
-// ResourceTypes is a list of all resource types implemented by the Terraform AWS Provider.
-var ResourceTypes = []string{
+// Types is a list of all resource types implemented by the Terraform AWS Provider.
+var Types = []string{
 {{range .}}"{{.}}",
 {{end}}}
 `))
