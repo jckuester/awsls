@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/autoscaling"
 )
 
-func ListAutoscalingGroup(client *Client) {
+func ListAutoscalingGroup(client *Client) error {
 	req := client.autoscalingconn.DescribeAutoScalingGroupsRequest(&autoscaling.DescribeAutoScalingGroupsInput{})
 
 	p := autoscaling.NewDescribeAutoScalingGroupsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_autoscaling_group:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListAutoscalingGroup(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_autoscaling_group: %s", err)
+		return err
 	}
 
+	return nil
 }

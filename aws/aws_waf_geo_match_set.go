@@ -5,26 +5,23 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/waf"
 )
 
-func ListWafGeoMatchSet(client *Client) {
+func ListWafGeoMatchSet(client *Client) error {
 	req := client.wafconn.ListGeoMatchSetsRequest(&waf.ListGeoMatchSetsInput{})
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		log.Printf("aws_waf_geo_match_set: %s", err)
-	} else {
-		if len(resp.GeoMatchSets) > 0 {
-			fmt.Println("")
-			fmt.Println("aws_waf_geo_match_set:")
-			for _, r := range resp.GeoMatchSets {
-				fmt.Println(*r.GeoMatchSetId)
+		return err
+	}
 
-			}
+	if len(resp.GeoMatchSets) > 0 {
+		for _, r := range resp.GeoMatchSets {
+			fmt.Println(*r.GeoMatchSetId)
 		}
 	}
 
+	return nil
 }

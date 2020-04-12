@@ -5,26 +5,23 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/configservice"
 )
 
-func ListConfigDeliveryChannel(client *Client) {
+func ListConfigDeliveryChannel(client *Client) error {
 	req := client.configserviceconn.DescribeDeliveryChannelsRequest(&configservice.DescribeDeliveryChannelsInput{})
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		log.Printf("aws_config_delivery_channel: %s", err)
-	} else {
-		if len(resp.DeliveryChannels) > 0 {
-			fmt.Println("")
-			fmt.Println("aws_config_delivery_channel:")
-			for _, r := range resp.DeliveryChannels {
-				fmt.Println(*r.Name)
+		return err
+	}
 
-			}
+	if len(resp.DeliveryChannels) > 0 {
+		for _, r := range resp.DeliveryChannels {
+			fmt.Println(*r.Name)
 		}
 	}
 
+	return nil
 }

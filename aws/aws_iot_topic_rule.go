@@ -5,26 +5,23 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/iot"
 )
 
-func ListIotTopicRule(client *Client) {
+func ListIotTopicRule(client *Client) error {
 	req := client.iotconn.ListTopicRulesRequest(&iot.ListTopicRulesInput{})
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		log.Printf("aws_iot_topic_rule: %s", err)
-	} else {
-		if len(resp.Rules) > 0 {
-			fmt.Println("")
-			fmt.Println("aws_iot_topic_rule:")
-			for _, r := range resp.Rules {
-				fmt.Println(*r.RuleName)
+		return err
+	}
 
-			}
+	if len(resp.Rules) > 0 {
+		for _, r := range resp.Rules {
+			fmt.Println(*r.RuleName)
 		}
 	}
 
+	return nil
 }

@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListNetworkAcl(client *Client) {
+func ListNetworkAcl(client *Client) error {
 	req := client.ec2conn.DescribeNetworkAclsRequest(&ec2.DescribeNetworkAclsInput{})
 
 	p := ec2.NewDescribeNetworkAclsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_network_acl:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListNetworkAcl(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_network_acl: %s", err)
+		return err
 	}
 
+	return nil
 }

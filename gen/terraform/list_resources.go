@@ -37,16 +37,23 @@ func listByTypeGoCode(listFunctionNames map[string]string) string {
 	return strings.TrimSpace(buf.String())
 }
 
-var listByTypeTmpl = template.Must(template.New("listByType").Parse(`import "github.com/jckuester/awsls/aws"
+var listByTypeTmpl = template.Must(template.New("listByType").Parse(`import(
+"fmt"
+"github.com/jckuester/awsls/aws"
+)
 
-func ListResources(client *aws.Client) {
+func ListResources(client *aws.Client) error {
 {{ range $key, $value := . }}aws.List{{ $value }}(client)
-{{end}}}
+{{end}}
+return nil
+}
 
-func ListResourcesByType(client *aws.Client, resourceType string) {
+func ListResourcesByType(client *aws.Client, resourceType string) error {
 	switch resourceType {
 	{{range $key, $value := .}}case "{{ $key }}":
-	aws.List{{ $value }}(client)
-	{{end}}}
+	return aws.List{{ $value }}(client)
+	{{end}}default:
+		return fmt.Errorf("resource type is not yet supported: %s", resourceType)
+	}
 }
 `))

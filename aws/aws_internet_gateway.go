@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListInternetGateway(client *Client) {
+func ListInternetGateway(client *Client) error {
 	req := client.ec2conn.DescribeInternetGatewaysRequest(&ec2.DescribeInternetGatewaysInput{})
 
 	p := ec2.NewDescribeInternetGatewaysPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_internet_gateway:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListInternetGateway(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_internet_gateway: %s", err)
+		return err
 	}
 
+	return nil
 }

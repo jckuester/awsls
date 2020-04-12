@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListEbsVolume(client *Client) {
+func ListEbsVolume(client *Client) error {
 	req := client.ec2conn.DescribeVolumesRequest(&ec2.DescribeVolumesInput{})
 
 	p := ec2.NewDescribeVolumesPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_ebs_volume:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListEbsVolume(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_ebs_volume: %s", err)
+		return err
 	}
 
+	return nil
 }

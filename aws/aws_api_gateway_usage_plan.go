@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
 )
 
-func ListApiGatewayUsagePlan(client *Client) {
+func ListApiGatewayUsagePlan(client *Client) error {
 	req := client.apigatewayconn.GetUsagePlansRequest(&apigateway.GetUsagePlansInput{})
 
 	p := apigateway.NewGetUsagePlansPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_api_gateway_usage_plan:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListApiGatewayUsagePlan(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_api_gateway_usage_plan: %s", err)
+		return err
 	}
 
+	return nil
 }

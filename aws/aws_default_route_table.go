@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListDefaultRouteTable(client *Client) {
+func ListDefaultRouteTable(client *Client) error {
 	req := client.ec2conn.DescribeRouteTablesRequest(&ec2.DescribeRouteTablesInput{})
 
 	p := ec2.NewDescribeRouteTablesPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_default_route_table:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListDefaultRouteTable(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_default_route_table: %s", err)
+		return err
 	}
 
+	return nil
 }

@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
 )
 
-func ListRedshiftEventSubscription(client *Client) {
+func ListRedshiftEventSubscription(client *Client) error {
 	req := client.redshiftconn.DescribeEventSubscriptionsRequest(&redshift.DescribeEventSubscriptionsInput{})
 
 	p := redshift.NewDescribeEventSubscriptionsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_redshift_event_subscription:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListRedshiftEventSubscription(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_redshift_event_subscription: %s", err)
+		return err
 	}
 
+	return nil
 }

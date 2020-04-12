@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
 )
 
-func ListApiGatewayApiKey(client *Client) {
+func ListApiGatewayApiKey(client *Client) error {
 	req := client.apigatewayconn.GetApiKeysRequest(&apigateway.GetApiKeysInput{})
 
 	p := apigateway.NewGetApiKeysPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_api_gateway_api_key:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListApiGatewayApiKey(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_api_gateway_api_key: %s", err)
+		return err
 	}
 
+	return nil
 }

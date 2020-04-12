@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 )
 
-func ListSsmDocument(client *Client) {
+func ListSsmDocument(client *Client) error {
 	req := client.ssmconn.ListDocumentsRequest(&ssm.ListDocumentsInput{})
 
 	p := ssm.NewListDocumentsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_ssm_document:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListSsmDocument(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_ssm_document: %s", err)
+		return err
 	}
 
+	return nil
 }

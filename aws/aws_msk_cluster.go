@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/kafka"
 )
 
-func ListMskCluster(client *Client) {
+func ListMskCluster(client *Client) error {
 	req := client.kafkaconn.ListClustersRequest(&kafka.ListClustersInput{})
 
 	p := kafka.NewListClustersPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_msk_cluster:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListMskCluster(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_msk_cluster: %s", err)
+		return err
 	}
 
+	return nil
 }

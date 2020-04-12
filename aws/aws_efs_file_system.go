@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/efs"
 )
 
-func ListEfsFileSystem(client *Client) {
+func ListEfsFileSystem(client *Client) error {
 	req := client.efsconn.DescribeFileSystemsRequest(&efs.DescribeFileSystemsInput{})
 
 	p := efs.NewDescribeFileSystemsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_efs_file_system:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListEfsFileSystem(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_efs_file_system: %s", err)
+		return err
 	}
 
+	return nil
 }

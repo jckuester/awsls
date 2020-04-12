@@ -2,9 +2,12 @@
 
 package resource
 
-import "github.com/jckuester/awsls/aws"
+import (
+	"fmt"
+	"github.com/jckuester/awsls/aws"
+)
 
-func ListResources(client *aws.Client) {
+func ListResources(client *aws.Client) error {
 	aws.ListAccessanalyzerAnalyzer(client)
 	aws.ListAcmCertificate(client)
 	aws.ListAlbListener(client)
@@ -224,447 +227,451 @@ func ListResources(client *aws.Client) {
 	aws.ListWafregionalXssMatchSet(client)
 	aws.ListWorklinkFleet(client)
 	aws.ListWorkspacesIpGroup(client)
+
+	return nil
 }
 
-func ListResourcesByType(client *aws.Client, resourceType string) {
+func ListResourcesByType(client *aws.Client, resourceType string) error {
 	switch resourceType {
 	case "aws_accessanalyzer_analyzer":
-		aws.ListAccessanalyzerAnalyzer(client)
+		return aws.ListAccessanalyzerAnalyzer(client)
 	case "aws_acm_certificate":
-		aws.ListAcmCertificate(client)
+		return aws.ListAcmCertificate(client)
 	case "aws_alb_listener":
-		aws.ListAlbListener(client)
+		return aws.ListAlbListener(client)
 	case "aws_alb_listener_rule":
-		aws.ListAlbListenerRule(client)
+		return aws.ListAlbListenerRule(client)
 	case "aws_alb_target_group":
-		aws.ListAlbTargetGroup(client)
+		return aws.ListAlbTargetGroup(client)
 	case "aws_ami":
-		aws.ListAmi(client)
+		return aws.ListAmi(client)
 	case "aws_api_gateway_api_key":
-		aws.ListApiGatewayApiKey(client)
+		return aws.ListApiGatewayApiKey(client)
 	case "aws_api_gateway_client_certificate":
-		aws.ListApiGatewayClientCertificate(client)
+		return aws.ListApiGatewayClientCertificate(client)
 	case "aws_api_gateway_domain_name":
-		aws.ListApiGatewayDomainName(client)
+		return aws.ListApiGatewayDomainName(client)
 	case "aws_api_gateway_rest_api":
-		aws.ListApiGatewayRestApi(client)
+		return aws.ListApiGatewayRestApi(client)
 	case "aws_api_gateway_usage_plan":
-		aws.ListApiGatewayUsagePlan(client)
+		return aws.ListApiGatewayUsagePlan(client)
 	case "aws_api_gateway_vpc_link":
-		aws.ListApiGatewayVpcLink(client)
+		return aws.ListApiGatewayVpcLink(client)
 	case "aws_apigatewayv2_api":
-		aws.ListApigatewayv2Api(client)
+		return aws.ListApigatewayv2Api(client)
 	case "aws_appmesh_mesh":
-		aws.ListAppmeshMesh(client)
+		return aws.ListAppmeshMesh(client)
 	case "aws_appsync_graphql_api":
-		aws.ListAppsyncGraphqlApi(client)
+		return aws.ListAppsyncGraphqlApi(client)
 	case "aws_athena_workgroup":
-		aws.ListAthenaWorkgroup(client)
+		return aws.ListAthenaWorkgroup(client)
 	case "aws_autoscaling_group":
-		aws.ListAutoscalingGroup(client)
+		return aws.ListAutoscalingGroup(client)
 	case "aws_backup_plan":
-		aws.ListBackupPlan(client)
+		return aws.ListBackupPlan(client)
 	case "aws_backup_vault":
-		aws.ListBackupVault(client)
+		return aws.ListBackupVault(client)
 	case "aws_batch_compute_environment":
-		aws.ListBatchComputeEnvironment(client)
+		return aws.ListBatchComputeEnvironment(client)
 	case "aws_batch_job_definition":
-		aws.ListBatchJobDefinition(client)
+		return aws.ListBatchJobDefinition(client)
 	case "aws_batch_job_queue":
-		aws.ListBatchJobQueue(client)
+		return aws.ListBatchJobQueue(client)
 	case "aws_cloudformation_stack":
-		aws.ListCloudformationStack(client)
+		return aws.ListCloudformationStack(client)
 	case "aws_cloudformation_stack_set":
-		aws.ListCloudformationStackSet(client)
+		return aws.ListCloudformationStackSet(client)
 	case "aws_cloudhsm_v2_cluster":
-		aws.ListCloudhsmV2Cluster(client)
+		return aws.ListCloudhsmV2Cluster(client)
 	case "aws_cloudwatch_dashboard":
-		aws.ListCloudwatchDashboard(client)
+		return aws.ListCloudwatchDashboard(client)
 	case "aws_cloudwatch_event_rule":
-		aws.ListCloudwatchEventRule(client)
+		return aws.ListCloudwatchEventRule(client)
 	case "aws_cloudwatch_log_destination":
-		aws.ListCloudwatchLogDestination(client)
+		return aws.ListCloudwatchLogDestination(client)
 	case "aws_cloudwatch_log_group":
-		aws.ListCloudwatchLogGroup(client)
+		return aws.ListCloudwatchLogGroup(client)
 	case "aws_cloudwatch_log_resource_policy":
-		aws.ListCloudwatchLogResourcePolicy(client)
+		return aws.ListCloudwatchLogResourcePolicy(client)
 	case "aws_codebuild_source_credential":
-		aws.ListCodebuildSourceCredential(client)
+		return aws.ListCodebuildSourceCredential(client)
 	case "aws_codecommit_repository":
-		aws.ListCodecommitRepository(client)
+		return aws.ListCodecommitRepository(client)
 	case "aws_codepipeline_webhook":
-		aws.ListCodepipelineWebhook(client)
+		return aws.ListCodepipelineWebhook(client)
 	case "aws_codestarnotifications_notification_rule":
-		aws.ListCodestarnotificationsNotificationRule(client)
+		return aws.ListCodestarnotificationsNotificationRule(client)
 	case "aws_config_config_rule":
-		aws.ListConfigConfigRule(client)
+		return aws.ListConfigConfigRule(client)
 	case "aws_config_configuration_recorder":
-		aws.ListConfigConfigurationRecorder(client)
+		return aws.ListConfigConfigurationRecorder(client)
 	case "aws_config_delivery_channel":
-		aws.ListConfigDeliveryChannel(client)
+		return aws.ListConfigDeliveryChannel(client)
 	case "aws_cur_report_definition":
-		aws.ListCurReportDefinition(client)
+		return aws.ListCurReportDefinition(client)
 	case "aws_customer_gateway":
-		aws.ListCustomerGateway(client)
+		return aws.ListCustomerGateway(client)
 	case "aws_datasync_agent":
-		aws.ListDatasyncAgent(client)
+		return aws.ListDatasyncAgent(client)
 	case "aws_datasync_task":
-		aws.ListDatasyncTask(client)
+		return aws.ListDatasyncTask(client)
 	case "aws_dax_parameter_group":
-		aws.ListDaxParameterGroup(client)
+		return aws.ListDaxParameterGroup(client)
 	case "aws_dax_subnet_group":
-		aws.ListDaxSubnetGroup(client)
+		return aws.ListDaxSubnetGroup(client)
 	case "aws_db_event_subscription":
-		aws.ListDbEventSubscription(client)
+		return aws.ListDbEventSubscription(client)
 	case "aws_db_instance":
-		aws.ListDbInstance(client)
+		return aws.ListDbInstance(client)
 	case "aws_db_parameter_group":
-		aws.ListDbParameterGroup(client)
+		return aws.ListDbParameterGroup(client)
 	case "aws_db_security_group":
-		aws.ListDbSecurityGroup(client)
+		return aws.ListDbSecurityGroup(client)
 	case "aws_db_subnet_group":
-		aws.ListDbSubnetGroup(client)
+		return aws.ListDbSubnetGroup(client)
 	case "aws_default_route_table":
-		aws.ListDefaultRouteTable(client)
+		return aws.ListDefaultRouteTable(client)
 	case "aws_default_security_group":
-		aws.ListDefaultSecurityGroup(client)
+		return aws.ListDefaultSecurityGroup(client)
 	case "aws_default_vpc":
-		aws.ListDefaultVpc(client)
+		return aws.ListDefaultVpc(client)
 	case "aws_devicefarm_project":
-		aws.ListDevicefarmProject(client)
+		return aws.ListDevicefarmProject(client)
 	case "aws_dlm_lifecycle_policy":
-		aws.ListDlmLifecyclePolicy(client)
+		return aws.ListDlmLifecyclePolicy(client)
 	case "aws_dms_certificate":
-		aws.ListDmsCertificate(client)
+		return aws.ListDmsCertificate(client)
 	case "aws_dms_endpoint":
-		aws.ListDmsEndpoint(client)
+		return aws.ListDmsEndpoint(client)
 	case "aws_dms_replication_subnet_group":
-		aws.ListDmsReplicationSubnetGroup(client)
+		return aws.ListDmsReplicationSubnetGroup(client)
 	case "aws_dms_replication_task":
-		aws.ListDmsReplicationTask(client)
+		return aws.ListDmsReplicationTask(client)
 	case "aws_dx_connection":
-		aws.ListDxConnection(client)
+		return aws.ListDxConnection(client)
 	case "aws_dx_hosted_private_virtual_interface":
-		aws.ListDxHostedPrivateVirtualInterface(client)
+		return aws.ListDxHostedPrivateVirtualInterface(client)
 	case "aws_dx_hosted_public_virtual_interface":
-		aws.ListDxHostedPublicVirtualInterface(client)
+		return aws.ListDxHostedPublicVirtualInterface(client)
 	case "aws_dx_hosted_transit_virtual_interface":
-		aws.ListDxHostedTransitVirtualInterface(client)
+		return aws.ListDxHostedTransitVirtualInterface(client)
 	case "aws_dx_lag":
-		aws.ListDxLag(client)
+		return aws.ListDxLag(client)
 	case "aws_dx_private_virtual_interface":
-		aws.ListDxPrivateVirtualInterface(client)
+		return aws.ListDxPrivateVirtualInterface(client)
 	case "aws_dx_public_virtual_interface":
-		aws.ListDxPublicVirtualInterface(client)
+		return aws.ListDxPublicVirtualInterface(client)
 	case "aws_dx_transit_virtual_interface":
-		aws.ListDxTransitVirtualInterface(client)
+		return aws.ListDxTransitVirtualInterface(client)
 	case "aws_dynamodb_global_table":
-		aws.ListDynamodbGlobalTable(client)
+		return aws.ListDynamodbGlobalTable(client)
 	case "aws_ebs_snapshot":
-		aws.ListEbsSnapshot(client)
+		return aws.ListEbsSnapshot(client)
 	case "aws_ebs_volume":
-		aws.ListEbsVolume(client)
+		return aws.ListEbsVolume(client)
 	case "aws_ec2_capacity_reservation":
-		aws.ListEc2CapacityReservation(client)
+		return aws.ListEc2CapacityReservation(client)
 	case "aws_ec2_client_vpn_endpoint":
-		aws.ListEc2ClientVpnEndpoint(client)
+		return aws.ListEc2ClientVpnEndpoint(client)
 	case "aws_ec2_fleet":
-		aws.ListEc2Fleet(client)
+		return aws.ListEc2Fleet(client)
 	case "aws_ec2_traffic_mirror_filter":
-		aws.ListEc2TrafficMirrorFilter(client)
+		return aws.ListEc2TrafficMirrorFilter(client)
 	case "aws_ec2_traffic_mirror_session":
-		aws.ListEc2TrafficMirrorSession(client)
+		return aws.ListEc2TrafficMirrorSession(client)
 	case "aws_ec2_traffic_mirror_target":
-		aws.ListEc2TrafficMirrorTarget(client)
+		return aws.ListEc2TrafficMirrorTarget(client)
 	case "aws_ec2_transit_gateway":
-		aws.ListEc2TransitGateway(client)
+		return aws.ListEc2TransitGateway(client)
 	case "aws_ec2_transit_gateway_route_table":
-		aws.ListEc2TransitGatewayRouteTable(client)
+		return aws.ListEc2TransitGatewayRouteTable(client)
 	case "aws_ec2_transit_gateway_vpc_attachment":
-		aws.ListEc2TransitGatewayVpcAttachment(client)
+		return aws.ListEc2TransitGatewayVpcAttachment(client)
 	case "aws_ecr_repository":
-		aws.ListEcrRepository(client)
+		return aws.ListEcrRepository(client)
 	case "aws_ecs_cluster":
-		aws.ListEcsCluster(client)
+		return aws.ListEcsCluster(client)
 	case "aws_efs_file_system":
-		aws.ListEfsFileSystem(client)
+		return aws.ListEfsFileSystem(client)
 	case "aws_efs_mount_target":
-		aws.ListEfsMountTarget(client)
+		return aws.ListEfsMountTarget(client)
 	case "aws_egress_only_internet_gateway":
-		aws.ListEgressOnlyInternetGateway(client)
+		return aws.ListEgressOnlyInternetGateway(client)
 	case "aws_eip":
-		aws.ListEip(client)
+		return aws.ListEip(client)
 	case "aws_elastic_beanstalk_application":
-		aws.ListElasticBeanstalkApplication(client)
+		return aws.ListElasticBeanstalkApplication(client)
 	case "aws_elastic_beanstalk_application_version":
-		aws.ListElasticBeanstalkApplicationVersion(client)
+		return aws.ListElasticBeanstalkApplicationVersion(client)
 	case "aws_elastic_beanstalk_environment":
-		aws.ListElasticBeanstalkEnvironment(client)
+		return aws.ListElasticBeanstalkEnvironment(client)
 	case "aws_elasticache_replication_group":
-		aws.ListElasticacheReplicationGroup(client)
+		return aws.ListElasticacheReplicationGroup(client)
 	case "aws_elastictranscoder_pipeline":
-		aws.ListElastictranscoderPipeline(client)
+		return aws.ListElastictranscoderPipeline(client)
 	case "aws_elastictranscoder_preset":
-		aws.ListElastictranscoderPreset(client)
+		return aws.ListElastictranscoderPreset(client)
 	case "aws_elb":
-		aws.ListElb(client)
+		return aws.ListElb(client)
 	case "aws_emr_security_configuration":
-		aws.ListEmrSecurityConfiguration(client)
+		return aws.ListEmrSecurityConfiguration(client)
 	case "aws_fsx_lustre_file_system":
-		aws.ListFsxLustreFileSystem(client)
+		return aws.ListFsxLustreFileSystem(client)
 	case "aws_fsx_windows_file_system":
-		aws.ListFsxWindowsFileSystem(client)
+		return aws.ListFsxWindowsFileSystem(client)
 	case "aws_gamelift_alias":
-		aws.ListGameliftAlias(client)
+		return aws.ListGameliftAlias(client)
 	case "aws_gamelift_build":
-		aws.ListGameliftBuild(client)
+		return aws.ListGameliftBuild(client)
 	case "aws_gamelift_game_session_queue":
-		aws.ListGameliftGameSessionQueue(client)
+		return aws.ListGameliftGameSessionQueue(client)
 	case "aws_globalaccelerator_accelerator":
-		aws.ListGlobalacceleratorAccelerator(client)
+		return aws.ListGlobalacceleratorAccelerator(client)
 	case "aws_glue_crawler":
-		aws.ListGlueCrawler(client)
+		return aws.ListGlueCrawler(client)
 	case "aws_glue_job":
-		aws.ListGlueJob(client)
+		return aws.ListGlueJob(client)
 	case "aws_glue_security_configuration":
-		aws.ListGlueSecurityConfiguration(client)
+		return aws.ListGlueSecurityConfiguration(client)
 	case "aws_glue_trigger":
-		aws.ListGlueTrigger(client)
+		return aws.ListGlueTrigger(client)
 	case "aws_iam_access_key":
-		aws.ListIamAccessKey(client)
+		return aws.ListIamAccessKey(client)
 	case "aws_iam_group":
-		aws.ListIamGroup(client)
+		return aws.ListIamGroup(client)
 	case "aws_iam_instance_profile":
-		aws.ListIamInstanceProfile(client)
+		return aws.ListIamInstanceProfile(client)
 	case "aws_iam_policy":
-		aws.ListIamPolicy(client)
+		return aws.ListIamPolicy(client)
 	case "aws_iam_role":
-		aws.ListIamRole(client)
+		return aws.ListIamRole(client)
 	case "aws_iam_server_certificate":
-		aws.ListIamServerCertificate(client)
+		return aws.ListIamServerCertificate(client)
 	case "aws_iam_service_linked_role":
-		aws.ListIamServiceLinkedRole(client)
+		return aws.ListIamServiceLinkedRole(client)
 	case "aws_iam_user":
-		aws.ListIamUser(client)
+		return aws.ListIamUser(client)
 	case "aws_internet_gateway":
-		aws.ListInternetGateway(client)
+		return aws.ListInternetGateway(client)
 	case "aws_iot_certificate":
-		aws.ListIotCertificate(client)
+		return aws.ListIotCertificate(client)
 	case "aws_iot_policy":
-		aws.ListIotPolicy(client)
+		return aws.ListIotPolicy(client)
 	case "aws_iot_thing":
-		aws.ListIotThing(client)
+		return aws.ListIotThing(client)
 	case "aws_iot_thing_type":
-		aws.ListIotThingType(client)
+		return aws.ListIotThingType(client)
 	case "aws_iot_topic_rule":
-		aws.ListIotTopicRule(client)
+		return aws.ListIotTopicRule(client)
 	case "aws_key_pair":
-		aws.ListKeyPair(client)
+		return aws.ListKeyPair(client)
 	case "aws_kinesis_analytics_application":
-		aws.ListKinesisAnalyticsApplication(client)
+		return aws.ListKinesisAnalyticsApplication(client)
 	case "aws_kms_alias":
-		aws.ListKmsAlias(client)
+		return aws.ListKmsAlias(client)
 	case "aws_kms_external_key":
-		aws.ListKmsExternalKey(client)
+		return aws.ListKmsExternalKey(client)
 	case "aws_kms_key":
-		aws.ListKmsKey(client)
+		return aws.ListKmsKey(client)
 	case "aws_lambda_event_source_mapping":
-		aws.ListLambdaEventSourceMapping(client)
+		return aws.ListLambdaEventSourceMapping(client)
 	case "aws_lambda_function":
-		aws.ListLambdaFunction(client)
+		return aws.ListLambdaFunction(client)
 	case "aws_launch_configuration":
-		aws.ListLaunchConfiguration(client)
+		return aws.ListLaunchConfiguration(client)
 	case "aws_launch_template":
-		aws.ListLaunchTemplate(client)
+		return aws.ListLaunchTemplate(client)
 	case "aws_lb_listener":
-		aws.ListLbListener(client)
+		return aws.ListLbListener(client)
 	case "aws_lb_listener_rule":
-		aws.ListLbListenerRule(client)
+		return aws.ListLbListenerRule(client)
 	case "aws_lb_target_group":
-		aws.ListLbTargetGroup(client)
+		return aws.ListLbTargetGroup(client)
 	case "aws_licensemanager_license_configuration":
-		aws.ListLicensemanagerLicenseConfiguration(client)
+		return aws.ListLicensemanagerLicenseConfiguration(client)
 	case "aws_lightsail_domain":
-		aws.ListLightsailDomain(client)
+		return aws.ListLightsailDomain(client)
 	case "aws_lightsail_instance":
-		aws.ListLightsailInstance(client)
+		return aws.ListLightsailInstance(client)
 	case "aws_lightsail_key_pair":
-		aws.ListLightsailKeyPair(client)
+		return aws.ListLightsailKeyPair(client)
 	case "aws_lightsail_static_ip":
-		aws.ListLightsailStaticIp(client)
+		return aws.ListLightsailStaticIp(client)
 	case "aws_media_convert_queue":
-		aws.ListMediaConvertQueue(client)
+		return aws.ListMediaConvertQueue(client)
 	case "aws_media_package_channel":
-		aws.ListMediaPackageChannel(client)
+		return aws.ListMediaPackageChannel(client)
 	case "aws_media_store_container":
-		aws.ListMediaStoreContainer(client)
+		return aws.ListMediaStoreContainer(client)
 	case "aws_mq_broker":
-		aws.ListMqBroker(client)
+		return aws.ListMqBroker(client)
 	case "aws_mq_configuration":
-		aws.ListMqConfiguration(client)
+		return aws.ListMqConfiguration(client)
 	case "aws_msk_cluster":
-		aws.ListMskCluster(client)
+		return aws.ListMskCluster(client)
 	case "aws_msk_configuration":
-		aws.ListMskConfiguration(client)
+		return aws.ListMskConfiguration(client)
 	case "aws_nat_gateway":
-		aws.ListNatGateway(client)
+		return aws.ListNatGateway(client)
 	case "aws_neptune_event_subscription":
-		aws.ListNeptuneEventSubscription(client)
+		return aws.ListNeptuneEventSubscription(client)
 	case "aws_network_acl":
-		aws.ListNetworkAcl(client)
+		return aws.ListNetworkAcl(client)
 	case "aws_network_interface":
-		aws.ListNetworkInterface(client)
+		return aws.ListNetworkInterface(client)
 	case "aws_opsworks_instance":
-		aws.ListOpsworksInstance(client)
+		return aws.ListOpsworksInstance(client)
 	case "aws_opsworks_stack":
-		aws.ListOpsworksStack(client)
+		return aws.ListOpsworksStack(client)
 	case "aws_opsworks_user_profile":
-		aws.ListOpsworksUserProfile(client)
+		return aws.ListOpsworksUserProfile(client)
 	case "aws_placement_group":
-		aws.ListPlacementGroup(client)
+		return aws.ListPlacementGroup(client)
 	case "aws_qldb_ledger":
-		aws.ListQldbLedger(client)
+		return aws.ListQldbLedger(client)
 	case "aws_rds_global_cluster":
-		aws.ListRdsGlobalCluster(client)
+		return aws.ListRdsGlobalCluster(client)
 	case "aws_redshift_cluster":
-		aws.ListRedshiftCluster(client)
+		return aws.ListRedshiftCluster(client)
 	case "aws_redshift_event_subscription":
-		aws.ListRedshiftEventSubscription(client)
+		return aws.ListRedshiftEventSubscription(client)
 	case "aws_redshift_snapshot_copy_grant":
-		aws.ListRedshiftSnapshotCopyGrant(client)
+		return aws.ListRedshiftSnapshotCopyGrant(client)
 	case "aws_redshift_snapshot_schedule":
-		aws.ListRedshiftSnapshotSchedule(client)
+		return aws.ListRedshiftSnapshotSchedule(client)
 	case "aws_route53_health_check":
-		aws.ListRoute53HealthCheck(client)
+		return aws.ListRoute53HealthCheck(client)
 	case "aws_route53_resolver_endpoint":
-		aws.ListRoute53ResolverEndpoint(client)
+		return aws.ListRoute53ResolverEndpoint(client)
 	case "aws_route53_resolver_rule":
-		aws.ListRoute53ResolverRule(client)
+		return aws.ListRoute53ResolverRule(client)
 	case "aws_route53_resolver_rule_association":
-		aws.ListRoute53ResolverRuleAssociation(client)
+		return aws.ListRoute53ResolverRuleAssociation(client)
 	case "aws_route53_zone":
-		aws.ListRoute53Zone(client)
+		return aws.ListRoute53Zone(client)
 	case "aws_route_table":
-		aws.ListRouteTable(client)
+		return aws.ListRouteTable(client)
 	case "aws_s3_bucket":
-		aws.ListS3Bucket(client)
+		return aws.ListS3Bucket(client)
 	case "aws_sagemaker_endpoint":
-		aws.ListSagemakerEndpoint(client)
+		return aws.ListSagemakerEndpoint(client)
 	case "aws_sagemaker_model":
-		aws.ListSagemakerModel(client)
+		return aws.ListSagemakerModel(client)
 	case "aws_secretsmanager_secret":
-		aws.ListSecretsmanagerSecret(client)
+		return aws.ListSecretsmanagerSecret(client)
 	case "aws_security_group":
-		aws.ListSecurityGroup(client)
+		return aws.ListSecurityGroup(client)
 	case "aws_service_discovery_service":
-		aws.ListServiceDiscoveryService(client)
+		return aws.ListServiceDiscoveryService(client)
 	case "aws_servicecatalog_portfolio":
-		aws.ListServicecatalogPortfolio(client)
+		return aws.ListServicecatalogPortfolio(client)
 	case "aws_ses_active_receipt_rule_set":
-		aws.ListSesActiveReceiptRuleSet(client)
+		return aws.ListSesActiveReceiptRuleSet(client)
 	case "aws_ses_configuration_set":
-		aws.ListSesConfigurationSet(client)
+		return aws.ListSesConfigurationSet(client)
 	case "aws_ses_receipt_filter":
-		aws.ListSesReceiptFilter(client)
+		return aws.ListSesReceiptFilter(client)
 	case "aws_ses_receipt_rule_set":
-		aws.ListSesReceiptRuleSet(client)
+		return aws.ListSesReceiptRuleSet(client)
 	case "aws_ses_template":
-		aws.ListSesTemplate(client)
+		return aws.ListSesTemplate(client)
 	case "aws_sfn_activity":
-		aws.ListSfnActivity(client)
+		return aws.ListSfnActivity(client)
 	case "aws_sfn_state_machine":
-		aws.ListSfnStateMachine(client)
+		return aws.ListSfnStateMachine(client)
 	case "aws_sns_platform_application":
-		aws.ListSnsPlatformApplication(client)
+		return aws.ListSnsPlatformApplication(client)
 	case "aws_sns_topic":
-		aws.ListSnsTopic(client)
+		return aws.ListSnsTopic(client)
 	case "aws_sns_topic_subscription":
-		aws.ListSnsTopicSubscription(client)
+		return aws.ListSnsTopicSubscription(client)
 	case "aws_spot_fleet_request":
-		aws.ListSpotFleetRequest(client)
+		return aws.ListSpotFleetRequest(client)
 	case "aws_spot_instance_request":
-		aws.ListSpotInstanceRequest(client)
+		return aws.ListSpotInstanceRequest(client)
 	case "aws_ssm_activation":
-		aws.ListSsmActivation(client)
+		return aws.ListSsmActivation(client)
 	case "aws_ssm_association":
-		aws.ListSsmAssociation(client)
+		return aws.ListSsmAssociation(client)
 	case "aws_ssm_document":
-		aws.ListSsmDocument(client)
+		return aws.ListSsmDocument(client)
 	case "aws_ssm_maintenance_window":
-		aws.ListSsmMaintenanceWindow(client)
+		return aws.ListSsmMaintenanceWindow(client)
 	case "aws_ssm_patch_baseline":
-		aws.ListSsmPatchBaseline(client)
+		return aws.ListSsmPatchBaseline(client)
 	case "aws_ssm_patch_group":
-		aws.ListSsmPatchGroup(client)
+		return aws.ListSsmPatchGroup(client)
 	case "aws_storagegateway_gateway":
-		aws.ListStoragegatewayGateway(client)
+		return aws.ListStoragegatewayGateway(client)
 	case "aws_subnet":
-		aws.ListSubnet(client)
+		return aws.ListSubnet(client)
 	case "aws_transfer_server":
-		aws.ListTransferServer(client)
+		return aws.ListTransferServer(client)
 	case "aws_vpc":
-		aws.ListVpc(client)
+		return aws.ListVpc(client)
 	case "aws_vpc_endpoint":
-		aws.ListVpcEndpoint(client)
+		return aws.ListVpcEndpoint(client)
 	case "aws_vpc_endpoint_connection_notification":
-		aws.ListVpcEndpointConnectionNotification(client)
+		return aws.ListVpcEndpointConnectionNotification(client)
 	case "aws_vpc_endpoint_service":
-		aws.ListVpcEndpointService(client)
+		return aws.ListVpcEndpointService(client)
 	case "aws_vpc_peering_connection":
-		aws.ListVpcPeeringConnection(client)
+		return aws.ListVpcPeeringConnection(client)
 	case "aws_vpn_gateway":
-		aws.ListVpnGateway(client)
+		return aws.ListVpnGateway(client)
 	case "aws_waf_byte_match_set":
-		aws.ListWafByteMatchSet(client)
+		return aws.ListWafByteMatchSet(client)
 	case "aws_waf_geo_match_set":
-		aws.ListWafGeoMatchSet(client)
+		return aws.ListWafGeoMatchSet(client)
 	case "aws_waf_ipset":
-		aws.ListWafIpset(client)
+		return aws.ListWafIpset(client)
 	case "aws_waf_rate_based_rule":
-		aws.ListWafRateBasedRule(client)
+		return aws.ListWafRateBasedRule(client)
 	case "aws_waf_regex_match_set":
-		aws.ListWafRegexMatchSet(client)
+		return aws.ListWafRegexMatchSet(client)
 	case "aws_waf_regex_pattern_set":
-		aws.ListWafRegexPatternSet(client)
+		return aws.ListWafRegexPatternSet(client)
 	case "aws_waf_rule":
-		aws.ListWafRule(client)
+		return aws.ListWafRule(client)
 	case "aws_waf_rule_group":
-		aws.ListWafRuleGroup(client)
+		return aws.ListWafRuleGroup(client)
 	case "aws_waf_size_constraint_set":
-		aws.ListWafSizeConstraintSet(client)
+		return aws.ListWafSizeConstraintSet(client)
 	case "aws_waf_sql_injection_match_set":
-		aws.ListWafSqlInjectionMatchSet(client)
+		return aws.ListWafSqlInjectionMatchSet(client)
 	case "aws_waf_web_acl":
-		aws.ListWafWebAcl(client)
+		return aws.ListWafWebAcl(client)
 	case "aws_waf_xss_match_set":
-		aws.ListWafXssMatchSet(client)
+		return aws.ListWafXssMatchSet(client)
 	case "aws_wafregional_byte_match_set":
-		aws.ListWafregionalByteMatchSet(client)
+		return aws.ListWafregionalByteMatchSet(client)
 	case "aws_wafregional_geo_match_set":
-		aws.ListWafregionalGeoMatchSet(client)
+		return aws.ListWafregionalGeoMatchSet(client)
 	case "aws_wafregional_ipset":
-		aws.ListWafregionalIpset(client)
+		return aws.ListWafregionalIpset(client)
 	case "aws_wafregional_rate_based_rule":
-		aws.ListWafregionalRateBasedRule(client)
+		return aws.ListWafregionalRateBasedRule(client)
 	case "aws_wafregional_regex_match_set":
-		aws.ListWafregionalRegexMatchSet(client)
+		return aws.ListWafregionalRegexMatchSet(client)
 	case "aws_wafregional_regex_pattern_set":
-		aws.ListWafregionalRegexPatternSet(client)
+		return aws.ListWafregionalRegexPatternSet(client)
 	case "aws_wafregional_rule":
-		aws.ListWafregionalRule(client)
+		return aws.ListWafregionalRule(client)
 	case "aws_wafregional_rule_group":
-		aws.ListWafregionalRuleGroup(client)
+		return aws.ListWafregionalRuleGroup(client)
 	case "aws_wafregional_size_constraint_set":
-		aws.ListWafregionalSizeConstraintSet(client)
+		return aws.ListWafregionalSizeConstraintSet(client)
 	case "aws_wafregional_sql_injection_match_set":
-		aws.ListWafregionalSqlInjectionMatchSet(client)
+		return aws.ListWafregionalSqlInjectionMatchSet(client)
 	case "aws_wafregional_web_acl":
-		aws.ListWafregionalWebAcl(client)
+		return aws.ListWafregionalWebAcl(client)
 	case "aws_wafregional_xss_match_set":
-		aws.ListWafregionalXssMatchSet(client)
+		return aws.ListWafregionalXssMatchSet(client)
 	case "aws_worklink_fleet":
-		aws.ListWorklinkFleet(client)
+		return aws.ListWorklinkFleet(client)
 	case "aws_workspaces_ip_group":
-		aws.ListWorkspacesIpGroup(client)
+		return aws.ListWorkspacesIpGroup(client)
+	default:
+		return fmt.Errorf("resource type is not yet supported: %s", resourceType)
 	}
 }

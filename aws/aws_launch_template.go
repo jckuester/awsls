@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListLaunchTemplate(client *Client) {
+func ListLaunchTemplate(client *Client) error {
 	req := client.ec2conn.DescribeLaunchTemplatesRequest(&ec2.DescribeLaunchTemplatesInput{})
 
 	p := ec2.NewDescribeLaunchTemplatesPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_launch_template:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListLaunchTemplate(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_launch_template: %s", err)
+		return err
 	}
 
+	return nil
 }

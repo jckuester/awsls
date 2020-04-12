@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/accessanalyzer"
 )
 
-func ListAccessanalyzerAnalyzer(client *Client) {
+func ListAccessanalyzerAnalyzer(client *Client) error {
 	req := client.accessanalyzerconn.ListAnalyzersRequest(&accessanalyzer.ListAnalyzersInput{})
 
 	p := accessanalyzer.NewListAnalyzersPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_accessanalyzer_analyzer:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListAccessanalyzerAnalyzer(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_accessanalyzer_analyzer: %s", err)
+		return err
 	}
 
+	return nil
 }

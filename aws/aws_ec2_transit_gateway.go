@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListEc2TransitGateway(client *Client) {
+func ListEc2TransitGateway(client *Client) error {
 	req := client.ec2conn.DescribeTransitGatewaysRequest(&ec2.DescribeTransitGatewaysInput{})
 
 	p := ec2.NewDescribeTransitGatewaysPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_ec2_transit_gateway:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListEc2TransitGateway(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_ec2_transit_gateway: %s", err)
+		return err
 	}
 
+	return nil
 }

@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
-func ListIamServiceLinkedRole(client *Client) {
+func ListIamServiceLinkedRole(client *Client) error {
 	req := client.iamconn.ListRolesRequest(&iam.ListRolesInput{})
 
 	p := iam.NewListRolesPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_iam_service_linked_role:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListIamServiceLinkedRole(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_iam_service_linked_role: %s", err)
+		return err
 	}
 
+	return nil
 }

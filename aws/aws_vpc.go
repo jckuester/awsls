@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListVpc(client *Client) {
+func ListVpc(client *Client) error {
 	req := client.ec2conn.DescribeVpcsRequest(&ec2.DescribeVpcsInput{})
 
 	p := ec2.NewDescribeVpcsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_vpc:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListVpc(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_vpc: %s", err)
+		return err
 	}
 
+	return nil
 }

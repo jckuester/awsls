@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 )
 
-func ListSecretsmanagerSecret(client *Client) {
+func ListSecretsmanagerSecret(client *Client) error {
 	req := client.secretsmanagerconn.ListSecretsRequest(&secretsmanager.ListSecretsInput{})
 
 	p := secretsmanager.NewListSecretsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_secretsmanager_secret:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListSecretsmanagerSecret(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_secretsmanager_secret: %s", err)
+		return err
 	}
 
+	return nil
 }

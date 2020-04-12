@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
 )
 
-func ListApiGatewayDomainName(client *Client) {
+func ListApiGatewayDomainName(client *Client) error {
 	req := client.apigatewayconn.GetDomainNamesRequest(&apigateway.GetDomainNamesInput{})
 
 	p := apigateway.NewGetDomainNamesPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_api_gateway_domain_name:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListApiGatewayDomainName(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_api_gateway_domain_name: %s", err)
+		return err
 	}
 
+	return nil
 }

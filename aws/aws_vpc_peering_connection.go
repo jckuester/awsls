@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListVpcPeeringConnection(client *Client) {
+func ListVpcPeeringConnection(client *Client) error {
 	req := client.ec2conn.DescribeVpcPeeringConnectionsRequest(&ec2.DescribeVpcPeeringConnectionsInput{})
 
 	p := ec2.NewDescribeVpcPeeringConnectionsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_vpc_peering_connection:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListVpcPeeringConnection(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_vpc_peering_connection: %s", err)
+		return err
 	}
 
+	return nil
 }

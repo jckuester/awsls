@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 )
 
-func ListSsmActivation(client *Client) {
+func ListSsmActivation(client *Client) error {
 	req := client.ssmconn.DescribeActivationsRequest(&ssm.DescribeActivationsInput{})
 
 	p := ssm.NewDescribeActivationsPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_ssm_activation:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListSsmActivation(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_ssm_activation: %s", err)
+		return err
 	}
 
+	return nil
 }

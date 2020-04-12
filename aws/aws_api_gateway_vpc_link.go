@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
 )
 
-func ListApiGatewayVpcLink(client *Client) {
+func ListApiGatewayVpcLink(client *Client) error {
 	req := client.apigatewayconn.GetVpcLinksRequest(&apigateway.GetVpcLinksInput{})
 
 	p := apigateway.NewGetVpcLinksPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_api_gateway_vpc_link:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListApiGatewayVpcLink(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_api_gateway_vpc_link: %s", err)
+		return err
 	}
 
+	return nil
 }

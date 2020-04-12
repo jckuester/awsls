@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
 )
 
-func ListRedshiftCluster(client *Client) {
+func ListRedshiftCluster(client *Client) error {
 	req := client.redshiftconn.DescribeClustersRequest(&redshift.DescribeClustersInput{})
 
 	p := redshift.NewDescribeClustersPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_redshift_cluster:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListRedshiftCluster(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_redshift_cluster: %s", err)
+		return err
 	}
 
+	return nil
 }

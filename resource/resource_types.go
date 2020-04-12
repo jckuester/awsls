@@ -2,6 +2,17 @@
 
 package resource
 
+// IsResourceType returns true if the given string s is a Terraform AWS resource type.
+func IsResourceType(s string) bool {
+	for _, t := range Types {
+		if t == s {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Types is a list of all resource types implemented by the Terraform AWS Provider.
 var Types = []string{
 	"aws_accessanalyzer_analyzer",

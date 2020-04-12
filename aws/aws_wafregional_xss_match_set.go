@@ -5,26 +5,23 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 )
 
-func ListWafregionalXssMatchSet(client *Client) {
+func ListWafregionalXssMatchSet(client *Client) error {
 	req := client.wafregionalconn.ListXssMatchSetsRequest(&wafregional.ListXssMatchSetsInput{})
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		log.Printf("aws_wafregional_xss_match_set: %s", err)
-	} else {
-		if len(resp.XssMatchSets) > 0 {
-			fmt.Println("")
-			fmt.Println("aws_wafregional_xss_match_set:")
-			for _, r := range resp.XssMatchSets {
-				fmt.Println(*r.XssMatchSetId)
+		return err
+	}
 
-			}
+	if len(resp.XssMatchSets) > 0 {
+		for _, r := range resp.XssMatchSets {
+			fmt.Println(*r.XssMatchSetId)
 		}
 	}
 
+	return nil
 }

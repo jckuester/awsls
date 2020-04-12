@@ -5,17 +5,14 @@ package aws
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
-func ListIamUser(client *Client) {
+func ListIamUser(client *Client) error {
 	req := client.iamconn.ListUsersRequest(&iam.ListUsersInput{})
 
 	p := iam.NewListUsersPaginator(req)
-	fmt.Println("")
-	fmt.Println("aws_iam_user:")
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
@@ -28,7 +25,8 @@ func ListIamUser(client *Client) {
 	}
 
 	if err := p.Err(); err != nil {
-		log.Printf("aws_iam_user: %s", err)
+		return err
 	}
 
+	return nil
 }
