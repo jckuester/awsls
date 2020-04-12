@@ -20,6 +20,7 @@ func ListSsmPatchGroup(client *Client) error {
 	if len(resp.Mappings) > 0 {
 		for _, r := range resp.Mappings {
 			fmt.Println(*r.PatchGroup)
+
 		}
 	}
 

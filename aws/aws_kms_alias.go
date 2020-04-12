@@ -18,6 +18,7 @@ func ListKmsAlias(client *Client) error {
 
 		for _, r := range page.Aliases {
 			fmt.Println(*r.AliasName)
+
 		}
 	}
 

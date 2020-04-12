@@ -18,6 +18,7 @@ func ListEcrRepository(client *Client) error {
 
 		for _, r := range page.Repositories {
 			fmt.Println(*r.RepositoryName)
+
 		}
 	}
 

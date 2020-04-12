@@ -20,6 +20,8 @@ func ListIotCertificate(client *Client) error {
 	if len(resp.Certificates) > 0 {
 		for _, r := range resp.Certificates {
 			fmt.Println(*r.CertificateId)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
 		}
 	}
 

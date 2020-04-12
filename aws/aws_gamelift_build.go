@@ -20,6 +20,8 @@ func ListGameliftBuild(client *Client) error {
 	if len(resp.Builds) > 0 {
 		for _, r := range resp.Builds {
 			fmt.Println(*r.BuildId)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

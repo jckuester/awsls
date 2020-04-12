@@ -20,6 +20,7 @@ func ListSsmMaintenanceWindow(client *Client) error {
 	if len(resp.WindowIdentities) > 0 {
 		for _, r := range resp.WindowIdentities {
 			fmt.Println(*r.WindowId)
+
 		}
 	}
 

@@ -18,6 +18,7 @@ func ListSnsTopic(client *Client) error {
 
 		for _, r := range page.Topics {
 			fmt.Println(*r.TopicArn)
+
 		}
 	}
 

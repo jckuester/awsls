@@ -18,6 +18,8 @@ func ListServiceDiscoveryService(client *Client) error {
 
 		for _, r := range page.Services {
 			fmt.Println(*r.Id)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
 		}
 	}
 

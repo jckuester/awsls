@@ -18,6 +18,8 @@ func ListMskConfiguration(client *Client) error {
 
 		for _, r := range page.Configurations {
 			fmt.Println(*r.Arn)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

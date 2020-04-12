@@ -21,6 +21,7 @@ func ListMskCluster(client *Client) error {
 			for k, v := range r.Tags {
 				fmt.Printf("\t%s: %s\n", k, v)
 			}
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

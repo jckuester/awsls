@@ -18,6 +18,7 @@ func ListElastictranscoderPreset(client *Client) error {
 
 		for _, r := range page.Presets {
 			fmt.Println(*r.Id)
+
 		}
 	}
 

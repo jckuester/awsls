@@ -21,6 +21,7 @@ func ListEc2TransitGatewayRouteTable(client *Client) error {
 			for _, t := range r.Tags {
 				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
 			}
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListSsmPatchBaseline(client *Client) error {
 	if len(resp.BaselineIdentities) > 0 {
 		for _, r := range resp.BaselineIdentities {
 			fmt.Println(*r.BaselineId)
+
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListLicensemanagerLicenseConfiguration(client *Client) error {
 	if len(resp.LicenseConfigurations) > 0 {
 		for _, r := range resp.LicenseConfigurations {
 			fmt.Println(*r.LicenseConfigurationArn)
+
 		}
 	}
 

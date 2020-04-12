@@ -20,6 +20,7 @@ func ListWafregionalSqlInjectionMatchSet(client *Client) error {
 	if len(resp.SqlInjectionMatchSets) > 0 {
 		for _, r := range resp.SqlInjectionMatchSets {
 			fmt.Println(*r.SqlInjectionMatchSetId)
+
 		}
 	}
 

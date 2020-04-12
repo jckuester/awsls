@@ -18,6 +18,7 @@ func ListTransferServer(client *Client) error {
 
 		for _, r := range page.Servers {
 			fmt.Println(*r.ServerId)
+
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListConfigConfigRule(client *Client) error {
 	if len(resp.ConfigRules) > 0 {
 		for _, r := range resp.ConfigRules {
 			fmt.Println(*r.ConfigRuleName)
+
 		}
 	}
 

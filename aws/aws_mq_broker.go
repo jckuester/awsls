@@ -20,6 +20,7 @@ func ListMqBroker(client *Client) error {
 	if len(resp.BrokerSummaries) > 0 {
 		for _, r := range resp.BrokerSummaries {
 			fmt.Println(*r.BrokerId)
+
 		}
 	}
 

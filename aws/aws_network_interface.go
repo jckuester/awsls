@@ -18,6 +18,7 @@ func ListNetworkInterface(client *Client) error {
 
 		for _, r := range page.NetworkInterfaces {
 			fmt.Println(*r.NetworkInterfaceId)
+
 		}
 	}
 

@@ -18,6 +18,7 @@ func ListQldbLedger(client *Client) error {
 
 		for _, r := range page.Ledgers {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

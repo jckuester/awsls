@@ -18,6 +18,7 @@ func ListAlbTargetGroup(client *Client) error {
 
 		for _, r := range page.TargetGroups {
 			fmt.Println(*r.TargetGroupArn)
+
 		}
 	}
 

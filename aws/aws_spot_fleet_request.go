@@ -18,6 +18,8 @@ func ListSpotFleetRequest(client *Client) error {
 
 		for _, r := range page.SpotFleetRequestConfigs {
 			fmt.Println(*r.SpotFleetRequestId)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreateTime)
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListConfigDeliveryChannel(client *Client) error {
 	if len(resp.DeliveryChannels) > 0 {
 		for _, r := range resp.DeliveryChannels {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListWafXssMatchSet(client *Client) error {
 	if len(resp.XssMatchSets) > 0 {
 		for _, r := range resp.XssMatchSets {
 			fmt.Println(*r.XssMatchSetId)
+
 		}
 	}
 

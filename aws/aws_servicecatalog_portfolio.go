@@ -18,6 +18,8 @@ func ListServicecatalogPortfolio(client *Client) error {
 
 		for _, r := range page.PortfolioDetails {
 			fmt.Println(*r.Id)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreatedTime)
 		}
 	}
 

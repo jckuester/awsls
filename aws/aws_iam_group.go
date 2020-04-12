@@ -18,6 +18,8 @@ func ListIamGroup(client *Client) error {
 
 		for _, r := range page.Groups {
 			fmt.Println(*r.GroupName)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
 		}
 	}
 

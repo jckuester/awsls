@@ -20,6 +20,8 @@ func ListGameliftAlias(client *Client) error {
 	if len(resp.Aliases) > 0 {
 		for _, r := range resp.Aliases {
 			fmt.Println(*r.AliasId)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

@@ -18,6 +18,8 @@ func ListBackupPlan(client *Client) error {
 
 		for _, r := range page.BackupPlansList {
 			fmt.Println(*r.BackupPlanId)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
 		}
 	}
 

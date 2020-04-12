@@ -18,6 +18,8 @@ func ListSagemakerEndpoint(client *Client) error {
 
 		for _, r := range page.Endpoints {
 			fmt.Println(*r.EndpointName)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

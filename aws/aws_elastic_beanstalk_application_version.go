@@ -20,6 +20,7 @@ func ListElasticBeanstalkApplicationVersion(client *Client) error {
 	if len(resp.ApplicationVersions) > 0 {
 		for _, r := range resp.ApplicationVersions {
 			fmt.Println(*r.ApplicationName)
+
 		}
 	}
 

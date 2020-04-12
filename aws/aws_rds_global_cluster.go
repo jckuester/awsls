@@ -18,6 +18,7 @@ func ListRdsGlobalCluster(client *Client) error {
 
 		for _, r := range page.GlobalClusters {
 			fmt.Println(*r.GlobalClusterIdentifier)
+
 		}
 	}
 

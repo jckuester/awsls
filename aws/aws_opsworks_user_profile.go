@@ -20,6 +20,7 @@ func ListOpsworksUserProfile(client *Client) error {
 	if len(resp.UserProfiles) > 0 {
 		for _, r := range resp.UserProfiles {
 			fmt.Println(*r.IamUserArn)
+
 		}
 	}
 

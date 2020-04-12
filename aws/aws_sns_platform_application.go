@@ -18,6 +18,7 @@ func ListSnsPlatformApplication(client *Client) error {
 
 		for _, r := range page.PlatformApplications {
 			fmt.Println(*r.PlatformApplicationArn)
+
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListOpsworksStack(client *Client) error {
 	if len(resp.Stacks) > 0 {
 		for _, r := range resp.Stacks {
 			fmt.Println(*r.StackId)
+
 		}
 	}
 

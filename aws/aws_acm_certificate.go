@@ -18,6 +18,7 @@ func ListAcmCertificate(client *Client) error {
 
 		for _, r := range page.CertificateSummaryList {
 			fmt.Println(*r.CertificateArn)
+
 		}
 	}
 

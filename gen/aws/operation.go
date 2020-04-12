@@ -13,11 +13,12 @@ import (
 type Operation struct {
 	api.Operation
 
-	TerraformType  string
-	ResourceID     string
-	OutputListName string
-	OpName         string
-	GetTagsGoCode  string
+	TerraformType         string
+	ResourceID            string
+	OutputListName        string
+	OpName                string
+	GetTagsGoCode         string
+	GetCreationTimeGoCode string
 }
 
 func (o *Operation) GoCode() string {
@@ -53,7 +54,8 @@ func  List{{.OpName}}(client *Client) error {
 
 		for _, r := range page.{{ .OutputListName }}{
 			fmt.Println(*r.{{ .ResourceID }})
-			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}}
+			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
+			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}}
 	}
 
 	if err := p.Err(); err != nil {
@@ -70,7 +72,8 @@ func  List{{.OpName}}(client *Client) error {
 	if len(resp.{{ .OutputListName }}) > 0 {
 		for _, r := range resp.{{ .OutputListName }}{
 			fmt.Println(*r.{{ .ResourceID }})
-			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}}
+			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
+			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}}
 	}
 	{{ end }}
 	return nil

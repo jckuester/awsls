@@ -76,7 +76,7 @@ func main() {
 		log.WithError(err).Fatal("failed to generate list resource functions (all and by type)")
 	}
 
-	err = aws.WriteReadme(outputPath, genResourceInfos)
+	err = aws.WriteReadme("..", genResourceInfos)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate README")
 	}

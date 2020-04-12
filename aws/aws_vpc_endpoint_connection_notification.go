@@ -18,6 +18,7 @@ func ListVpcEndpointConnectionNotification(client *Client) error {
 
 		for _, r := range page.ConnectionNotificationSet {
 			fmt.Println(*r.ConnectionNotificationId)
+
 		}
 	}
 

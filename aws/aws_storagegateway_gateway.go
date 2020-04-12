@@ -18,6 +18,7 @@ func ListStoragegatewayGateway(client *Client) error {
 
 		for _, r := range page.Gateways {
 			fmt.Println(*r.GatewayARN)
+
 		}
 	}
 

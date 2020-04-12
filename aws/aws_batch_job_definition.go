@@ -18,6 +18,7 @@ func ListBatchJobDefinition(client *Client) error {
 
 		for _, r := range page.JobDefinitions {
 			fmt.Println(*r.JobDefinitionArn)
+
 		}
 	}
 

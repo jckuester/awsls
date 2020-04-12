@@ -20,6 +20,7 @@ func ListSesTemplate(client *Client) error {
 	if len(resp.TemplatesMetadata) > 0 {
 		for _, r := range resp.TemplatesMetadata {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

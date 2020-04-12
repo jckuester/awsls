@@ -18,6 +18,7 @@ func ListCloudhsmV2Cluster(client *Client) error {
 
 		for _, r := range page.Clusters {
 			fmt.Println(*r.ClusterId)
+
 		}
 	}
 

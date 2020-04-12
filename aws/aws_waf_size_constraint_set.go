@@ -20,6 +20,7 @@ func ListWafSizeConstraintSet(client *Client) error {
 	if len(resp.SizeConstraintSets) > 0 {
 		for _, r := range resp.SizeConstraintSets {
 			fmt.Println(*r.SizeConstraintSetId)
+
 		}
 	}
 

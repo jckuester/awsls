@@ -18,6 +18,7 @@ func ListGlueTrigger(client *Client) error {
 
 		for _, r := range page.Triggers {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListSesReceiptRuleSet(client *Client) error {
 	if len(resp.RuleSets) > 0 {
 		for _, r := range resp.RuleSets {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

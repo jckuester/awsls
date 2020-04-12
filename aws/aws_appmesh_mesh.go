@@ -18,6 +18,7 @@ func ListAppmeshMesh(client *Client) error {
 
 		for _, r := range page.Meshes {
 			fmt.Println(*r.MeshName)
+
 		}
 	}
 

@@ -18,6 +18,8 @@ func ListBackupVault(client *Client) error {
 
 		for _, r := range page.BackupVaultList {
 			fmt.Println(*r.BackupVaultName)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
 		}
 	}
 

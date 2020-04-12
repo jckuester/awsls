@@ -18,6 +18,7 @@ func ListDmsCertificate(client *Client) error {
 
 		for _, r := range page.Certificates {
 			fmt.Println(*r.CertificateIdentifier)
+
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListLightsailStaticIp(client *Client) error {
 	if len(resp.StaticIps) > 0 {
 		for _, r := range resp.StaticIps {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

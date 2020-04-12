@@ -18,6 +18,7 @@ func ListDatasyncAgent(client *Client) error {
 
 		for _, r := range page.Agents {
 			fmt.Println(*r.AgentArn)
+
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListWafByteMatchSet(client *Client) error {
 	if len(resp.ByteMatchSets) > 0 {
 		for _, r := range resp.ByteMatchSets {
 			fmt.Println(*r.ByteMatchSetId)
+
 		}
 	}
 

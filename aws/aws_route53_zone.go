@@ -18,6 +18,7 @@ func ListRoute53Zone(client *Client) error {
 
 		for _, r := range page.HostedZones {
 			fmt.Println(*r.Id)
+
 		}
 	}
 

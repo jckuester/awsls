@@ -7,15 +7,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jckuester/awsls/gen/util"
-
 	"github.com/apex/log"
 	"github.com/aws/aws-sdk-go-v2/private/model/api"
+	"github.com/jckuester/awsls/gen/util"
 )
 
 type GeneratedResourceInfo struct {
-	Type string
-	Tags bool
+	Type         string
+	Tags         bool
+	CreationTime bool
 }
 
 func GenerateListFunctions(outputPath string, resourceServices map[string]string,
@@ -133,15 +133,20 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 
 			listFunctionNames[rType] = TypeToOpName(rType)
 
-			// handle tags
-			op.GetTagsGoCode = GetTagsGoCode(outputField)
-
 			genInfo := GeneratedResourceInfo{
 				Type: rType,
 			}
 
+			op.GetTagsGoCode = GetTagsGoCode(outputField)
+
 			if op.GetTagsGoCode != "" {
 				genInfo.Tags = true
+			}
+
+			op.GetCreationTimeGoCode = GetCreationTimeGoCode(outputField)
+
+			if op.GetCreationTimeGoCode != "" {
+				genInfo.CreationTime = true
 			}
 
 			genResourceInfos = append(genResourceInfos, genInfo)
@@ -214,6 +219,44 @@ func GetTagsGoCode(outputField *api.ShapeRef) string {
 		if strings.Contains(k, "Tags") {
 			// TODO handle TagValue
 			log.Infof("tags: %s %s", k, v.Shape.Type)
+		}
+	}
+
+	return ""
+}
+
+func GetCreationTimeGoCode(outputField *api.ShapeRef) string {
+	creationTimeFieldNames := []string{
+		"LaunchTime",
+		"CreateTime",
+		"CreateDate",
+		"CreatedTime",
+		"CreationDate",
+		"CreationTime",
+		"CreationTimestamp",
+		"StartTime",
+		"InstanceCreateTime",
+	}
+
+	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
+		for _, name := range creationTimeFieldNames {
+			if k == name {
+				if v.Shape.Type == "string" {
+					return `fmt.Printf("CreatedAt: %s\n", ` + fmt.Sprintf("*r.%s)", k)
+				}
+
+				if v.Shape.Type == "timestamp" {
+					return `fmt.Printf("CreatedAt: %s\n", ` + fmt.Sprintf("*r.%s)", k)
+				}
+
+				if v.Shape.Type == "long" {
+					// TODO import time in template
+					return fmt.Sprintf("t := time.Unix(0, *r.%s * 1000000).UTC()", k) + `
+												fmt.Printf("CreatedAt: %s\n", t)`
+				}
+
+				log.Warnf("uncovered creation time type: %s", v.Shape.Type)
+			}
 		}
 	}
 

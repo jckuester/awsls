@@ -18,6 +18,7 @@ func ListLbListener(client *Client) error {
 
 		for _, r := range page.Listeners {
 			fmt.Println(*r.ListenerArn)
+
 		}
 	}
 

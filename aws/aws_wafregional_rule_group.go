@@ -20,6 +20,7 @@ func ListWafregionalRuleGroup(client *Client) error {
 	if len(resp.RuleGroups) > 0 {
 		for _, r := range resp.RuleGroups {
 			fmt.Println(*r.RuleGroupId)
+
 		}
 	}
 

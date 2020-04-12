@@ -20,6 +20,7 @@ func ListWafRegexMatchSet(client *Client) error {
 	if len(resp.RegexMatchSets) > 0 {
 		for _, r := range resp.RegexMatchSets {
 			fmt.Println(*r.RegexMatchSetId)
+
 		}
 	}
 

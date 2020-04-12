@@ -20,6 +20,7 @@ func ListWorkspacesIpGroup(client *Client) error {
 	if len(resp.Result) > 0 {
 		for _, r := range resp.Result {
 			fmt.Println(*r.GroupId)
+
 		}
 	}
 

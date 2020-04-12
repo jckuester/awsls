@@ -18,6 +18,7 @@ func ListGlueJob(client *Client) error {
 
 		for _, r := range page.Jobs {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

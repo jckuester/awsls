@@ -18,6 +18,7 @@ func ListDmsReplicationSubnetGroup(client *Client) error {
 
 		for _, r := range page.ReplicationSubnetGroups {
 			fmt.Println(*r.ReplicationSubnetGroupIdentifier)
+
 		}
 	}
 

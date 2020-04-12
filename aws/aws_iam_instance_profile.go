@@ -18,6 +18,8 @@ func ListIamInstanceProfile(client *Client) error {
 
 		for _, r := range page.InstanceProfiles {
 			fmt.Println(*r.InstanceProfileName)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
 		}
 	}
 

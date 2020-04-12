@@ -20,6 +20,7 @@ func ListDaxSubnetGroup(client *Client) error {
 	if len(resp.SubnetGroups) > 0 {
 		for _, r := range resp.SubnetGroups {
 			fmt.Println(*r.SubnetGroupName)
+
 		}
 	}
 

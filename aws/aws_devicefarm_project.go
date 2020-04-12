@@ -18,6 +18,7 @@ func ListDevicefarmProject(client *Client) error {
 
 		for _, r := range page.Projects {
 			fmt.Println(*r.Arn)
+
 		}
 	}
 

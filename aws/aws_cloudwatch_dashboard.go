@@ -18,6 +18,7 @@ func ListCloudwatchDashboard(client *Client) error {
 
 		for _, r := range page.DashboardEntries {
 			fmt.Println(*r.DashboardName)
+
 		}
 	}
 

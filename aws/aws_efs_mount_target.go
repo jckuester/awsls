@@ -20,6 +20,7 @@ func ListEfsMountTarget(client *Client) error {
 	if len(resp.MountTargets) > 0 {
 		for _, r := range resp.MountTargets {
 			fmt.Println(*r.MountTargetId)
+
 		}
 	}
 

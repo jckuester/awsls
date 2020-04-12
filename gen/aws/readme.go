@@ -33,9 +33,20 @@ func readmeCode(terraformTypes []GeneratedResourceInfo) string {
 }
 
 var Readme = template.Must(template.New("readme").Parse(`
+# awsls
 
-| Resource Type                    | Tag 
-| :-----------------------------   |:-------------:
-{{ range . }}| {{ .Type }}         |   {{ if .Tags }} x {{ end }} | 
+A list command for AWS.
+
+	awsls <terraform_resource_type>
+
+Run, for example
+
+    awsls aws_vpc
+
+## Supported resource types
+
+| Resource Type                    | Show Tags | Show Creation Time
+| :-----------------------------   |:-------------:|:-----------------------:
+{{ range . }}| {{ .Type }}         |   {{ if .Tags }} x {{ end }} |  {{ if .CreationTime }} x {{ end }}
 {{ end }} 
 `))

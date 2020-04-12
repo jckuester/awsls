@@ -20,6 +20,8 @@ func ListGlobalacceleratorAccelerator(client *Client) error {
 	if len(resp.Accelerators) > 0 {
 		for _, r := range resp.Accelerators {
 			fmt.Println(*r.AcceleratorArn)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreatedTime)
 		}
 	}
 

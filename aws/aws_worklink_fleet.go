@@ -18,6 +18,8 @@ func ListWorklinkFleet(client *Client) error {
 
 		for _, r := range page.FleetSummaryList {
 			fmt.Println(*r.FleetArn)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreatedTime)
 		}
 	}
 

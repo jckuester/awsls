@@ -20,6 +20,7 @@ func ListWafregionalRateBasedRule(client *Client) error {
 	if len(resp.Rules) > 0 {
 		for _, r := range resp.Rules {
 			fmt.Println(*r.RuleId)
+
 		}
 	}
 

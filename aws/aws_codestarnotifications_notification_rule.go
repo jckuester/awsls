@@ -18,6 +18,7 @@ func ListCodestarnotificationsNotificationRule(client *Client) error {
 
 		for _, r := range page.NotificationRules {
 			fmt.Println(*r.Arn)
+
 		}
 	}
 

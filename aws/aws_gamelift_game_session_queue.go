@@ -20,6 +20,7 @@ func ListGameliftGameSessionQueue(client *Client) error {
 	if len(resp.GameSessionQueues) > 0 {
 		for _, r := range resp.GameSessionQueues {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

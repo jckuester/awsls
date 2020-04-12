@@ -18,6 +18,7 @@ func ListIamServerCertificate(client *Client) error {
 
 		for _, r := range page.ServerCertificateMetadataList {
 			fmt.Println(*r.ServerCertificateId)
+
 		}
 	}
 

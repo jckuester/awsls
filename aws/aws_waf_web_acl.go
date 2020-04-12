@@ -20,6 +20,7 @@ func ListWafWebAcl(client *Client) error {
 	if len(resp.WebACLs) > 0 {
 		for _, r := range resp.WebACLs {
 			fmt.Println(*r.WebACLId)
+
 		}
 	}
 

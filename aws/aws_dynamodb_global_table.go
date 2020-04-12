@@ -20,6 +20,7 @@ func ListDynamodbGlobalTable(client *Client) error {
 	if len(resp.GlobalTables) > 0 {
 		for _, r := range resp.GlobalTables {
 			fmt.Println(*r.GlobalTableName)
+
 		}
 	}
 

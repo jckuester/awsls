@@ -20,6 +20,7 @@ func ListWafregionalGeoMatchSet(client *Client) error {
 	if len(resp.GeoMatchSets) > 0 {
 		for _, r := range resp.GeoMatchSets {
 			fmt.Println(*r.GeoMatchSetId)
+
 		}
 	}
 

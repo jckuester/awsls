@@ -18,6 +18,7 @@ func ListDbSecurityGroup(client *Client) error {
 
 		for _, r := range page.DBSecurityGroups {
 			fmt.Println(*r.DBSecurityGroupName)
+
 		}
 	}
 

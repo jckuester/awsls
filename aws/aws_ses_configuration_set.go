@@ -20,6 +20,7 @@ func ListSesConfigurationSet(client *Client) error {
 	if len(resp.ConfigurationSets) > 0 {
 		for _, r := range resp.ConfigurationSets {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

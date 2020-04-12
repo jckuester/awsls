@@ -18,6 +18,7 @@ func ListDmsReplicationTask(client *Client) error {
 
 		for _, r := range page.ReplicationTasks {
 			fmt.Println(*r.ReplicationTaskIdentifier)
+
 		}
 	}
 

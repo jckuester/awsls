@@ -18,6 +18,7 @@ func ListElastictranscoderPipeline(client *Client) error {
 
 		for _, r := range page.Pipelines {
 			fmt.Println(*r.Id)
+
 		}
 	}
 

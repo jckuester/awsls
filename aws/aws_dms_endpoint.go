@@ -18,6 +18,7 @@ func ListDmsEndpoint(client *Client) error {
 
 		for _, r := range page.Endpoints {
 			fmt.Println(*r.EndpointIdentifier)
+
 		}
 	}
 

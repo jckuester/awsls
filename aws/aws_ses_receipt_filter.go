@@ -20,6 +20,7 @@ func ListSesReceiptFilter(client *Client) error {
 	if len(resp.Filters) > 0 {
 		for _, r := range resp.Filters {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

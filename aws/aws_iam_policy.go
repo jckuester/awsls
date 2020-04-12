@@ -18,6 +18,8 @@ func ListIamPolicy(client *Client) error {
 
 		for _, r := range page.Policies {
 			fmt.Println(*r.Arn)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
 		}
 	}
 

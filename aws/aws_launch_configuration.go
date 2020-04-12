@@ -18,6 +18,8 @@ func ListLaunchConfiguration(client *Client) error {
 
 		for _, r := range page.LaunchConfigurations {
 			fmt.Println(*r.LaunchConfigurationName)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreatedTime)
 		}
 	}
 

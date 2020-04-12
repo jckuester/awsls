@@ -18,6 +18,8 @@ func ListSfnActivity(client *Client) error {
 
 		for _, r := range page.Activities {
 			fmt.Println(*r.ActivityArn)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
 		}
 	}
 

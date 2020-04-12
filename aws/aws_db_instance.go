@@ -18,6 +18,8 @@ func ListDbInstance(client *Client) error {
 
 		for _, r := range page.DBInstances {
 			fmt.Println(*r.DBInstanceIdentifier)
+
+			fmt.Printf("CreatedAt: %s\n", *r.InstanceCreateTime)
 		}
 	}
 

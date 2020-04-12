@@ -18,6 +18,7 @@ func ListDbParameterGroup(client *Client) error {
 
 		for _, r := range page.DBParameterGroups {
 			fmt.Println(*r.DBParameterGroupName)
+
 		}
 	}
 

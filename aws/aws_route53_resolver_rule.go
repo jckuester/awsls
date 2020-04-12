@@ -18,6 +18,7 @@ func ListRoute53ResolverRule(client *Client) error {
 
 		for _, r := range page.ResolverRules {
 			fmt.Println(*r.Id)
+
 		}
 	}
 

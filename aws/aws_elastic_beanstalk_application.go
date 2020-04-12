@@ -20,6 +20,7 @@ func ListElasticBeanstalkApplication(client *Client) error {
 	if len(resp.Applications) > 0 {
 		for _, r := range resp.Applications {
 			fmt.Println(*r.ApplicationName)
+
 		}
 	}
 

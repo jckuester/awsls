@@ -18,6 +18,7 @@ func ListRoute53HealthCheck(client *Client) error {
 
 		for _, r := range page.HealthChecks {
 			fmt.Println(*r.Id)
+
 		}
 	}
 

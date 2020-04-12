@@ -20,6 +20,7 @@ func ListDaxParameterGroup(client *Client) error {
 	if len(resp.ParameterGroups) > 0 {
 		for _, r := range resp.ParameterGroups {
 			fmt.Println(*r.ParameterGroupName)
+
 		}
 	}
 

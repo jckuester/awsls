@@ -18,6 +18,7 @@ func ListKmsKey(client *Client) error {
 
 		for _, r := range page.Keys {
 			fmt.Println(*r.KeyId)
+
 		}
 	}
 

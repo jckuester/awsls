@@ -18,6 +18,8 @@ func ListSagemakerModel(client *Client) error {
 
 		for _, r := range page.Models {
 			fmt.Println(*r.ModelName)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

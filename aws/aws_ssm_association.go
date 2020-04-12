@@ -18,6 +18,7 @@ func ListSsmAssociation(client *Client) error {
 
 		for _, r := range page.Associations {
 			fmt.Println(*r.AssociationId)
+
 		}
 	}
 

@@ -20,6 +20,7 @@ func ListKinesisAnalyticsApplication(client *Client) error {
 	if len(resp.ApplicationSummaries) > 0 {
 		for _, r := range resp.ApplicationSummaries {
 			fmt.Println(*r.ApplicationARN)
+
 		}
 	}
 

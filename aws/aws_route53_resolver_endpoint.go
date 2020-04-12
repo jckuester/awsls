@@ -18,6 +18,8 @@ func ListRoute53ResolverEndpoint(client *Client) error {
 
 		for _, r := range page.ResolverEndpoints {
 			fmt.Println(*r.Id)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

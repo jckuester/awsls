@@ -20,6 +20,7 @@ func ListElasticBeanstalkEnvironment(client *Client) error {
 	if len(resp.Environments) > 0 {
 		for _, r := range resp.Environments {
 			fmt.Println(*r.EnvironmentId)
+
 		}
 	}
 

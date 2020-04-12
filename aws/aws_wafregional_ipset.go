@@ -20,6 +20,7 @@ func ListWafregionalIpset(client *Client) error {
 	if len(resp.IPSets) > 0 {
 		for _, r := range resp.IPSets {
 			fmt.Println(*r.IPSetId)
+
 		}
 	}
 

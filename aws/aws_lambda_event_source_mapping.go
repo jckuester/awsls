@@ -18,6 +18,7 @@ func ListLambdaEventSourceMapping(client *Client) error {
 
 		for _, r := range page.EventSourceMappings {
 			fmt.Println(*r.UUID)
+
 		}
 	}
 

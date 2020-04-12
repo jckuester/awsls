@@ -5,6 +5,7 @@ package aws
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
 )
@@ -18,6 +19,9 @@ func ListCloudwatchLogDestination(client *Client) error {
 
 		for _, r := range page.Destinations {
 			fmt.Println(*r.DestinationName)
+
+			t := time.Unix(0, *r.CreationTime*1000000).UTC()
+			fmt.Printf("CreatedAt: %s\n", t)
 		}
 	}
 

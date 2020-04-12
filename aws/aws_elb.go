@@ -18,6 +18,8 @@ func ListElb(client *Client) error {
 
 		for _, r := range page.LoadBalancerDescriptions {
 			fmt.Println(*r.LoadBalancerName)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreatedTime)
 		}
 	}
 

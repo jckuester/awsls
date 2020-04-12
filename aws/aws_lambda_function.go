@@ -18,6 +18,7 @@ func ListLambdaFunction(client *Client) error {
 
 		for _, r := range page.Functions {
 			fmt.Println(*r.FunctionName)
+
 		}
 	}
 

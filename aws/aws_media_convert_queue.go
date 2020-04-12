@@ -18,6 +18,7 @@ func ListMediaConvertQueue(client *Client) error {
 
 		for _, r := range page.Queues {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

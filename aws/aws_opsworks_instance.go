@@ -20,6 +20,7 @@ func ListOpsworksInstance(client *Client) error {
 	if len(resp.Instances) > 0 {
 		for _, r := range resp.Instances {
 			fmt.Println(*r.InstanceId)
+
 		}
 	}
 

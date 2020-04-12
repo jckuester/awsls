@@ -18,6 +18,8 @@ func ListGlueCrawler(client *Client) error {
 
 		for _, r := range page.Crawlers {
 			fmt.Println(*r.Name)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

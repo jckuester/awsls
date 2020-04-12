@@ -18,6 +18,7 @@ func ListGlueSecurityConfiguration(client *Client) error {
 
 		for _, r := range page.SecurityConfigurations {
 			fmt.Println(*r.Name)
+
 		}
 	}
 

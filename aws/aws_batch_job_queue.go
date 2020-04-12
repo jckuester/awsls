@@ -18,6 +18,7 @@ func ListBatchJobQueue(client *Client) error {
 
 		for _, r := range page.JobQueues {
 			fmt.Println(*r.JobQueueArn)
+
 		}
 	}
 

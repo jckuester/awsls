@@ -18,6 +18,7 @@ func ListElasticacheReplicationGroup(client *Client) error {
 
 		for _, r := range page.ReplicationGroups {
 			fmt.Println(*r.ReplicationGroupId)
+
 		}
 	}
 

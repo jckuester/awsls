@@ -18,6 +18,7 @@ func ListNeptuneEventSubscription(client *Client) error {
 
 		for _, r := range page.EventSubscriptionsList {
 			fmt.Println(*r.CustSubscriptionId)
+
 		}
 	}
 

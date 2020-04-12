@@ -23,6 +23,7 @@ func ListAmi(client *Client) error {
 			for _, t := range r.Tags {
 				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
 			}
+			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
 		}
 	}
 

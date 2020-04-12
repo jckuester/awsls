@@ -20,6 +20,7 @@ func ListIotThingType(client *Client) error {
 	if len(resp.ThingTypes) > 0 {
 		for _, r := range resp.ThingTypes {
 			fmt.Println(*r.ThingTypeName)
+
 		}
 	}
 

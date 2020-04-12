@@ -18,6 +18,7 @@ func ListDbSubnetGroup(client *Client) error {
 
 		for _, r := range page.DBSubnetGroups {
 			fmt.Println(*r.DBSubnetGroupName)
+
 		}
 	}
 

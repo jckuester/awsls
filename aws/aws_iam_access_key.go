@@ -18,6 +18,8 @@ func ListIamAccessKey(client *Client) error {
 
 		for _, r := range page.AccessKeyMetadata {
 			fmt.Println(*r.AccessKeyId)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
 		}
 	}
 

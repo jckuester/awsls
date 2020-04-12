@@ -18,6 +18,8 @@ func ListMediaStoreContainer(client *Client) error {
 
 		for _, r := range page.Containers {
 			fmt.Println(*r.Name)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
 		}
 	}
 

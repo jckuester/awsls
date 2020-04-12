@@ -20,6 +20,7 @@ func ListIotPolicy(client *Client) error {
 	if len(resp.Policies) > 0 {
 		for _, r := range resp.Policies {
 			fmt.Println(*r.PolicyName)
+
 		}
 	}
 

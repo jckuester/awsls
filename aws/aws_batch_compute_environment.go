@@ -18,6 +18,7 @@ func ListBatchComputeEnvironment(client *Client) error {
 
 		for _, r := range page.ComputeEnvironments {
 			fmt.Println(*r.ComputeEnvironmentName)
+
 		}
 	}
 

@@ -18,6 +18,7 @@ func ListDatasyncTask(client *Client) error {
 
 		for _, r := range page.Tasks {
 			fmt.Println(*r.TaskArn)
+
 		}
 	}
 

@@ -18,6 +18,8 @@ func ListSfnStateMachine(client *Client) error {
 
 		for _, r := range page.StateMachines {
 			fmt.Println(*r.StateMachineArn)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
 		}
 	}
 

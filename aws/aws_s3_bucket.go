@@ -20,6 +20,8 @@ func ListS3Bucket(client *Client) error {
 	if len(resp.Buckets) > 0 {
 		for _, r := range resp.Buckets {
 			fmt.Println(*r.Name)
+
+			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
 		}
 	}
 
