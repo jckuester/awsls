@@ -1,7 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"os"
+
+	"github.com/jckuester/awsls/resource"
+
+	"github.com/jckuester/awsls/aws"
+)
 
 func main() {
-	fmt.Println("foo")
+	client := aws.NewClient()
+
+	if os.Args[1] == "*" {
+		resource.ListResources(client)
+		return
+	}
+
+	resource.ListResourcesByType(client, os.Args[1])
 }

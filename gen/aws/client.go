@@ -5,17 +5,17 @@ package aws
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/jckuester/awsls/gen/util"
 )
 
-// WriteClient writes Go code to initialize all AWS API Clients
+// GenerateClient writes Go code to initialize all AWS API Clients
 // used by Terraform AWS resources.
-func WriteClient(outputPath string, services []string) error {
+func GenerateClient(outputPath string, services []string) error {
 	err := os.MkdirAll(outputPath, 0775)
 	if err != nil {
 		return fmt.Errorf("failed to create directory: %s", err)
@@ -30,7 +30,7 @@ func WriteClient(outputPath string, services []string) error {
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to write AWSClient file: %s", err)
+		return fmt.Errorf("failed to write Go code to file: %s", err)
 	}
 
 	return nil

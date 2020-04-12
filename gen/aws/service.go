@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/private/model/api"
 )
 
-// Services returns the package name of all AWS services.
-func Services(apis api.APIs) []string {
+// ServicePkgNames returns the package name of all AWS services.
+func ServicePkgNames(apis api.APIs) []string {
 	var result []string
 	for _, a := range apis {
 		result = append(result, a.PackageName())

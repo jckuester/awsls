@@ -3,88 +3,81 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
-	"github.com/aws/aws-sdk-go-v2/private/model/api"
 	"github.com/jckuester/awsls/gen/aws"
 	"github.com/jckuester/awsls/gen/terraform"
 	"github.com/jckuester/awsls/gen/util"
 )
 
 const (
-	outputPath       = "../resource"
-	providerRepoPath = "/home/jan/git/github.com/terraform-provider-aws"
+	outputPath                   = "../resource"
+	terraformAwsProviderRepoPath = "/home/jan/git/github.com/terraform-provider-aws"
+	awsSdkGoRepoPath             = "/home/jan/git/github.com/aws-sdk-go-v2"
 )
 
 func main() {
 	log.SetHandler(cli.Default)
 	log.SetLevel(log.DebugLevel)
 
-	resourceTypes, err := terraform.GenerateResourceTypeList(providerRepoPath, outputPath)
+	resourceTypes, err := terraform.GenerateResourceTypeList(terraformAwsProviderRepoPath, outputPath)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate list of Terraform AWS resource types")
 	}
 
-	resourceFileNames, err := terraform.ResourceFileNames(providerRepoPath, resourceTypes)
+	resourceFileNames, err := terraform.ResourceFileNames(terraformAwsProviderRepoPath, resourceTypes)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate map of resource type -> filename implementing resource")
 	}
 
-	resourceServices, err := terraform.GenerateResourceServiceMap(providerRepoPath, outputPath,
+	resourceServices, err := terraform.GenerateResourceServiceMap(terraformAwsProviderRepoPath, outputPath,
 		resourceTypes, resourceFileNames)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate map of resource type -> AWS service")
 	}
 
-	resourceIDs, err := terraform.GenerateResourceIDMap(providerRepoPath, outputPath, resourceFileNames)
+	resourceIDs, err := terraform.GenerateResourceIDMap(terraformAwsProviderRepoPath, outputPath, resourceFileNames)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate map of resource type -> resource ID")
 	}
 
-	globs := []string{"/home/jan/git/github.com/aws-sdk-go-v2/models/apis/*/*/api-2.json"}
-	modelPaths, err := api.ExpandModelGlobPath(globs...)
+	apis, err := aws.APIs(awsSdkGoRepoPath)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to glob file pattern", err)
-		os.Exit(1)
+		log.WithError(err).Fatal("failed to load AWS APIs")
 	}
-	modelPaths, _ = api.TrimModelServiceVersions(modelPaths)
-
-	loader := api.Loader{
-		BaseImport:          outputPath,
-		KeepUnsupportedAPIs: false,
-	}
-
-	apis, err := loader.Load(modelPaths)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to load API models", err)
-		os.Exit(1)
-	}
-	if len(apis) == 0 {
-		fmt.Fprintf(os.Stderr, "expected to load models, but found none")
-		os.Exit(1)
-	}
-
-	delete(apis, "github.com/aws/aws-sdk-go-v2/service/importexport")
 
 	log.Infof("AWS services covered by Terraform: %d/%d",
-		len(aws.ServicesCoveredByTerraform(resourceServices)), len(aws.Services(apis)))
+		len(aws.ServicesCoveredByTerraform(resourceServices)), len(aws.ServicePkgNames(apis)))
 
 	log.Debugf("AWS services not covered:")
-	diff := util.Difference(aws.Services(apis), aws.ServicesCoveredByTerraform(resourceServices))
+	diff := util.Difference(aws.ServicePkgNames(apis), aws.ServicesCoveredByTerraform(resourceServices))
 	for _, d := range diff {
 		log.Debugf("\t%s", d)
 	}
 
-	diff = util.Difference(aws.ServicesCoveredByTerraform(resourceServices), aws.Services(apis))
+	log.Warn("AWS services used by Terraform that are named differently in AWS API v2:")
+	diff = util.Difference(aws.ServicesCoveredByTerraform(resourceServices), aws.ServicePkgNames(apis))
 	for _, d := range diff {
-		log.Warnf("\tnot in v2 API: %s", d)
+		log.Warnf("\t: %s", d)
 	}
 
-	err = aws.WriteClient("../aws", aws.ServicesCoveredByTerraform(resourceServices))
+	err = aws.GenerateClient("../aws", aws.ServicesCoveredByTerraform(resourceServices))
 	if err != nil {
-		log.Fatal(err.Error())
+		log.WithError(err).Fatal("Failed to write AWS client")
+	}
+
+	listFunctionNames, genResourceInfos := aws.GenerateListFunctions("../aws",
+		resourceServices, resourceIDs, apis)
+
+	log.Infof("Generated list functions: %d", len(listFunctionNames))
+
+	err = terraform.GenerateListResourcesFunctions(outputPath, listFunctionNames)
+	if err != nil {
+		log.WithError(err).Fatal("failed to generate list resource functions (all and by type)")
+	}
+
+	err = aws.WriteReadme(outputPath, genResourceInfos)
+	if err != nil {
+		log.WithError(err).Fatal("failed to generate README")
 	}
 }
