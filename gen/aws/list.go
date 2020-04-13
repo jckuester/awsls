@@ -19,12 +19,14 @@ type GeneratedResourceInfo struct {
 }
 
 func GenerateListFunctions(outputPath string, resourceServices map[string]string,
-	resourceIDs map[string]string, apis api.APIs) (map[string]string, []GeneratedResourceInfo) {
+	resourceIDs map[string]string, apis api.APIs) (map[string]string, map[string][]GeneratedResourceInfo) {
 	listFunctionNames := map[string]string{}
-	var genResourceInfos []GeneratedResourceInfo
+	genResourceInfo := map[string][]GeneratedResourceInfo{}
 
 	for _, service := range ServicesCoveredByTerraform(resourceServices) {
 		fmt.Printf("\nservice: %s\n---\n", service)
+
+		var genResourceInfoPerService []GeneratedResourceInfo
 
 		for rType, rService := range resourceServices {
 			if rService != service {
@@ -149,16 +151,20 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 				genInfo.CreationTime = true
 			}
 
-			genResourceInfos = append(genResourceInfos, genInfo)
+			genResourceInfoPerService = append(genResourceInfoPerService, genInfo)
 
 			err := writeListFunction(outputPath, &op, rType)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
 		}
+
+		if len(genResourceInfoPerService) > 0 {
+			genResourceInfo[service] = genResourceInfoPerService
+		}
 	}
 
-	return listFunctionNames, genResourceInfos
+	return listFunctionNames, genResourceInfo
 }
 
 func GetResourceIDNameCandidates(v *api.ShapeRef) []string {

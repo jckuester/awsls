@@ -1,3 +1,5 @@
+// +build codegen
+
 package terraform
 
 // ManualResourceServiceMap manually matches resources to its AWS service since the

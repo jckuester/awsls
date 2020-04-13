@@ -46,22 +46,25 @@ func main() {
 		log.WithError(err).Fatal("failed to load AWS APIs")
 	}
 
+	terraformServices := aws.ServicesCoveredByTerraform(resourceServices)
+	servicePkgNames := aws.ServicePkgNames(apis)
+
 	log.Infof("AWS services covered by Terraform: %d/%d",
-		len(aws.ServicesCoveredByTerraform(resourceServices)), len(aws.ServicePkgNames(apis)))
+		len(terraformServices), len(servicePkgNames))
 
 	log.Debugf("AWS services not covered:")
-	diff := util.Difference(aws.ServicePkgNames(apis), aws.ServicesCoveredByTerraform(resourceServices))
+	diff := util.Difference(servicePkgNames, terraformServices)
 	for _, d := range diff {
 		log.Debugf("\t%s", d)
 	}
 
 	log.Warn("AWS services used by Terraform that are named differently in AWS API v2:")
-	diff = util.Difference(aws.ServicesCoveredByTerraform(resourceServices), aws.ServicePkgNames(apis))
+	diff = util.Difference(terraformServices, servicePkgNames)
 	for _, d := range diff {
 		log.Warnf("\t: %s", d)
 	}
 
-	err = aws.GenerateClient("../aws", aws.ServicesCoveredByTerraform(resourceServices))
+	err = aws.GenerateClient("../aws", terraformServices)
 	if err != nil {
 		log.WithError(err).Fatal("Failed to write AWS client")
 	}
