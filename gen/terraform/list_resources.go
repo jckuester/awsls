@@ -55,7 +55,7 @@ func ListResourcesByType(client *aws.Client, resourceType string) error {
 	{{range $key, $value := .}}case "{{ $key }}":
 	return aws.List{{ $value }}(client)
 	{{end}}default:
-		return fmt.Errorf("resource type is not yet supported: %s", resourceType)
+		return fmt.Errorf("resource type is not (yet) supported: %s", resourceType)
 	}
 }
 `))

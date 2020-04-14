@@ -24,7 +24,7 @@ func mainExitCode() int {
 	resourceType := os.Args[1]
 
 	if !resource.IsResourceType(resourceType) {
-		fmt.Fprint(os.Stderr, color.RedString("Error: this is not a valid Terraform AWS resource type: %s\n",
+		fmt.Fprint(os.Stderr, color.RedString("Error: not a valid Terraform AWS resource type: %s\n",
 			resourceType))
 		return 1
 	}
