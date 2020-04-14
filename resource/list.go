@@ -672,6 +672,6 @@ func ListResourcesByType(client *aws.Client, resourceType string) error {
 	case "aws_workspaces_ip_group":
 		return aws.ListWorkspacesIpGroup(client)
 	default:
-		return fmt.Errorf("resource type is not yet supported: %s", resourceType)
+		return fmt.Errorf("resource type is not (yet) supported: %s", resourceType)
 	}
 }

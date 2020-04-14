@@ -145,7 +145,10 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 				genInfo.Tags = true
 			}
 
-			op.GetCreationTimeGoCode = GetCreationTimeGoCode(outputField)
+			getTagCode, imports := GetCreationTimeGoCode(outputField)
+
+			op.GetCreationTimeGoCode = getTagCode
+			op.Imports = imports
 
 			if op.GetCreationTimeGoCode != "" {
 				genInfo.CreationTime = true
@@ -231,7 +234,7 @@ func GetTagsGoCode(outputField *api.ShapeRef) string {
 	return ""
 }
 
-func GetCreationTimeGoCode(outputField *api.ShapeRef) string {
+func GetCreationTimeGoCode(outputField *api.ShapeRef) (string, []string) {
 	creationTimeFieldNames := []string{
 		"LaunchTime",
 		"CreateTime",
@@ -248,17 +251,16 @@ func GetCreationTimeGoCode(outputField *api.ShapeRef) string {
 		for _, name := range creationTimeFieldNames {
 			if k == name {
 				if v.Shape.Type == "string" {
-					return `fmt.Printf("CreatedAt: %s\n", ` + fmt.Sprintf("*r.%s)", k)
+					return `fmt.Printf("CreatedAt: %s\n", ` + fmt.Sprintf("*r.%s)", k), []string{}
 				}
 
 				if v.Shape.Type == "timestamp" {
-					return `fmt.Printf("CreatedAt: %s\n", ` + fmt.Sprintf("*r.%s)", k)
+					return `fmt.Printf("CreatedAt: %s\n", ` + fmt.Sprintf("*r.%s)", k), []string{}
 				}
 
 				if v.Shape.Type == "long" {
-					// TODO import time in template
 					return fmt.Sprintf("t := time.Unix(0, *r.%s * 1000000).UTC()", k) + `
-												fmt.Printf("CreatedAt: %s\n", t)`
+												fmt.Printf("CreatedAt: %s\n", t)`, []string{"time"}
 				}
 
 				log.Warnf("uncovered creation time type: %s", v.Shape.Type)
@@ -266,7 +268,7 @@ func GetCreationTimeGoCode(outputField *api.ShapeRef) string {
 		}
 	}
 
-	return ""
+	return "", []string{}
 }
 
 func Operations(apis api.APIs, prefixes []string) []string {

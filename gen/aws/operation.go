@@ -19,6 +19,7 @@ type Operation struct {
 	OpName                string
 	GetTagsGoCode         string
 	GetCreationTimeGoCode string
+	Imports               []string
 }
 
 func (o *Operation) GoCode() string {
@@ -35,7 +36,8 @@ var listResourcesOperationTmpl = template.Must(template.New("listResourcesOperat
 import(
 	"context"
 	"fmt"
-
+	{{ range .Imports }}"{{ . }}"
+	{{ end }}
 	"github.com/aws/aws-sdk-go-v2/service/{{ .API.PackageName }}"
 )
 
