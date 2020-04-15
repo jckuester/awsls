@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/opsworks"
 )
 
-func ListOpsworksUserProfile(client *Client) error {
+func ListOpsworksUserProfile(client *Client) ([]Resource, error) {
 	req := client.opsworksconn.DescribeUserProfilesRequest(&opsworks.DescribeUserProfilesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.UserProfiles) > 0 {
 		for _, r := range resp.UserProfiles {
-			fmt.Println(*r.IamUserArn)
 
+			result = append(result, Resource{
+				Type: "aws_opsworks_user_profile",
+				ID:   *r.IamUserArn,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

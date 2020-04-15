@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kafka"
 )
 
-func ListMskConfiguration(client *Client) error {
+func ListMskConfiguration(client *Client) ([]Resource, error) {
 	req := client.kafkaconn.ListConfigurationsRequest(&kafka.ListConfigurationsInput{})
+
+	var result []Resource
 
 	p := kafka.NewListConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Configurations {
-			fmt.Println(*r.Arn)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type: "aws_msk_configuration",
+				ID:   *r.Arn,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

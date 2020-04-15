@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/servicecatalog"
 )
 
-func ListServicecatalogPortfolio(client *Client) error {
+func ListServicecatalogPortfolio(client *Client) ([]Resource, error) {
 	req := client.servicecatalogconn.ListPortfoliosRequest(&servicecatalog.ListPortfoliosInput{})
+
+	var result []Resource
 
 	p := servicecatalog.NewListPortfoliosPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.PortfolioDetails {
-			fmt.Println(*r.Id)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreatedTime)
+			t := *r.CreatedTime
+			result = append(result, Resource{
+				Type: "aws_servicecatalog_portfolio",
+				ID:   *r.Id,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

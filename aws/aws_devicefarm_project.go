@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/devicefarm"
 )
 
-func ListDevicefarmProject(client *Client) error {
+func ListDevicefarmProject(client *Client) ([]Resource, error) {
 	req := client.devicefarmconn.ListProjectsRequest(&devicefarm.ListProjectsInput{})
+
+	var result []Resource
 
 	p := devicefarm.NewListProjectsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Projects {
-			fmt.Println(*r.Arn)
 
+			result = append(result, Resource{
+				Type: "aws_devicefarm_project",
+				ID:   *r.Arn,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

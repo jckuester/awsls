@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 )
 
-func ListWafregionalRuleGroup(client *Client) error {
+func ListWafregionalRuleGroup(client *Client) ([]Resource, error) {
 	req := client.wafregionalconn.ListRuleGroupsRequest(&wafregional.ListRuleGroupsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.RuleGroups) > 0 {
 		for _, r := range resp.RuleGroups {
-			fmt.Println(*r.RuleGroupId)
 
+			result = append(result, Resource{
+				Type: "aws_wafregional_rule_group",
+				ID:   *r.RuleGroupId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

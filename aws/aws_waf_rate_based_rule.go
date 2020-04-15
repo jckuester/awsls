@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/waf"
 )
 
-func ListWafRateBasedRule(client *Client) error {
+func ListWafRateBasedRule(client *Client) ([]Resource, error) {
 	req := client.wafconn.ListRateBasedRulesRequest(&waf.ListRateBasedRulesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Rules) > 0 {
 		for _, r := range resp.Rules {
-			fmt.Println(*r.RuleId)
 
+			result = append(result, Resource{
+				Type: "aws_waf_rate_based_rule",
+				ID:   *r.RuleId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

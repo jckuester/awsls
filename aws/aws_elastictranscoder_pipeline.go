@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/elastictranscoder"
 )
 
-func ListElastictranscoderPipeline(client *Client) error {
+func ListElastictranscoderPipeline(client *Client) ([]Resource, error) {
 	req := client.elastictranscoderconn.ListPipelinesRequest(&elastictranscoder.ListPipelinesInput{})
+
+	var result []Resource
 
 	p := elastictranscoder.NewListPipelinesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Pipelines {
-			fmt.Println(*r.Id)
 
+			result = append(result, Resource{
+				Type: "aws_elastictranscoder_pipeline",
+				ID:   *r.Id,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

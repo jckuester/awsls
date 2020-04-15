@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
-func ListIamServerCertificate(client *Client) error {
+func ListIamServerCertificate(client *Client) ([]Resource, error) {
 	req := client.iamconn.ListServerCertificatesRequest(&iam.ListServerCertificatesInput{})
+
+	var result []Resource
 
 	p := iam.NewListServerCertificatesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ServerCertificateMetadataList {
-			fmt.Println(*r.ServerCertificateId)
 
+			result = append(result, Resource{
+				Type: "aws_iam_server_certificate",
+				ID:   *r.ServerCertificateId,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/iot"
 )
 
-func ListIotThingType(client *Client) error {
+func ListIotThingType(client *Client) ([]Resource, error) {
 	req := client.iotconn.ListThingTypesRequest(&iot.ListThingTypesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.ThingTypes) > 0 {
 		for _, r := range resp.ThingTypes {
-			fmt.Println(*r.ThingTypeName)
 
+			result = append(result, Resource{
+				Type: "aws_iot_thing_type",
+				ID:   *r.ThingTypeName,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

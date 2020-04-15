@@ -74,7 +74,7 @@ func main() {
 
 	log.Infof("Generated list functions: %d", len(listFunctionNames))
 
-	err = terraform.GenerateListResourcesFunctions(outputPath, listFunctionNames)
+	err = terraform.GenerateListResourcesFunctions("../aws", listFunctionNames)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate list resource functions (all and by type)")
 	}

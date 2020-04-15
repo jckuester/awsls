@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListSpotFleetRequest(client *Client) error {
+func ListSpotFleetRequest(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeSpotFleetRequestsRequest(&ec2.DescribeSpotFleetRequestsInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeSpotFleetRequestsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.SpotFleetRequestConfigs {
-			fmt.Println(*r.SpotFleetRequestId)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreateTime)
+			t := *r.CreateTime
+			result = append(result, Resource{
+				Type: "aws_spot_fleet_request",
+				ID:   *r.SpotFleetRequestId,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

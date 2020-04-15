@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/efs"
 )
 
-func ListEfsMountTarget(client *Client) error {
+func ListEfsMountTarget(client *Client) ([]Resource, error) {
 	req := client.efsconn.DescribeMountTargetsRequest(&efs.DescribeMountTargetsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.MountTargets) > 0 {
 		for _, r := range resp.MountTargets {
-			fmt.Println(*r.MountTargetId)
 
+			result = append(result, Resource{
+				Type: "aws_efs_mount_target",
+				ID:   *r.MountTargetId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

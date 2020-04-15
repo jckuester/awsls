@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 )
 
-func ListDbSubnetGroup(client *Client) error {
+func ListDbSubnetGroup(client *Client) ([]Resource, error) {
 	req := client.rdsconn.DescribeDBSubnetGroupsRequest(&rds.DescribeDBSubnetGroupsInput{})
+
+	var result []Resource
 
 	p := rds.NewDescribeDBSubnetGroupsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.DBSubnetGroups {
-			fmt.Println(*r.DBSubnetGroupName)
 
+			result = append(result, Resource{
+				Type: "aws_db_subnet_group",
+				ID:   *r.DBSubnetGroupName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

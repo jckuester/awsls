@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 )
 
-func ListWafregionalByteMatchSet(client *Client) error {
+func ListWafregionalByteMatchSet(client *Client) ([]Resource, error) {
 	req := client.wafregionalconn.ListByteMatchSetsRequest(&wafregional.ListByteMatchSetsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.ByteMatchSets) > 0 {
 		for _, r := range resp.ByteMatchSets {
-			fmt.Println(*r.ByteMatchSetId)
 
+			result = append(result, Resource{
+				Type: "aws_wafregional_byte_match_set",
+				ID:   *r.ByteMatchSetId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

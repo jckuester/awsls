@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kinesisanalytics"
 )
 
-func ListKinesisAnalyticsApplication(client *Client) error {
+func ListKinesisAnalyticsApplication(client *Client) ([]Resource, error) {
 	req := client.kinesisanalyticsconn.ListApplicationsRequest(&kinesisanalytics.ListApplicationsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.ApplicationSummaries) > 0 {
 		for _, r := range resp.ApplicationSummaries {
-			fmt.Println(*r.ApplicationARN)
 
+			result = append(result, Resource{
+				Type: "aws_kinesis_analytics_application",
+				ID:   *r.ApplicationARN,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

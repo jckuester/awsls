@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/databasemigrationservice"
 )
 
-func ListDmsEndpoint(client *Client) error {
+func ListDmsEndpoint(client *Client) ([]Resource, error) {
 	req := client.databasemigrationserviceconn.DescribeEndpointsRequest(&databasemigrationservice.DescribeEndpointsInput{})
+
+	var result []Resource
 
 	p := databasemigrationservice.NewDescribeEndpointsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Endpoints {
-			fmt.Println(*r.EndpointIdentifier)
 
+			result = append(result, Resource{
+				Type: "aws_dms_endpoint",
+				ID:   *r.EndpointIdentifier,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

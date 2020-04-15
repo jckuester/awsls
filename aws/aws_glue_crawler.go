@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/glue"
 )
 
-func ListGlueCrawler(client *Client) error {
+func ListGlueCrawler(client *Client) ([]Resource, error) {
 	req := client.glueconn.GetCrawlersRequest(&glue.GetCrawlersInput{})
+
+	var result []Resource
 
 	p := glue.NewGetCrawlersPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Crawlers {
-			fmt.Println(*r.Name)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type: "aws_glue_crawler",
+				ID:   *r.Name,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

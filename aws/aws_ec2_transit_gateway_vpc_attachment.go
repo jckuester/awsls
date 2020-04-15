@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListEc2TransitGatewayVpcAttachment(client *Client) error {
+func ListEc2TransitGatewayVpcAttachment(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeTransitGatewayVpcAttachmentsRequest(&ec2.DescribeTransitGatewayVpcAttachmentsInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeTransitGatewayVpcAttachmentsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TransitGatewayVpcAttachments {
-			fmt.Println(*r.TransitGatewayAttachmentId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type:      "aws_ec2_transit_gateway_vpc_attachment",
+				ID:        *r.TransitGatewayAttachmentId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,29 +4,36 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
 )
 
-func ListApiGatewayClientCertificate(client *Client) error {
+func ListApiGatewayClientCertificate(client *Client) ([]Resource, error) {
 	req := client.apigatewayconn.GetClientCertificatesRequest(&apigateway.GetClientCertificatesInput{})
+
+	var result []Resource
 
 	p := apigateway.NewGetClientCertificatesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Items {
-			fmt.Println(*r.ClientCertificateId)
+			tags := map[string]string{}
 			for k, v := range r.Tags {
-				fmt.Printf("\t%s: %s\n", k, v)
+				tags[k] = v
 			}
+
+			result = append(result, Resource{
+				Type: "aws_api_gateway_client_certificate",
+				ID:   *r.ClientCertificateId,
+				Tags: tags,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

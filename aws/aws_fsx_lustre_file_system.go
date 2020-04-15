@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/fsx"
 )
 
-func ListFsxLustreFileSystem(client *Client) error {
+func ListFsxLustreFileSystem(client *Client) ([]Resource, error) {
 	req := client.fsxconn.DescribeFileSystemsRequest(&fsx.DescribeFileSystemsInput{})
+
+	var result []Resource
 
 	p := fsx.NewDescribeFileSystemsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.FileSystems {
-			fmt.Println(*r.FileSystemId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type:      "aws_fsx_lustre_file_system",
+				ID:        *r.FileSystemId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

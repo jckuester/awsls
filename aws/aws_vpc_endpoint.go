@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListVpcEndpoint(client *Client) error {
+func ListVpcEndpoint(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeVpcEndpointsRequest(&ec2.DescribeVpcEndpointsInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeVpcEndpointsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.VpcEndpoints {
-			fmt.Println(*r.VpcEndpointId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTimestamp)
+			t := *r.CreationTimestamp
+			result = append(result, Resource{
+				Type:      "aws_vpc_endpoint",
+				ID:        *r.VpcEndpointId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

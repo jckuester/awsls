@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/databasemigrationservice"
 )
 
-func ListDmsReplicationSubnetGroup(client *Client) error {
+func ListDmsReplicationSubnetGroup(client *Client) ([]Resource, error) {
 	req := client.databasemigrationserviceconn.DescribeReplicationSubnetGroupsRequest(&databasemigrationservice.DescribeReplicationSubnetGroupsInput{})
+
+	var result []Resource
 
 	p := databasemigrationservice.NewDescribeReplicationSubnetGroupsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ReplicationSubnetGroups {
-			fmt.Println(*r.ReplicationSubnetGroupIdentifier)
 
+			result = append(result, Resource{
+				Type: "aws_dms_replication_subnet_group",
+				ID:   *r.ReplicationSubnetGroupIdentifier,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

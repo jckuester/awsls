@@ -4,29 +4,36 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/mediapackage"
 )
 
-func ListMediaPackageChannel(client *Client) error {
+func ListMediaPackageChannel(client *Client) ([]Resource, error) {
 	req := client.mediapackageconn.ListChannelsRequest(&mediapackage.ListChannelsInput{})
+
+	var result []Resource
 
 	p := mediapackage.NewListChannelsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Channels {
-			fmt.Println(*r.Id)
+			tags := map[string]string{}
 			for k, v := range r.Tags {
-				fmt.Printf("\t%s: %s\n", k, v)
+				tags[k] = v
 			}
+
+			result = append(result, Resource{
+				Type: "aws_media_package_channel",
+				ID:   *r.Id,
+				Tags: tags,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

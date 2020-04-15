@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
 )
 
-func ListCloudwatchEventRule(client *Client) error {
+func ListCloudwatchEventRule(client *Client) ([]Resource, error) {
 	req := client.cloudwatcheventsconn.ListRulesRequest(&cloudwatchevents.ListRulesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Rules) > 0 {
 		for _, r := range resp.Rules {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_cloudwatch_event_rule",
+				ID:   *r.Name,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

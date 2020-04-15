@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/transfer"
 )
 
-func ListTransferServer(client *Client) error {
+func ListTransferServer(client *Client) ([]Resource, error) {
 	req := client.transferconn.ListServersRequest(&transfer.ListServersInput{})
+
+	var result []Resource
 
 	p := transfer.NewListServersPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Servers {
-			fmt.Println(*r.ServerId)
 
+			result = append(result, Resource{
+				Type: "aws_transfer_server",
+				ID:   *r.ServerId,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

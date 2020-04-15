@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
 )
 
-func ListCloudwatchLogResourcePolicy(client *Client) error {
+func ListCloudwatchLogResourcePolicy(client *Client) ([]Resource, error) {
 	req := client.cloudwatchlogsconn.DescribeResourcePoliciesRequest(&cloudwatchlogs.DescribeResourcePoliciesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.ResourcePolicies) > 0 {
 		for _, r := range resp.ResourcePolicies {
-			fmt.Println(*r.PolicyName)
 
+			result = append(result, Resource{
+				Type: "aws_cloudwatch_log_resource_policy",
+				ID:   *r.PolicyName,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

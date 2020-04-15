@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/codecommit"
 )
 
-func ListCodecommitRepository(client *Client) error {
+func ListCodecommitRepository(client *Client) ([]Resource, error) {
 	req := client.codecommitconn.ListRepositoriesRequest(&codecommit.ListRepositoriesInput{})
+
+	var result []Resource
 
 	p := codecommit.NewListRepositoriesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Repositories {
-			fmt.Println(*r.RepositoryName)
 
+			result = append(result, Resource{
+				Type: "aws_codecommit_repository",
+				ID:   *r.RepositoryName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

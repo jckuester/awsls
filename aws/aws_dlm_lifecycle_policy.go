@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/dlm"
 )
 
-func ListDlmLifecyclePolicy(client *Client) error {
+func ListDlmLifecyclePolicy(client *Client) ([]Resource, error) {
 	req := client.dlmconn.GetLifecyclePoliciesRequest(&dlm.GetLifecyclePoliciesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Policies) > 0 {
 		for _, r := range resp.Policies {
-			fmt.Println(*r.PolicyId)
+			tags := map[string]string{}
 			for k, v := range r.Tags {
-				fmt.Printf("\t%s: %s\n", k, v)
+				tags[k] = v
 			}
+
+			result = append(result, Resource{
+				Type: "aws_dlm_lifecycle_policy",
+				ID:   *r.PolicyId,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

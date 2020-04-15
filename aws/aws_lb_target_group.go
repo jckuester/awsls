@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2"
 )
 
-func ListLbTargetGroup(client *Client) error {
+func ListLbTargetGroup(client *Client) ([]Resource, error) {
 	req := client.elasticloadbalancingv2conn.DescribeTargetGroupsRequest(&elasticloadbalancingv2.DescribeTargetGroupsInput{})
+
+	var result []Resource
 
 	p := elasticloadbalancingv2.NewDescribeTargetGroupsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TargetGroups {
-			fmt.Println(*r.TargetGroupArn)
 
+			result = append(result, Resource{
+				Type: "aws_lb_target_group",
+				ID:   *r.TargetGroupArn,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kafka"
 )
 
-func ListMskCluster(client *Client) error {
+func ListMskCluster(client *Client) ([]Resource, error) {
 	req := client.kafkaconn.ListClustersRequest(&kafka.ListClustersInput{})
+
+	var result []Resource
 
 	p := kafka.NewListClustersPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ClusterInfoList {
-			fmt.Println(*r.ClusterArn)
+			tags := map[string]string{}
 			for k, v := range r.Tags {
-				fmt.Printf("\t%s: %s\n", k, v)
+				tags[k] = v
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type:      "aws_msk_cluster",
+				ID:        *r.ClusterArn,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

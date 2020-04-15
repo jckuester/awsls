@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/sfn"
 )
 
-func ListSfnActivity(client *Client) error {
+func ListSfnActivity(client *Client) ([]Resource, error) {
 	req := client.sfnconn.ListActivitiesRequest(&sfn.ListActivitiesInput{})
+
+	var result []Resource
 
 	p := sfn.NewListActivitiesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Activities {
-			fmt.Println(*r.ActivityArn)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
+			t := *r.CreationDate
+			result = append(result, Resource{
+				Type: "aws_sfn_activity",
+				ID:   *r.ActivityArn,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

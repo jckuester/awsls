@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 )
 
-func ListDbInstance(client *Client) error {
+func ListDbInstance(client *Client) ([]Resource, error) {
 	req := client.rdsconn.DescribeDBInstancesRequest(&rds.DescribeDBInstancesInput{})
+
+	var result []Resource
 
 	p := rds.NewDescribeDBInstancesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.DBInstances {
-			fmt.Println(*r.DBInstanceIdentifier)
 
-			fmt.Printf("CreatedAt: %s\n", *r.InstanceCreateTime)
+			t := *r.InstanceCreateTime
+			result = append(result, Resource{
+				Type: "aws_db_instance",
+				ID:   *r.DBInstanceIdentifier,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/athena"
 )
 
-func ListAthenaWorkgroup(client *Client) error {
+func ListAthenaWorkgroup(client *Client) ([]Resource, error) {
 	req := client.athenaconn.ListWorkGroupsRequest(&athena.ListWorkGroupsInput{})
+
+	var result []Resource
 
 	p := athena.NewListWorkGroupsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.WorkGroups {
-			fmt.Println(*r.Name)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type: "aws_athena_workgroup",
+				ID:   *r.Name,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

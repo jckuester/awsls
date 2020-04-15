@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 )
 
-func ListRdsGlobalCluster(client *Client) error {
+func ListRdsGlobalCluster(client *Client) ([]Resource, error) {
 	req := client.rdsconn.DescribeGlobalClustersRequest(&rds.DescribeGlobalClustersInput{})
+
+	var result []Resource
 
 	p := rds.NewDescribeGlobalClustersPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.GlobalClusters {
-			fmt.Println(*r.GlobalClusterIdentifier)
 
+			result = append(result, Resource{
+				Type: "aws_rds_global_cluster",
+				ID:   *r.GlobalClusterIdentifier,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

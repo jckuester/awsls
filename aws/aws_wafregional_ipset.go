@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 )
 
-func ListWafregionalIpset(client *Client) error {
+func ListWafregionalIpset(client *Client) ([]Resource, error) {
 	req := client.wafregionalconn.ListIPSetsRequest(&wafregional.ListIPSetsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.IPSets) > 0 {
 		for _, r := range resp.IPSets {
-			fmt.Println(*r.IPSetId)
 
+			result = append(result, Resource{
+				Type: "aws_wafregional_ipset",
+				ID:   *r.IPSetId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

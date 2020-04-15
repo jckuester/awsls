@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 )
 
-func ListDynamodbGlobalTable(client *Client) error {
+func ListDynamodbGlobalTable(client *Client) ([]Resource, error) {
 	req := client.dynamodbconn.ListGlobalTablesRequest(&dynamodb.ListGlobalTablesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.GlobalTables) > 0 {
 		for _, r := range resp.GlobalTables {
-			fmt.Println(*r.GlobalTableName)
 
+			result = append(result, Resource{
+				Type: "aws_dynamodb_global_table",
+				ID:   *r.GlobalTableName,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

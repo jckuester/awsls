@@ -4,30 +4,35 @@ package aws
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
 )
 
-func ListCloudwatchLogDestination(client *Client) error {
+func ListCloudwatchLogDestination(client *Client) ([]Resource, error) {
 	req := client.cloudwatchlogsconn.DescribeDestinationsRequest(&cloudwatchlogs.DescribeDestinationsInput{})
+
+	var result []Resource
 
 	p := cloudwatchlogs.NewDescribeDestinationsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Destinations {
-			fmt.Println(*r.DestinationName)
 
 			t := time.Unix(0, *r.CreationTime*1000000).UTC()
-			fmt.Printf("CreatedAt: %s\n", t)
+			result = append(result, Resource{
+				Type: "aws_cloudwatch_log_destination",
+				ID:   *r.DestinationName,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

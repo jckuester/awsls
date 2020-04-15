@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/glue"
 )
 
-func ListGlueJob(client *Client) error {
+func ListGlueJob(client *Client) ([]Resource, error) {
 	req := client.glueconn.GetJobsRequest(&glue.GetJobsInput{})
+
+	var result []Resource
 
 	p := glue.NewGetJobsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Jobs {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_glue_job",
+				ID:   *r.Name,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

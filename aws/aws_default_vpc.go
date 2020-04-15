@@ -4,29 +4,36 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListDefaultVpc(client *Client) error {
+func ListDefaultVpc(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeVpcsRequest(&ec2.DescribeVpcsInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeVpcsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Vpcs {
-			fmt.Println(*r.VpcId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_default_vpc",
+				ID:   *r.VpcId,
+				Tags: tags,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

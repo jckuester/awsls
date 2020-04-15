@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/dax"
 )
 
-func ListDaxSubnetGroup(client *Client) error {
+func ListDaxSubnetGroup(client *Client) ([]Resource, error) {
 	req := client.daxconn.DescribeSubnetGroupsRequest(&dax.DescribeSubnetGroupsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.SubnetGroups) > 0 {
 		for _, r := range resp.SubnetGroups {
-			fmt.Println(*r.SubnetGroupName)
 
+			result = append(result, Resource{
+				Type: "aws_dax_subnet_group",
+				ID:   *r.SubnetGroupName,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

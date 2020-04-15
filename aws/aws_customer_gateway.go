@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListCustomerGateway(client *Client) error {
+func ListCustomerGateway(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeCustomerGatewaysRequest(&ec2.DescribeCustomerGatewaysInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.CustomerGateways) > 0 {
 		for _, r := range resp.CustomerGateways {
-			fmt.Println(*r.CustomerGatewayId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_customer_gateway",
+				ID:   *r.CustomerGatewayId,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

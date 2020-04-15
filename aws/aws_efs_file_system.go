@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/efs"
 )
 
-func ListEfsFileSystem(client *Client) error {
+func ListEfsFileSystem(client *Client) ([]Resource, error) {
 	req := client.efsconn.DescribeFileSystemsRequest(&efs.DescribeFileSystemsInput{})
+
+	var result []Resource
 
 	p := efs.NewDescribeFileSystemsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.FileSystems {
-			fmt.Println(*r.FileSystemId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type:      "aws_efs_file_system",
+				ID:        *r.FileSystemId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/qldb"
 )
 
-func ListQldbLedger(client *Client) error {
+func ListQldbLedger(client *Client) ([]Resource, error) {
 	req := client.qldbconn.ListLedgersRequest(&qldb.ListLedgersInput{})
+
+	var result []Resource
 
 	p := qldb.NewListLedgersPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Ledgers {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_qldb_ledger",
+				ID:   *r.Name,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

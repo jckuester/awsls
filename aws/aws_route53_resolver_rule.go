@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/route53resolver"
 )
 
-func ListRoute53ResolverRule(client *Client) error {
+func ListRoute53ResolverRule(client *Client) ([]Resource, error) {
 	req := client.route53resolverconn.ListResolverRulesRequest(&route53resolver.ListResolverRulesInput{})
+
+	var result []Resource
 
 	p := route53resolver.NewListResolverRulesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ResolverRules {
-			fmt.Println(*r.Id)
 
+			result = append(result, Resource{
+				Type: "aws_route53_resolver_rule",
+				ID:   *r.Id,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

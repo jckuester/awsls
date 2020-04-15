@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/opsworks"
 )
 
-func ListOpsworksInstance(client *Client) error {
+func ListOpsworksInstance(client *Client) ([]Resource, error) {
 	req := client.opsworksconn.DescribeInstancesRequest(&opsworks.DescribeInstancesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Instances) > 0 {
 		for _, r := range resp.Instances {
-			fmt.Println(*r.InstanceId)
 
+			result = append(result, Resource{
+				Type: "aws_opsworks_instance",
+				ID:   *r.InstanceId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

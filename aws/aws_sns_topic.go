@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
-func ListSnsTopic(client *Client) error {
+func ListSnsTopic(client *Client) ([]Resource, error) {
 	req := client.snsconn.ListTopicsRequest(&sns.ListTopicsInput{})
+
+	var result []Resource
 
 	p := sns.NewListTopicsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Topics {
-			fmt.Println(*r.TopicArn)
 
+			result = append(result, Resource{
+				Type: "aws_sns_topic",
+				ID:   *r.TopicArn,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

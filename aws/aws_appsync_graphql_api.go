@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/appsync"
 )
 
-func ListAppsyncGraphqlApi(client *Client) error {
+func ListAppsyncGraphqlApi(client *Client) ([]Resource, error) {
 	req := client.appsyncconn.ListGraphqlApisRequest(&appsync.ListGraphqlApisInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.GraphqlApis) > 0 {
 		for _, r := range resp.GraphqlApis {
-			fmt.Println(*r.ApiId)
+			tags := map[string]string{}
 			for k, v := range r.Tags {
-				fmt.Printf("\t%s: %s\n", k, v)
+				tags[k] = v
 			}
+
+			result = append(result, Resource{
+				Type: "aws_appsync_graphql_api",
+				ID:   *r.ApiId,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

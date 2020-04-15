@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
-func ListSnsPlatformApplication(client *Client) error {
+func ListSnsPlatformApplication(client *Client) ([]Resource, error) {
 	req := client.snsconn.ListPlatformApplicationsRequest(&sns.ListPlatformApplicationsInput{})
+
+	var result []Resource
 
 	p := sns.NewListPlatformApplicationsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.PlatformApplications {
-			fmt.Println(*r.PlatformApplicationArn)
 
+			result = append(result, Resource{
+				Type: "aws_sns_platform_application",
+				ID:   *r.PlatformApplicationArn,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

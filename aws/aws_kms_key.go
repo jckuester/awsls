@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 )
 
-func ListKmsKey(client *Client) error {
+func ListKmsKey(client *Client) ([]Resource, error) {
 	req := client.kmsconn.ListKeysRequest(&kms.ListKeysInput{})
+
+	var result []Resource
 
 	p := kms.NewListKeysPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Keys {
-			fmt.Println(*r.KeyId)
 
+			result = append(result, Resource{
+				Type: "aws_kms_key",
+				ID:   *r.KeyId,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

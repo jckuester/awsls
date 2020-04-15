@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 )
 
-func ListWafregionalRegexMatchSet(client *Client) error {
+func ListWafregionalRegexMatchSet(client *Client) ([]Resource, error) {
 	req := client.wafregionalconn.ListRegexMatchSetsRequest(&wafregional.ListRegexMatchSetsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.RegexMatchSets) > 0 {
 		for _, r := range resp.RegexMatchSets {
-			fmt.Println(*r.RegexMatchSetId)
 
+			result = append(result, Resource{
+				Type: "aws_wafregional_regex_match_set",
+				ID:   *r.RegexMatchSetId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

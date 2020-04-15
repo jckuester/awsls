@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/worklink"
 )
 
-func ListWorklinkFleet(client *Client) error {
+func ListWorklinkFleet(client *Client) ([]Resource, error) {
 	req := client.worklinkconn.ListFleetsRequest(&worklink.ListFleetsInput{})
+
+	var result []Resource
 
 	p := worklink.NewListFleetsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.FleetSummaryList {
-			fmt.Println(*r.FleetArn)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreatedTime)
+			t := *r.CreatedTime
+			result = append(result, Resource{
+				Type: "aws_worklink_fleet",
+				ID:   *r.FleetArn,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

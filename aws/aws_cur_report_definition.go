@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/costandusagereportservice"
 )
 
-func ListCurReportDefinition(client *Client) error {
+func ListCurReportDefinition(client *Client) ([]Resource, error) {
 	req := client.costandusagereportserviceconn.DescribeReportDefinitionsRequest(&costandusagereportservice.DescribeReportDefinitionsInput{})
+
+	var result []Resource
 
 	p := costandusagereportservice.NewDescribeReportDefinitionsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ReportDefinitions {
-			fmt.Println(*r.ReportName)
 
+			result = append(result, Resource{
+				Type: "aws_cur_report_definition",
+				ID:   *r.ReportName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

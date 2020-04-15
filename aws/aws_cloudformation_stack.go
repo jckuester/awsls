@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 )
 
-func ListCloudformationStack(client *Client) error {
+func ListCloudformationStack(client *Client) ([]Resource, error) {
 	req := client.cloudformationconn.DescribeStacksRequest(&cloudformation.DescribeStacksInput{})
+
+	var result []Resource
 
 	p := cloudformation.NewDescribeStacksPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Stacks {
-			fmt.Println(*r.StackId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type:      "aws_cloudformation_stack",
+				ID:        *r.StackId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

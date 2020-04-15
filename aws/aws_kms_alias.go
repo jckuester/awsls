@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 )
 
-func ListKmsAlias(client *Client) error {
+func ListKmsAlias(client *Client) ([]Resource, error) {
 	req := client.kmsconn.ListAliasesRequest(&kms.ListAliasesInput{})
+
+	var result []Resource
 
 	p := kms.NewListAliasesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Aliases {
-			fmt.Println(*r.AliasName)
 
+			result = append(result, Resource{
+				Type: "aws_kms_alias",
+				ID:   *r.AliasName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

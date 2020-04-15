@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 )
 
-func ListWafregionalRateBasedRule(client *Client) error {
+func ListWafregionalRateBasedRule(client *Client) ([]Resource, error) {
 	req := client.wafregionalconn.ListRateBasedRulesRequest(&wafregional.ListRateBasedRulesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Rules) > 0 {
 		for _, r := range resp.Rules {
-			fmt.Println(*r.RuleId)
 
+			result = append(result, Resource{
+				Type: "aws_wafregional_rate_based_rule",
+				ID:   *r.RuleId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

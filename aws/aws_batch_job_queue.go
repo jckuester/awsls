@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/batch"
 )
 
-func ListBatchJobQueue(client *Client) error {
+func ListBatchJobQueue(client *Client) ([]Resource, error) {
 	req := client.batchconn.DescribeJobQueuesRequest(&batch.DescribeJobQueuesInput{})
+
+	var result []Resource
 
 	p := batch.NewDescribeJobQueuesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.JobQueues {
-			fmt.Println(*r.JobQueueArn)
 
+			result = append(result, Resource{
+				Type: "aws_batch_job_queue",
+				ID:   *r.JobQueueArn,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

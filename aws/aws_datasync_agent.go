@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/datasync"
 )
 
-func ListDatasyncAgent(client *Client) error {
+func ListDatasyncAgent(client *Client) ([]Resource, error) {
 	req := client.datasyncconn.ListAgentsRequest(&datasync.ListAgentsInput{})
+
+	var result []Resource
 
 	p := datasync.NewListAgentsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Agents {
-			fmt.Println(*r.AgentArn)
 
+			result = append(result, Resource{
+				Type: "aws_datasync_agent",
+				ID:   *r.AgentArn,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

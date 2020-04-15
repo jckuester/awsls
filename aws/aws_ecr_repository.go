@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ecr"
 )
 
-func ListEcrRepository(client *Client) error {
+func ListEcrRepository(client *Client) ([]Resource, error) {
 	req := client.ecrconn.DescribeRepositoriesRequest(&ecr.DescribeRepositoriesInput{})
+
+	var result []Resource
 
 	p := ecr.NewDescribeRepositoriesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Repositories {
-			fmt.Println(*r.RepositoryName)
 
+			result = append(result, Resource{
+				Type: "aws_ecr_repository",
+				ID:   *r.RepositoryName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker"
 )
 
-func ListSagemakerEndpoint(client *Client) error {
+func ListSagemakerEndpoint(client *Client) ([]Resource, error) {
 	req := client.sagemakerconn.ListEndpointsRequest(&sagemaker.ListEndpointsInput{})
+
+	var result []Resource
 
 	p := sagemaker.NewListEndpointsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Endpoints {
-			fmt.Println(*r.EndpointName)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type: "aws_sagemaker_endpoint",
+				ID:   *r.EndpointName,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

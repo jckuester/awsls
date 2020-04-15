@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2"
 )
 
-func ListLbListenerRule(client *Client) error {
+func ListLbListenerRule(client *Client) ([]Resource, error) {
 	req := client.elasticloadbalancingv2conn.DescribeRulesRequest(&elasticloadbalancingv2.DescribeRulesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Rules) > 0 {
 		for _, r := range resp.Rules {
-			fmt.Println(*r.RuleArn)
 
+			result = append(result, Resource{
+				Type: "aws_lb_listener_rule",
+				ID:   *r.RuleArn,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

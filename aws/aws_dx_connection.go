@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/directconnect"
 )
 
-func ListDxConnection(client *Client) error {
+func ListDxConnection(client *Client) ([]Resource, error) {
 	req := client.directconnectconn.DescribeConnectionsRequest(&directconnect.DescribeConnectionsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Connections) > 0 {
 		for _, r := range resp.Connections {
-			fmt.Println(*r.ConnectionId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_dx_connection",
+				ID:   *r.ConnectionId,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

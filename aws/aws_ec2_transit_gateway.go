@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListEc2TransitGateway(client *Client) error {
+func ListEc2TransitGateway(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeTransitGatewaysRequest(&ec2.DescribeTransitGatewaysInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeTransitGatewaysPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TransitGateways {
-			fmt.Println(*r.TransitGatewayId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type:      "aws_ec2_transit_gateway",
+				ID:        *r.TransitGatewayId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

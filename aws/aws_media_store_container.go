@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/mediastore"
 )
 
-func ListMediaStoreContainer(client *Client) error {
+func ListMediaStoreContainer(client *Client) ([]Resource, error) {
 	req := client.mediastoreconn.ListContainersRequest(&mediastore.ListContainersInput{})
+
+	var result []Resource
 
 	p := mediastore.NewListContainersPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Containers {
-			fmt.Println(*r.Name)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type: "aws_media_store_container",
+				ID:   *r.Name,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatch"
 )
 
-func ListCloudwatchDashboard(client *Client) error {
+func ListCloudwatchDashboard(client *Client) ([]Resource, error) {
 	req := client.cloudwatchconn.ListDashboardsRequest(&cloudwatch.ListDashboardsInput{})
+
+	var result []Resource
 
 	p := cloudwatch.NewListDashboardsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.DashboardEntries {
-			fmt.Println(*r.DashboardName)
 
+			result = append(result, Resource{
+				Type: "aws_cloudwatch_dashboard",
+				ID:   *r.DashboardName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

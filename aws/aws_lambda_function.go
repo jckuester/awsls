@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
 )
 
-func ListLambdaFunction(client *Client) error {
+func ListLambdaFunction(client *Client) ([]Resource, error) {
 	req := client.lambdaconn.ListFunctionsRequest(&lambda.ListFunctionsInput{})
+
+	var result []Resource
 
 	p := lambda.NewListFunctionsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Functions {
-			fmt.Println(*r.FunctionName)
 
+			result = append(result, Resource{
+				Type: "aws_lambda_function",
+				ID:   *r.FunctionName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/emr"
 )
 
-func ListEmrSecurityConfiguration(client *Client) error {
+func ListEmrSecurityConfiguration(client *Client) ([]Resource, error) {
 	req := client.emrconn.ListSecurityConfigurationsRequest(&emr.ListSecurityConfigurationsInput{})
+
+	var result []Resource
 
 	p := emr.NewListSecurityConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.SecurityConfigurations {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_emr_security_configuration",
+				ID:   *r.Name,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

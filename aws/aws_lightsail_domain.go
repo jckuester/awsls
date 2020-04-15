@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/lightsail"
 )
 
-func ListLightsailDomain(client *Client) error {
+func ListLightsailDomain(client *Client) ([]Resource, error) {
 	req := client.lightsailconn.GetDomainsRequest(&lightsail.GetDomainsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Domains) > 0 {
 		for _, r := range resp.Domains {
-			fmt.Println(*r.Name)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_lightsail_domain",
+				ID:   *r.Name,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

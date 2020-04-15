@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 )
 
-func ListDbSecurityGroup(client *Client) error {
+func ListDbSecurityGroup(client *Client) ([]Resource, error) {
 	req := client.rdsconn.DescribeDBSecurityGroupsRequest(&rds.DescribeDBSecurityGroupsInput{})
+
+	var result []Resource
 
 	p := rds.NewDescribeDBSecurityGroupsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.DBSecurityGroups {
-			fmt.Println(*r.DBSecurityGroupName)
 
+			result = append(result, Resource{
+				Type: "aws_db_security_group",
+				ID:   *r.DBSecurityGroupName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

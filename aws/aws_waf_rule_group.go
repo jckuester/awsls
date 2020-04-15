@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/waf"
 )
 
-func ListWafRuleGroup(client *Client) error {
+func ListWafRuleGroup(client *Client) ([]Resource, error) {
 	req := client.wafconn.ListRuleGroupsRequest(&waf.ListRuleGroupsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.RuleGroups) > 0 {
 		for _, r := range resp.RuleGroups {
-			fmt.Println(*r.RuleGroupId)
 
+			result = append(result, Resource{
+				Type: "aws_waf_rule_group",
+				ID:   *r.RuleGroupId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/configservice"
 )
 
-func ListConfigConfigRule(client *Client) error {
+func ListConfigConfigRule(client *Client) ([]Resource, error) {
 	req := client.configserviceconn.DescribeConfigRulesRequest(&configservice.DescribeConfigRulesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.ConfigRules) > 0 {
 		for _, r := range resp.ConfigRules {
-			fmt.Println(*r.ConfigRuleName)
 
+			result = append(result, Resource{
+				Type: "aws_config_config_rule",
+				ID:   *r.ConfigRuleName,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

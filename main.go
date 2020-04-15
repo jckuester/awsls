@@ -16,8 +16,10 @@ func main() {
 func mainExitCode() int {
 	client := aws.NewClient()
 
+	fmt.Println()
+
 	if os.Args[1] == "*" {
-		resource.ListResources(client)
+		aws.ListResources(client)
 		return 1
 	}
 
@@ -29,10 +31,24 @@ func mainExitCode() int {
 		return 1
 	}
 
-	err := resource.ListResourcesByType(client, resourceType)
+	resources, err := aws.ListResourcesByType(client, resourceType)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("Error: %s\n", err))
 		return 1
+	}
+
+	for _, r := range resources {
+		fmt.Printf("ID:\t%s\n", r.ID)
+		if len(r.Tags) > 0 {
+			fmt.Println("Tags:")
+			for k, v := range r.Tags {
+				fmt.Printf("\t%s: %s\n", k, v)
+			}
+		}
+		if r.CreatedAt != nil {
+			fmt.Printf("Created at:\t%s\n", r.CreatedAt)
+		}
+		fmt.Println()
 	}
 
 	return 0

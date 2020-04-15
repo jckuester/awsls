@@ -4,29 +4,36 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListEc2TrafficMirrorSession(client *Client) error {
+func ListEc2TrafficMirrorSession(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeTrafficMirrorSessionsRequest(&ec2.DescribeTrafficMirrorSessionsInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeTrafficMirrorSessionsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TrafficMirrorSessions {
-			fmt.Println(*r.TrafficMirrorSessionId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_ec2_traffic_mirror_session",
+				ID:   *r.TrafficMirrorSessionId,
+				Tags: tags,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

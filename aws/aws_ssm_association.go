@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 )
 
-func ListSsmAssociation(client *Client) error {
+func ListSsmAssociation(client *Client) ([]Resource, error) {
 	req := client.ssmconn.ListAssociationsRequest(&ssm.ListAssociationsInput{})
+
+	var result []Resource
 
 	p := ssm.NewListAssociationsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Associations {
-			fmt.Println(*r.AssociationId)
 
+			result = append(result, Resource{
+				Type: "aws_ssm_association",
+				ID:   *r.AssociationId,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

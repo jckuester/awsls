@@ -4,26 +4,32 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/iot"
 )
 
-func ListIotCertificate(client *Client) error {
+func ListIotCertificate(client *Client) ([]Resource, error) {
 	req := client.iotconn.ListCertificatesRequest(&iot.ListCertificatesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Certificates) > 0 {
 		for _, r := range resp.Certificates {
-			fmt.Println(*r.CertificateId)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
+			t := *r.CreationDate
+			result = append(result, Resource{
+				Type: "aws_iot_certificate",
+				ID:   *r.CertificateId,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

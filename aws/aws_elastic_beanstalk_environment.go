@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/elasticbeanstalk"
 )
 
-func ListElasticBeanstalkEnvironment(client *Client) error {
+func ListElasticBeanstalkEnvironment(client *Client) ([]Resource, error) {
 	req := client.elasticbeanstalkconn.DescribeEnvironmentsRequest(&elasticbeanstalk.DescribeEnvironmentsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Environments) > 0 {
 		for _, r := range resp.Environments {
-			fmt.Println(*r.EnvironmentId)
 
+			result = append(result, Resource{
+				Type: "aws_elastic_beanstalk_environment",
+				ID:   *r.EnvironmentId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

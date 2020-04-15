@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
-func ListIamAccessKey(client *Client) error {
+func ListIamAccessKey(client *Client) ([]Resource, error) {
 	req := client.iamconn.ListAccessKeysRequest(&iam.ListAccessKeysInput{})
+
+	var result []Resource
 
 	p := iam.NewListAccessKeysPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.AccessKeyMetadata {
-			fmt.Println(*r.AccessKeyId)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
+			t := *r.CreateDate
+			result = append(result, Resource{
+				Type: "aws_iam_access_key",
+				ID:   *r.AccessKeyId,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

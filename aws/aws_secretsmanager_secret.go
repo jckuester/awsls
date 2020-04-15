@@ -4,29 +4,36 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 )
 
-func ListSecretsmanagerSecret(client *Client) error {
+func ListSecretsmanagerSecret(client *Client) ([]Resource, error) {
 	req := client.secretsmanagerconn.ListSecretsRequest(&secretsmanager.ListSecretsInput{})
+
+	var result []Resource
 
 	p := secretsmanager.NewListSecretsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.SecretList {
-			fmt.Println(*r.ARN)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_secretsmanager_secret",
+				ID:   *r.ARN,
+				Tags: tags,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

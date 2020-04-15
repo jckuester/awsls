@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
 )
 
-func ListRedshiftSnapshotSchedule(client *Client) error {
+func ListRedshiftSnapshotSchedule(client *Client) ([]Resource, error) {
 	req := client.redshiftconn.DescribeSnapshotSchedulesRequest(&redshift.DescribeSnapshotSchedulesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.SnapshotSchedules) > 0 {
 		for _, r := range resp.SnapshotSchedules {
-			fmt.Println(*r.ScheduleIdentifier)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_redshift_snapshot_schedule",
+				ID:   *r.ScheduleIdentifier,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

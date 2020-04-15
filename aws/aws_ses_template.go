@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ses"
 )
 
-func ListSesTemplate(client *Client) error {
+func ListSesTemplate(client *Client) ([]Resource, error) {
 	req := client.sesconn.ListTemplatesRequest(&ses.ListTemplatesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.TemplatesMetadata) > 0 {
 		for _, r := range resp.TemplatesMetadata {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_ses_template",
+				ID:   *r.Name,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

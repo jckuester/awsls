@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/neptune"
 )
 
-func ListNeptuneEventSubscription(client *Client) error {
+func ListNeptuneEventSubscription(client *Client) ([]Resource, error) {
 	req := client.neptuneconn.DescribeEventSubscriptionsRequest(&neptune.DescribeEventSubscriptionsInput{})
+
+	var result []Resource
 
 	p := neptune.NewDescribeEventSubscriptionsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.EventSubscriptionsList {
-			fmt.Println(*r.CustSubscriptionId)
 
+			result = append(result, Resource{
+				Type: "aws_neptune_event_subscription",
+				ID:   *r.CustSubscriptionId,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

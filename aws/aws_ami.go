@@ -4,28 +4,39 @@ package aws
 
 import (
 	"context"
-	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListAmi(client *Client) error {
+func ListAmi(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeImagesRequest(&ec2.DescribeImagesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Images) > 0 {
 		for _, r := range resp.Images {
-			fmt.Println(*r.ImageId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
+			t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.CreationDate)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, Resource{
+				Type:      "aws_ami",
+				ID:        *r.ImageId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

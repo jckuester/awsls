@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/waf"
 )
 
-func ListWafSizeConstraintSet(client *Client) error {
+func ListWafSizeConstraintSet(client *Client) ([]Resource, error) {
 	req := client.wafconn.ListSizeConstraintSetsRequest(&waf.ListSizeConstraintSetsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.SizeConstraintSets) > 0 {
 		for _, r := range resp.SizeConstraintSets {
-			fmt.Println(*r.SizeConstraintSetId)
 
+			result = append(result, Resource{
+				Type: "aws_waf_size_constraint_set",
+				ID:   *r.SizeConstraintSetId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/databasemigrationservice"
 )
 
-func ListDmsCertificate(client *Client) error {
+func ListDmsCertificate(client *Client) ([]Resource, error) {
 	req := client.databasemigrationserviceconn.DescribeCertificatesRequest(&databasemigrationservice.DescribeCertificatesInput{})
+
+	var result []Resource
 
 	p := databasemigrationservice.NewDescribeCertificatesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Certificates {
-			fmt.Println(*r.CertificateIdentifier)
 
+			result = append(result, Resource{
+				Type: "aws_dms_certificate",
+				ID:   *r.CertificateIdentifier,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

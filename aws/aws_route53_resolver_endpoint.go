@@ -4,28 +4,38 @@ package aws
 
 import (
 	"context"
-	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/route53resolver"
 )
 
-func ListRoute53ResolverEndpoint(client *Client) error {
+func ListRoute53ResolverEndpoint(client *Client) ([]Resource, error) {
 	req := client.route53resolverconn.ListResolverEndpointsRequest(&route53resolver.ListResolverEndpointsInput{})
+
+	var result []Resource
 
 	p := route53resolver.NewListResolverEndpointsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ResolverEndpoints {
-			fmt.Println(*r.Id)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.CreationTime)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, Resource{
+				Type: "aws_route53_resolver_endpoint",
+				ID:   *r.Id,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

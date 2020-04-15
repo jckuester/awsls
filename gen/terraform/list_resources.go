@@ -18,7 +18,7 @@ func GenerateListResourcesFunctions(outputPath string, listFunctionNames map[str
 		filepath.Join(outputPath, "list.go"),
 		util.CodeLayout,
 		"",
-		"resource",
+		"aws",
 		listByTypeGoCode(listFunctionNames),
 	)
 
@@ -41,21 +41,28 @@ func listByTypeGoCode(listFunctionNames map[string]string) string {
 
 var listByTypeTmpl = template.Must(template.New("listByType").Parse(`import(
 "fmt"
-"github.com/jckuester/awsls/aws"
+"time"
 )
 
-func ListResources(client *aws.Client) error {
-{{ range $key, $value := . }}aws.List{{ $value }}(client)
+type Resource struct {
+	Type string
+	ID string
+	Tags map[string]string
+	CreatedAt *time.Time
+}
+
+func ListResources(client *Client) error {
+{{ range $key, $value := . }}List{{ $value }}(client)
 {{end}}
 return nil
 }
 
-func ListResourcesByType(client *aws.Client, resourceType string) error {
+func ListResourcesByType(client *Client, resourceType string) ([]Resource, error) {
 	switch resourceType {
 	{{range $key, $value := .}}case "{{ $key }}":
-	return aws.List{{ $value }}(client)
+	return List{{ $value }}(client)
 	{{end}}default:
-		return fmt.Errorf("resource type is not (yet) supported: %s", resourceType)
+		return nil, fmt.Errorf("resource type is not (yet) supported: %s", resourceType)
 	}
 }
 `))

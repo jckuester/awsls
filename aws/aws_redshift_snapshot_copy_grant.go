@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
 )
 
-func ListRedshiftSnapshotCopyGrant(client *Client) error {
+func ListRedshiftSnapshotCopyGrant(client *Client) ([]Resource, error) {
 	req := client.redshiftconn.DescribeSnapshotCopyGrantsRequest(&redshift.DescribeSnapshotCopyGrantsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.SnapshotCopyGrants) > 0 {
 		for _, r := range resp.SnapshotCopyGrants {
-			fmt.Println(*r.SnapshotCopyGrantName)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_redshift_snapshot_copy_grant",
+				ID:   *r.SnapshotCopyGrantName,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

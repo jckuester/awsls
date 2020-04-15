@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/elastictranscoder"
 )
 
-func ListElastictranscoderPreset(client *Client) error {
+func ListElastictranscoderPreset(client *Client) ([]Resource, error) {
 	req := client.elastictranscoderconn.ListPresetsRequest(&elastictranscoder.ListPresetsInput{})
+
+	var result []Resource
 
 	p := elastictranscoder.NewListPresetsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Presets {
-			fmt.Println(*r.Id)
 
+			result = append(result, Resource{
+				Type: "aws_elastictranscoder_preset",
+				ID:   *r.Id,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

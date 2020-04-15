@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/waf"
 )
 
-func ListWafIpset(client *Client) error {
+func ListWafIpset(client *Client) ([]Resource, error) {
 	req := client.wafconn.ListIPSetsRequest(&waf.ListIPSetsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.IPSets) > 0 {
 		for _, r := range resp.IPSets {
-			fmt.Println(*r.IPSetId)
 
+			result = append(result, Resource{
+				Type: "aws_waf_ipset",
+				ID:   *r.IPSetId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

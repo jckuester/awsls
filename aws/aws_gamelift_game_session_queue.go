@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/gamelift"
 )
 
-func ListGameliftGameSessionQueue(client *Client) error {
+func ListGameliftGameSessionQueue(client *Client) ([]Resource, error) {
 	req := client.gameliftconn.DescribeGameSessionQueuesRequest(&gamelift.DescribeGameSessionQueuesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.GameSessionQueues) > 0 {
 		for _, r := range resp.GameSessionQueues {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_gamelift_game_session_queue",
+				ID:   *r.Name,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

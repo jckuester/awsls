@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListEip(client *Client) error {
+func ListEip(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeAddressesRequest(&ec2.DescribeAddressesInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Addresses) > 0 {
 		for _, r := range resp.Addresses {
-			fmt.Println(*r.AllocationId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_eip",
+				ID:   *r.AllocationId,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

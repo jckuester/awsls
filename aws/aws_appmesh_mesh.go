@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/appmesh"
 )
 
-func ListAppmeshMesh(client *Client) error {
+func ListAppmeshMesh(client *Client) ([]Resource, error) {
 	req := client.appmeshconn.ListMeshesRequest(&appmesh.ListMeshesInput{})
+
+	var result []Resource
 
 	p := appmesh.NewListMeshesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Meshes {
-			fmt.Println(*r.MeshName)
 
+			result = append(result, Resource{
+				Type: "aws_appmesh_mesh",
+				ID:   *r.MeshName,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

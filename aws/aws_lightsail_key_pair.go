@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/lightsail"
 )
 
-func ListLightsailKeyPair(client *Client) error {
+func ListLightsailKeyPair(client *Client) ([]Resource, error) {
 	req := client.lightsailconn.GetKeyPairsRequest(&lightsail.GetKeyPairsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.KeyPairs) > 0 {
 		for _, r := range resp.KeyPairs {
-			fmt.Println(*r.Name)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_lightsail_key_pair",
+				ID:   *r.Name,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

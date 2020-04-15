@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 )
 
-func ListWafregionalWebAcl(client *Client) error {
+func ListWafregionalWebAcl(client *Client) ([]Resource, error) {
 	req := client.wafregionalconn.ListWebACLsRequest(&wafregional.ListWebACLsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.WebACLs) > 0 {
 		for _, r := range resp.WebACLs {
-			fmt.Println(*r.WebACLId)
 
+			result = append(result, Resource{
+				Type: "aws_wafregional_web_acl",
+				ID:   *r.WebACLId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

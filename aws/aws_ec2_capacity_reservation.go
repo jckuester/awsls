@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListEc2CapacityReservation(client *Client) error {
+func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeCapacityReservationsRequest(&ec2.DescribeCapacityReservationsInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeCapacityReservationsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.CapacityReservations {
-			fmt.Println(*r.CapacityReservationId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
+			t := *r.CreateDate
+			result = append(result, Resource{
+				Type:      "aws_ec2_capacity_reservation",
+				ID:        *r.CapacityReservationId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

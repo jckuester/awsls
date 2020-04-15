@@ -213,14 +213,16 @@ func GetTagsGoCode(outputField *api.ShapeRef) string {
 	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
 		if k == "Tags" {
 			if v.Shape.Type == "list" {
-				return `for _, t := range r.Tags {
-							fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				return `tags := map[string]string{}
+						for _, t := range r.Tags {
+							tags[*t.Key] = *t.Value
 						}`
 			}
 
 			if v.Shape.Type == "map" {
-				return `for k, v := range r.Tags {
-							fmt.Printf("\t%s: %s\n", k, v)
+				return `tags := map[string]string{}
+						for k, v := range r.Tags {
+							tags[k] = v
 						}`
 			}
 		}
@@ -251,16 +253,18 @@ func GetCreationTimeGoCode(outputField *api.ShapeRef) (string, []string) {
 		for _, name := range creationTimeFieldNames {
 			if k == name {
 				if v.Shape.Type == "string" {
-					return `fmt.Printf("CreatedAt: %s\n", ` + fmt.Sprintf("*r.%s)", k), []string{}
+					return `t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.` + k + `)
+							if err != nil {
+								return nil, err
+							}`, []string{"time"}
 				}
 
 				if v.Shape.Type == "timestamp" {
-					return `fmt.Printf("CreatedAt: %s\n", ` + fmt.Sprintf("*r.%s)", k), []string{}
+					return `t := ` + fmt.Sprintf("*r.%s", k), []string{}
 				}
 
 				if v.Shape.Type == "long" {
-					return fmt.Sprintf("t := time.Unix(0, *r.%s * 1000000).UTC()", k) + `
-												fmt.Printf("CreatedAt: %s\n", t)`, []string{"time"}
+					return fmt.Sprintf("t := time.Unix(0, *r.%s * 1000000).UTC()", k), []string{"time"}
 				}
 
 				log.Warnf("uncovered creation time type: %s", v.Shape.Type)

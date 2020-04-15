@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/directconnect"
 )
 
-func ListDxLag(client *Client) error {
+func ListDxLag(client *Client) ([]Resource, error) {
 	req := client.directconnectconn.DescribeLagsRequest(&directconnect.DescribeLagsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Lags) > 0 {
 		for _, r := range resp.Lags {
-			fmt.Println(*r.LagId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_dx_lag",
+				ID:   *r.LagId,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/lightsail"
 )
 
-func ListLightsailStaticIp(client *Client) error {
+func ListLightsailStaticIp(client *Client) ([]Resource, error) {
 	req := client.lightsailconn.GetStaticIpsRequest(&lightsail.GetStaticIpsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.StaticIps) > 0 {
 		for _, r := range resp.StaticIps {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_lightsail_static_ip",
+				ID:   *r.Name,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

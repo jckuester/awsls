@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/databasemigrationservice"
 )
 
-func ListDmsReplicationTask(client *Client) error {
+func ListDmsReplicationTask(client *Client) ([]Resource, error) {
 	req := client.databasemigrationserviceconn.DescribeReplicationTasksRequest(&databasemigrationservice.DescribeReplicationTasksInput{})
+
+	var result []Resource
 
 	p := databasemigrationservice.NewDescribeReplicationTasksPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ReplicationTasks {
-			fmt.Println(*r.ReplicationTaskIdentifier)
 
+			result = append(result, Resource{
+				Type: "aws_dms_replication_task",
+				ID:   *r.ReplicationTaskIdentifier,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

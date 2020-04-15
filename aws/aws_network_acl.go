@@ -4,29 +4,36 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListNetworkAcl(client *Client) error {
+func ListNetworkAcl(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeNetworkAclsRequest(&ec2.DescribeNetworkAclsInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeNetworkAclsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.NetworkAcls {
-			fmt.Println(*r.NetworkAclId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_network_acl",
+				ID:   *r.NetworkAclId,
+				Tags: tags,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

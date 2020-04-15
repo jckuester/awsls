@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/dax"
 )
 
-func ListDaxParameterGroup(client *Client) error {
+func ListDaxParameterGroup(client *Client) ([]Resource, error) {
 	req := client.daxconn.DescribeParameterGroupsRequest(&dax.DescribeParameterGroupsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.ParameterGroups) > 0 {
 		for _, r := range resp.ParameterGroups {
-			fmt.Println(*r.ParameterGroupName)
 
+			result = append(result, Resource{
+				Type: "aws_dax_parameter_group",
+				ID:   *r.ParameterGroupName,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

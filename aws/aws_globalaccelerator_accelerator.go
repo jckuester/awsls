@@ -4,26 +4,32 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/globalaccelerator"
 )
 
-func ListGlobalacceleratorAccelerator(client *Client) error {
+func ListGlobalacceleratorAccelerator(client *Client) ([]Resource, error) {
 	req := client.globalacceleratorconn.ListAcceleratorsRequest(&globalaccelerator.ListAcceleratorsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Accelerators) > 0 {
 		for _, r := range resp.Accelerators {
-			fmt.Println(*r.AcceleratorArn)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreatedTime)
+			t := *r.CreatedTime
+			result = append(result, Resource{
+				Type: "aws_globalaccelerator_accelerator",
+				ID:   *r.AcceleratorArn,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

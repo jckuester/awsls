@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ses"
 )
 
-func ListSesConfigurationSet(client *Client) error {
+func ListSesConfigurationSet(client *Client) ([]Resource, error) {
 	req := client.sesconn.ListConfigurationSetsRequest(&ses.ListConfigurationSetsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.ConfigurationSets) > 0 {
 		for _, r := range resp.ConfigurationSets {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_ses_configuration_set",
+				ID:   *r.Name,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 )
 
-func ListSsmPatchGroup(client *Client) error {
+func ListSsmPatchGroup(client *Client) ([]Resource, error) {
 	req := client.ssmconn.DescribePatchGroupsRequest(&ssm.DescribePatchGroupsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Mappings) > 0 {
 		for _, r := range resp.Mappings {
-			fmt.Println(*r.PatchGroup)
 
+			result = append(result, Resource{
+				Type: "aws_ssm_patch_group",
+				ID:   *r.PatchGroup,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

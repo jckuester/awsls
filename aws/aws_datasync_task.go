@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/datasync"
 )
 
-func ListDatasyncTask(client *Client) error {
+func ListDatasyncTask(client *Client) ([]Resource, error) {
 	req := client.datasyncconn.ListTasksRequest(&datasync.ListTasksInput{})
+
+	var result []Resource
 
 	p := datasync.NewListTasksPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Tasks {
-			fmt.Println(*r.TaskArn)
 
+			result = append(result, Resource{
+				Type: "aws_datasync_task",
+				ID:   *r.TaskArn,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

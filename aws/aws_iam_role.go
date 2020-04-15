@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
-func ListIamRole(client *Client) error {
+func ListIamRole(client *Client) ([]Resource, error) {
 	req := client.iamconn.ListRolesRequest(&iam.ListRolesInput{})
+
+	var result []Resource
 
 	p := iam.NewListRolesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Roles {
-			fmt.Println(*r.RoleName)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
+			t := *r.CreateDate
+			result = append(result, Resource{
+				Type:      "aws_iam_role",
+				ID:        *r.RoleName,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

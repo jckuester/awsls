@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/sfn"
 )
 
-func ListSfnStateMachine(client *Client) error {
+func ListSfnStateMachine(client *Client) ([]Resource, error) {
 	req := client.sfnconn.ListStateMachinesRequest(&sfn.ListStateMachinesInput{})
+
+	var result []Resource
 
 	p := sfn.NewListStateMachinesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.StateMachines {
-			fmt.Println(*r.StateMachineArn)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
+			t := *r.CreationDate
+			result = append(result, Resource{
+				Type: "aws_sfn_state_machine",
+				ID:   *r.StateMachineArn,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

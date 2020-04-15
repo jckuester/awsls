@@ -35,7 +35,6 @@ func (o *Operation) GoCode() string {
 var listResourcesOperationTmpl = template.Must(template.New("listResourcesOperation").Parse(`
 import(
 	"context"
-	"fmt"
 	{{ range .Imports }}"{{ . }}"
 	{{ end }}
 	"github.com/aws/aws-sdk-go-v2/service/{{ .API.PackageName }}"
@@ -45,39 +44,52 @@ import(
 {{ $respType := printf "%sResponse" .ExportedName -}}
 {{ $pagerType := printf "%sPaginator" .ExportedName -}}
 
-func  List{{.OpName}}(client *Client) error {
+func  List{{.OpName}}(client *Client) ([]Resource, error) {
     req := client.{{ .API.PackageName }}conn.{{ $reqType }}(&{{ .API.PackageName }}.{{ .InputRef.GoTypeElem }}{})
 
-	{{ if .Paginator }}
+	var result []Resource
 
+	{{ if .Paginator }}
     p := {{ .API.PackageName }}.New{{ $pagerType }}(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.{{ .OutputListName }}{
-			fmt.Println(*r.{{ .ResourceID }})
 			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
-			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}}
+			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
+			result = append(result, Resource{
+				Type: "{{ .TerraformType }}",
+				ID: *r.{{ .ResourceID }},
+				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
+				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
+			})
+		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
 	{{ else }}
 
     resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.{{ .OutputListName }}) > 0 {
 		for _, r := range resp.{{ .OutputListName }}{
-			fmt.Println(*r.{{ .ResourceID }})
 			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
-			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}}
+			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
+			result = append(result, Resource{
+				Type: "{{ .TerraformType }}",
+				ID: *r.{{ .ResourceID }},
+				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
+				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
+			})
+		}
 	}
 	{{ end }}
-	return nil
+	return result, nil
 }
 `))

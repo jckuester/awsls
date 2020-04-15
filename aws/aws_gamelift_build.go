@@ -4,26 +4,32 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/gamelift"
 )
 
-func ListGameliftBuild(client *Client) error {
+func ListGameliftBuild(client *Client) ([]Resource, error) {
 	req := client.gameliftconn.ListBuildsRequest(&gamelift.ListBuildsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Builds) > 0 {
 		for _, r := range resp.Builds {
-			fmt.Println(*r.BuildId)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationTime)
+			t := *r.CreationTime
+			result = append(result, Resource{
+				Type: "aws_gamelift_build",
+				ID:   *r.BuildId,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

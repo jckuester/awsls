@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/backup"
 )
 
-func ListBackupPlan(client *Client) error {
+func ListBackupPlan(client *Client) ([]Resource, error) {
 	req := client.backupconn.ListBackupPlansRequest(&backup.ListBackupPlansInput{})
+
+	var result []Resource
 
 	p := backup.NewListBackupPlansPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.BackupPlansList {
-			fmt.Println(*r.BackupPlanId)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
+			t := *r.CreationDate
+			result = append(result, Resource{
+				Type: "aws_backup_plan",
+				ID:   *r.BackupPlanId,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

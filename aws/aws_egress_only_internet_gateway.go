@@ -4,29 +4,36 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListEgressOnlyInternetGateway(client *Client) error {
+func ListEgressOnlyInternetGateway(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeEgressOnlyInternetGatewaysRequest(&ec2.DescribeEgressOnlyInternetGatewaysInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeEgressOnlyInternetGatewaysPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.EgressOnlyInternetGateways {
-			fmt.Println(*r.EgressOnlyInternetGatewayId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_egress_only_internet_gateway",
+				ID:   *r.EgressOnlyInternetGatewayId,
+				Tags: tags,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

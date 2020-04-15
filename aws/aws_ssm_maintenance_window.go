@@ -4,25 +4,29 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 )
 
-func ListSsmMaintenanceWindow(client *Client) error {
+func ListSsmMaintenanceWindow(client *Client) ([]Resource, error) {
 	req := client.ssmconn.DescribeMaintenanceWindowsRequest(&ssm.DescribeMaintenanceWindowsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.WindowIdentities) > 0 {
 		for _, r := range resp.WindowIdentities {
-			fmt.Println(*r.WindowId)
 
+			result = append(result, Resource{
+				Type: "aws_ssm_maintenance_window",
+				ID:   *r.WindowId,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

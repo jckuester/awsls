@@ -4,29 +4,36 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/codepipeline"
 )
 
-func ListCodepipelineWebhook(client *Client) error {
+func ListCodepipelineWebhook(client *Client) ([]Resource, error) {
 	req := client.codepipelineconn.ListWebhooksRequest(&codepipeline.ListWebhooksInput{})
+
+	var result []Resource
 
 	p := codepipeline.NewListWebhooksPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Webhooks {
-			fmt.Println(*r.Arn)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_codepipeline_webhook",
+				ID:   *r.Arn,
+				Tags: tags,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

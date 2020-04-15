@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
 )
 
-func ListEcsCluster(client *Client) error {
+func ListEcsCluster(client *Client) ([]Resource, error) {
 	req := client.ecsconn.DescribeClustersRequest(&ecs.DescribeClustersInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Clusters) > 0 {
 		for _, r := range resp.Clusters {
-			fmt.Println(*r.ClusterArn)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
+
+			result = append(result, Resource{
+				Type: "aws_ecs_cluster",
+				ID:   *r.ClusterArn,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

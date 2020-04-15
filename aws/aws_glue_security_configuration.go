@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/glue"
 )
 
-func ListGlueSecurityConfiguration(client *Client) error {
+func ListGlueSecurityConfiguration(client *Client) ([]Resource, error) {
 	req := client.glueconn.GetSecurityConfigurationsRequest(&glue.GetSecurityConfigurationsInput{})
+
+	var result []Resource
 
 	p := glue.NewGetSecurityConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.SecurityConfigurations {
-			fmt.Println(*r.Name)
 
+			result = append(result, Resource{
+				Type: "aws_glue_security_configuration",
+				ID:   *r.Name,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

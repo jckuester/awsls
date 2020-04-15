@@ -4,27 +4,31 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListVpcEndpointConnectionNotification(client *Client) error {
+func ListVpcEndpointConnectionNotification(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeVpcEndpointConnectionNotificationsRequest(&ec2.DescribeVpcEndpointConnectionNotificationsInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeVpcEndpointConnectionNotificationsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ConnectionNotificationSet {
-			fmt.Println(*r.ConnectionNotificationId)
 
+			result = append(result, Resource{
+				Type: "aws_vpc_endpoint_connection_notification",
+				ID:   *r.ConnectionNotificationId,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

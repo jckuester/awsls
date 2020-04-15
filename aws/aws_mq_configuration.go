@@ -4,27 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/mq"
 )
 
-func ListMqConfiguration(client *Client) error {
+func ListMqConfiguration(client *Client) ([]Resource, error) {
 	req := client.mqconn.ListConfigurationsRequest(&mq.ListConfigurationsInput{})
+
+	var result []Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(resp.Configurations) > 0 {
 		for _, r := range resp.Configurations {
-			fmt.Println(*r.Id)
+			tags := map[string]string{}
 			for k, v := range r.Tags {
-				fmt.Printf("\t%s: %s\n", k, v)
+				tags[k] = v
 			}
+
+			result = append(result, Resource{
+				Type: "aws_mq_configuration",
+				ID:   *r.Id,
+				Tags: tags,
+			})
 		}
 	}
 
-	return nil
+	return result, nil
 }

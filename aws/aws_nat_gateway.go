@@ -4,30 +4,37 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListNatGateway(client *Client) error {
+func ListNatGateway(client *Client) ([]Resource, error) {
 	req := client.ec2conn.DescribeNatGatewaysRequest(&ec2.DescribeNatGatewaysInput{})
+
+	var result []Resource
 
 	p := ec2.NewDescribeNatGatewaysPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.NatGateways {
-			fmt.Println(*r.NatGatewayId)
+			tags := map[string]string{}
 			for _, t := range r.Tags {
-				fmt.Printf("\t%s: %s\n", *t.Key, *t.Value)
+				tags[*t.Key] = *t.Value
 			}
-			fmt.Printf("CreatedAt: %s\n", *r.CreateTime)
+			t := *r.CreateTime
+			result = append(result, Resource{
+				Type:      "aws_nat_gateway",
+				ID:        *r.NatGatewayId,
+				Tags:      tags,
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

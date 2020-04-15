@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/backup"
 )
 
-func ListBackupVault(client *Client) error {
+func ListBackupVault(client *Client) ([]Resource, error) {
 	req := client.backupconn.ListBackupVaultsRequest(&backup.ListBackupVaultsInput{})
+
+	var result []Resource
 
 	p := backup.NewListBackupVaultsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.BackupVaultList {
-			fmt.Println(*r.BackupVaultName)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreationDate)
+			t := *r.CreationDate
+			result = append(result, Resource{
+				Type: "aws_backup_vault",
+				ID:   *r.BackupVaultName,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }

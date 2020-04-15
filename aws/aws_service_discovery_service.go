@@ -4,28 +4,34 @@ package aws
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/servicediscovery"
 )
 
-func ListServiceDiscoveryService(client *Client) error {
+func ListServiceDiscoveryService(client *Client) ([]Resource, error) {
 	req := client.servicediscoveryconn.ListServicesRequest(&servicediscovery.ListServicesInput{})
+
+	var result []Resource
 
 	p := servicediscovery.NewListServicesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Services {
-			fmt.Println(*r.Id)
 
-			fmt.Printf("CreatedAt: %s\n", *r.CreateDate)
+			t := *r.CreateDate
+			result = append(result, Resource{
+				Type: "aws_service_discovery_service",
+				ID:   *r.Id,
+
+				CreatedAt: &t,
+			})
 		}
 	}
 
 	if err := p.Err(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }
