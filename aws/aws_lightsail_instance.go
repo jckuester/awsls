@@ -20,6 +20,7 @@ func ListLightsailInstance(client *Client) ([]Resource, error) {
 
 	if len(resp.Instances) > 0 {
 		for _, r := range resp.Instances {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

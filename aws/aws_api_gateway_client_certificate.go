@@ -18,6 +18,7 @@ func ListApiGatewayClientCertificate(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Items {
+
 			tags := map[string]string{}
 			for k, v := range r.Tags {
 				tags[k] = v

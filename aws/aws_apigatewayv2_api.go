@@ -20,6 +20,7 @@ func ListApigatewayv2Api(client *Client) ([]Resource, error) {
 
 	if len(resp.Items) > 0 {
 		for _, r := range resp.Items {
+
 			tags := map[string]string{}
 			for k, v := range r.Tags {
 				tags[k] = v

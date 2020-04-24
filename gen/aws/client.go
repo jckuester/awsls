@@ -47,21 +47,36 @@ func clientGoCode(services []string) string {
 }
 
 var clientTmpl = template.Must(template.New("client").Parse(`import (
+"context"
 "github.com/aws/aws-sdk-go-v2/aws/external"
+"github.com/aws/aws-sdk-go-v2/service/sts"
 {{range .}}"github.com/aws/aws-sdk-go-v2/service/{{.}}"
 {{end}})
 type Client struct {
+accountid string
 {{range .}}{{.}}conn *{{.}}.Client
 {{end}}}
 
-func  NewClient() *Client {
+func  NewClient() (*Client, error) {
 cfg, err := external.LoadDefaultAWSConfig()
 if err != nil {
 	panic("failed to load config, " + err.Error())
 }
 
-return &Client{
+
+
+client := &Client{
 {{range .}}{{.}}conn: {{.}}.New(cfg),
 {{end}}}
+
+stsconn := sts.New(cfg)
+req := stsconn.GetCallerIdentityRequest(&sts.GetCallerIdentityInput{})
+resp, err := req.Send(context.Background())
+if err != nil {
+	return nil, err
+}
+client.accountid = *resp.Account
+
+return client, nil
 }
 `))

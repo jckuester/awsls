@@ -20,6 +20,9 @@ func ListEfsMountTarget(client *Client) ([]Resource, error) {
 
 	if len(resp.MountTargets) > 0 {
 		for _, r := range resp.MountTargets {
+			if *r.OwnerId != client.accountid {
+				continue
+			}
 
 			result = append(result, Resource{
 				Type: "aws_efs_mount_target",

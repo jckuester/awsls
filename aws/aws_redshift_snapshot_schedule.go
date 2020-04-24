@@ -20,6 +20,7 @@ func ListRedshiftSnapshotSchedule(client *Client) ([]Resource, error) {
 
 	if len(resp.SnapshotSchedules) > 0 {
 		for _, r := range resp.SnapshotSchedules {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

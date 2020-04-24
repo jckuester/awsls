@@ -14,8 +14,10 @@ func main() {
 }
 
 func mainExitCode() int {
-	client := aws.NewClient()
-
+	client, err := aws.NewClient()
+	if err != nil {
+		return 1
+	}
 	fmt.Println()
 
 	if os.Args[1] == "*" {

@@ -18,6 +18,7 @@ func ListRedshiftCluster(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Clusters {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

@@ -18,6 +18,7 @@ func ListAutoscalingGroup(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.AutoScalingGroups {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

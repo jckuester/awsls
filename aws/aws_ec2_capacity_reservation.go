@@ -18,6 +18,9 @@ func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.CapacityReservations {
+			if *r.OwnerId != client.accountid {
+				continue
+			}
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

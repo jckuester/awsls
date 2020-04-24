@@ -21,6 +21,9 @@ func ListAmi(client *Client) ([]Resource, error) {
 
 	if len(resp.Images) > 0 {
 		for _, r := range resp.Images {
+			if *r.OwnerId != client.accountid {
+				continue
+			}
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

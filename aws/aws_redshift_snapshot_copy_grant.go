@@ -20,6 +20,7 @@ func ListRedshiftSnapshotCopyGrant(client *Client) ([]Resource, error) {
 
 	if len(resp.SnapshotCopyGrants) > 0 {
 		for _, r := range resp.SnapshotCopyGrants {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

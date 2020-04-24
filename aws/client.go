@@ -3,6 +3,7 @@
 package aws
 
 import (
+	"context"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/accessanalyzer"
 	"github.com/aws/aws-sdk-go-v2/service/acm"
@@ -108,6 +109,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/aws/aws-sdk-go-v2/service/storagegateway"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/aws/aws-sdk-go-v2/service/swf"
 	"github.com/aws/aws-sdk-go-v2/service/transfer"
 	"github.com/aws/aws-sdk-go-v2/service/waf"
@@ -118,6 +120,7 @@ import (
 )
 
 type Client struct {
+	accountid                     string
 	accessanalyzerconn            *accessanalyzer.Client
 	acmconn                       *acm.Client
 	acmpcaconn                    *acmpca.Client
@@ -231,13 +234,13 @@ type Client struct {
 	xrayconn                      *xray.Client
 }
 
-func NewClient() *Client {
+func NewClient() (*Client, error) {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		panic("failed to load config, " + err.Error())
 	}
 
-	return &Client{
+	client := &Client{
 		accessanalyzerconn:            accessanalyzer.New(cfg),
 		acmconn:                       acm.New(cfg),
 		acmpcaconn:                    acmpca.New(cfg),
@@ -350,4 +353,14 @@ func NewClient() *Client {
 		workspacesconn:                workspaces.New(cfg),
 		xrayconn:                      xray.New(cfg),
 	}
+
+	stsconn := sts.New(cfg)
+	req := stsconn.GetCallerIdentityRequest(&sts.GetCallerIdentityInput{})
+	resp, err := req.Send(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	client.accountid = *resp.Account
+
+	return client, nil
 }

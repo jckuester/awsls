@@ -20,6 +20,7 @@ func ListDxLag(client *Client) ([]Resource, error) {
 
 	if len(resp.Lags) > 0 {
 		for _, r := range resp.Lags {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

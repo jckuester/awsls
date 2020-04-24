@@ -18,6 +18,7 @@ func ListAccessanalyzerAnalyzer(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Analyzers {
+
 			tags := map[string]string{}
 			for k, v := range r.Tags {
 				tags[k] = v

@@ -20,6 +20,7 @@ func ListEcsCluster(client *Client) ([]Resource, error) {
 
 	if len(resp.Clusters) > 0 {
 		for _, r := range resp.Clusters {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

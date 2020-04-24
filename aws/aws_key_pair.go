@@ -20,6 +20,7 @@ func ListKeyPair(client *Client) ([]Resource, error) {
 
 	if len(resp.KeyPairs) > 0 {
 		for _, r := range resp.KeyPairs {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

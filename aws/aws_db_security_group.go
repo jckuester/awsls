@@ -18,6 +18,9 @@ func ListDbSecurityGroup(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.DBSecurityGroups {
+			if *r.OwnerId != client.accountid {
+				continue
+			}
 
 			result = append(result, Resource{
 				Type: "aws_db_security_group",

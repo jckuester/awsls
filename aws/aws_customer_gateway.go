@@ -20,6 +20,7 @@ func ListCustomerGateway(client *Client) ([]Resource, error) {
 
 	if len(resp.CustomerGateways) > 0 {
 		for _, r := range resp.CustomerGateways {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

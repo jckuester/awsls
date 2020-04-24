@@ -18,6 +18,7 @@ func ListMediaPackageChannel(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Channels {
+
 			tags := map[string]string{}
 			for k, v := range r.Tags {
 				tags[k] = v

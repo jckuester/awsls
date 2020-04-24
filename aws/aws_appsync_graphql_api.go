@@ -20,6 +20,7 @@ func ListAppsyncGraphqlApi(client *Client) ([]Resource, error) {
 
 	if len(resp.GraphqlApis) > 0 {
 		for _, r := range resp.GraphqlApis {
+
 			tags := map[string]string{}
 			for k, v := range r.Tags {
 				tags[k] = v

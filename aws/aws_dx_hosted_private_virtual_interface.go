@@ -20,6 +20,7 @@ func ListDxHostedPrivateVirtualInterface(client *Client) ([]Resource, error) {
 
 	if len(resp.VirtualInterfaces) > 0 {
 		for _, r := range resp.VirtualInterfaces {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value

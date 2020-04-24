@@ -20,6 +20,7 @@ func ListEip(client *Client) ([]Resource, error) {
 
 	if len(resp.Addresses) > 0 {
 		for _, r := range resp.Addresses {
+
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value
