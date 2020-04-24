@@ -4,6 +4,8 @@ package aws
 
 // some resource types are excluded as they need be handled slightly differently
 var ExcludedResourceTypes = map[string]bool{
+	// is not a resource
+	"aws_acm_certificate_validation": true,
 	// A normal subnet with "DefaultForAz" attribute set to true
 	"aws_default_subnet":                true,
 	"aws_ami_from_instance":             true,

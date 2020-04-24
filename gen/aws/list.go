@@ -93,19 +93,7 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 				continue
 			}
 
-			for k, _ := range op.InputRef.Shape.MemberRefs {
-				if strings.Contains(strings.ToLower(k), "owner") {
-					log.Infof("input; found owner field for %s: %s", rType, k)
-				}
-			}
-
 			outputField := op.OutputRef.Shape.MemberRefs[outputFieldName]
-
-			for k, _ := range outputField.Shape.MemberRef.Shape.MemberRefs {
-				if strings.Contains(strings.ToLower(k), "owner") {
-					log.Infof("output; found owner field for %s: %s", rType, k)
-				}
-			}
 
 			resourceID, ok := ManualMatchedResourceID[rType]
 			if !ok {
@@ -152,6 +140,14 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 
 			if op.GetCreationTimeGoCode != "" {
 				genInfo.CreationTime = true
+			}
+
+			op.GetOwnerGoCode = GetOwnerGoCode(outputField)
+
+			for k, _ := range op.InputRef.Shape.MemberRefs {
+				if strings.Contains(strings.ToLower(k), "owner") {
+					log.Infof("input; found owner field for %s: %s", rType, k)
+				}
 			}
 
 			genResourceInfoPerService = append(genResourceInfoPerService, genInfo)
@@ -273,6 +269,21 @@ func GetCreationTimeGoCode(outputField *api.ShapeRef) (string, []string) {
 	}
 
 	return "", []string{}
+}
+
+func GetOwnerGoCode(outputField *api.ShapeRef) string {
+	for k, _ := range outputField.Shape.MemberRef.Shape.MemberRefs {
+		if k == "OwnerId" {
+			return `if *r.OwnerId != client.accountid {
+						continue
+					}`
+		}
+		if strings.Contains(strings.ToLower(k), "owner") {
+			log.Infof("output; found owner field: %s", k)
+		}
+	}
+
+	return ""
 }
 
 func Operations(apis api.APIs, prefixes []string) []string {

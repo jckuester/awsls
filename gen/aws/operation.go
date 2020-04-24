@@ -19,6 +19,7 @@ type Operation struct {
 	OpName                string
 	GetTagsGoCode         string
 	GetCreationTimeGoCode string
+	GetOwnerGoCode        string
 	Imports               []string
 }
 
@@ -55,6 +56,7 @@ func  List{{.OpName}}(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.{{ .OutputListName }}{
+			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
 			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
 			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
 			result = append(result, Resource{
@@ -79,6 +81,7 @@ func  List{{.OpName}}(client *Client) ([]Resource, error) {
 
 	if len(resp.{{ .OutputListName }}) > 0 {
 		for _, r := range resp.{{ .OutputListName }}{
+			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
 			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
 			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
 			result = append(result, Resource{
