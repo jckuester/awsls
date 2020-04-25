@@ -15,7 +15,7 @@ func IsType(s string) bool {
 
 // MatchResourceTypes return all Terraform AWS resource types that match the given glob pattern.
 func MatchTypes(regex string) []string {
-	var result []string
+	result := []string{}
 
 	compiledRegex, _ := glob.Compile(regex)
 
