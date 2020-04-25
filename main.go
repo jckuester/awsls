@@ -20,11 +20,6 @@ func mainExitCode() int {
 	}
 	fmt.Println()
 
-	if os.Args[1] == "*" {
-		aws.ListResources(client)
-		return 1
-	}
-
 	resourceType := os.Args[1]
 
 	if !resource.IsResourceType(resourceType) {

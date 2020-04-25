@@ -12,8 +12,8 @@ import (
 	"github.com/jckuester/awsls/gen/util"
 )
 
-//GenerateListResourcesFunctions generates two functions: one to list all resources and one to list resources by type.
-func GenerateListResourcesFunctions(outputPath string, listFunctionNames map[string]string) error {
+//GenerateListResourcesByTypeFunction generates a function to list all resources of a given Terraform resource type.
+func GenerateListResourcesByTypeFunction(outputPath string, listFunctionNames map[string]string) error {
 	err := util.WriteGoFile(
 		filepath.Join(outputPath, "list.go"),
 		util.CodeLayout,
@@ -49,12 +49,6 @@ type Resource struct {
 	ID string
 	Tags map[string]string
 	CreatedAt *time.Time
-}
-
-func ListResources(client *Client) error {
-{{ range $key, $value := . }}List{{ $value }}(client)
-{{end}}
-return nil
 }
 
 func ListResourcesByType(client *Client, resourceType string) ([]Resource, error) {
