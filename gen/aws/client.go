@@ -63,8 +63,6 @@ if err != nil {
 	panic("failed to load config, " + err.Error())
 }
 
-
-
 client := &Client{
 {{range .}}{{.}}conn: {{.}}.New(cfg),
 {{end}}}

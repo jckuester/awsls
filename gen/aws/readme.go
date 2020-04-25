@@ -79,12 +79,12 @@ Run, for example
 {{ $service := . -}}
 ### {{ $service }} 
 
-| Resource Type                    | Tags | Creation Time
-| :-----------------------------   |:-------------:|:-----------------------:
+| Resource Type  | Tags | Creation Time | Owner
+| :------------- |:----:|:------------: | :---:
 {{ range $key, $value := $infos -}}
 	{{ if eq $key  $service -}}
 		{{ range $value -}}
-| {{ .Type }} | {{ if .Tags }} x {{ end }} | {{ if .CreationTime }} x {{ end }}
+| {{ .Type }} | {{ if .Tags }} x {{ end }} | {{ if .CreationTime }} x {{ end }} | {{ if .Owner }} x {{ end }}
 {{ end }}
 	{{- end }}
 {{- end }}
