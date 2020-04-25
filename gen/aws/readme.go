@@ -59,6 +59,8 @@ var Readme = template.Must(template.New("readme").Parse(`
 
 # awsls
 
+**Note: this tool is still WIP**
+
 A list command for AWS. Supports listing of {{ .SupportedResourceTypeCount }} resource types across
 {{ len .Services }} different services.
 
@@ -79,12 +81,12 @@ Run, for example
 {{ $service := . -}}
 ### {{ $service }} 
 
-| Resource Type                    | Tags | Creation Time
-| :-----------------------------   |:-------------:|:-----------------------:
+| Resource Type  | Tags | Creation Time | Owner
+| :------------- |:----:|:------------: | :---:
 {{ range $key, $value := $infos -}}
 	{{ if eq $key  $service -}}
 		{{ range $value -}}
-| {{ .Type }} | {{ if .Tags }} x {{ end }} | {{ if .CreationTime }} x {{ end }}
+| {{ .Type }} | {{ if .Tags }} x {{ end }} | {{ if .CreationTime }} x {{ end }} | {{ if .Owner }} x {{ end }}
 {{ end }}
 	{{- end }}
 {{- end }}

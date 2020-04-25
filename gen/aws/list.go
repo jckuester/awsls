@@ -16,6 +16,7 @@ type GeneratedResourceInfo struct {
 	Type         string
 	Tags         bool
 	CreationTime bool
+	Owner        bool
 }
 
 func GenerateListFunctions(outputPath string, resourceServices map[string]string,
@@ -143,6 +144,10 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 			}
 
 			op.GetOwnerGoCode = GetOwnerGoCode(outputField)
+
+			if op.GetCreationTimeGoCode != "" {
+				genInfo.Owner = true
+			}
 
 			for k, _ := range op.InputRef.Shape.MemberRefs {
 				if strings.Contains(strings.ToLower(k), "owner") {
