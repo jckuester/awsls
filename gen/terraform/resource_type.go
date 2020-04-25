@@ -95,7 +95,7 @@ func writeResourceTypes(outputPath string, resourceTypes []string) error {
 	}
 
 	err = util.WriteGoFile(
-		filepath.Join(outputPath, "resource_types.go"),
+		filepath.Join(outputPath, "types.go"),
 		util.CodeLayout,
 		"",
 		"resource",
@@ -120,17 +120,6 @@ func resourceTypesGoCode(terraformTypes []string) (string, error) {
 }
 
 var resourceTypesTmpl = template.Must(template.New("resourceTypes").Parse(`
-// IsResourceType returns true if the given string s is a Terraform AWS resource type.
-func IsResourceType(s string) bool {
-    for _, t := range Types {
-        if t == s {
-            return true
-        }
-    }
-
-    return false
-}
-
 // Types is a list of all resource types implemented by the Terraform AWS Provider.
 var Types = []string{
 {{range .}}"{{.}}",

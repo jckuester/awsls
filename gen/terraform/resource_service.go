@@ -102,7 +102,7 @@ func writeResourceServices(outputPath string, resourceServices map[string]string
 	}
 
 	err = util.WriteGoFile(
-		filepath.Join(outputPath, "resource_services.go"),
+		filepath.Join(outputPath, "services.go"),
 		util.CodeLayout,
 		"",
 		"resource",

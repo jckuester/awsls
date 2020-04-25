@@ -190,7 +190,7 @@ func writeResourceIDs(outputPath string, resourceIDs map[string]string) error {
 	}
 
 	err = util.WriteGoFile(
-		filepath.Join(outputPath, "resource_ids.go"),
+		filepath.Join(outputPath, "ids.go"),
 		util.CodeLayout,
 		"",
 		"resource",
