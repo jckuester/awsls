@@ -25,9 +25,10 @@ func ListApiGatewayUsagePlan(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_api_gateway_usage_plan",
-				ID:   *r.Id,
-				Tags: tags,
+				Type:   "aws_api_gateway_usage_plan",
+				ID:     *r.Id,
+				Region: client.apigatewayconn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

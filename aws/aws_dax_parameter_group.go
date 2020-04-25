@@ -22,8 +22,9 @@ func ListDaxParameterGroup(client *Client) ([]Resource, error) {
 		for _, r := range resp.ParameterGroups {
 
 			result = append(result, Resource{
-				Type: "aws_dax_parameter_group",
-				ID:   *r.ParameterGroupName,
+				Type:   "aws_dax_parameter_group",
+				ID:     *r.ParameterGroupName,
+				Region: client.daxconn.Config.Region,
 			})
 		}
 	}

@@ -22,8 +22,9 @@ func ListCloudformationStackSet(client *Client) ([]Resource, error) {
 		for _, r := range resp.Summaries {
 
 			result = append(result, Resource{
-				Type: "aws_cloudformation_stack_set",
-				ID:   *r.StackSetName,
+				Type:   "aws_cloudformation_stack_set",
+				ID:     *r.StackSetName,
+				Region: client.cloudformationconn.Config.Region,
 			})
 		}
 	}

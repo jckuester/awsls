@@ -27,9 +27,10 @@ func ListDefaultVpc(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_default_vpc",
-				ID:   *r.VpcId,
-				Tags: tags,
+				Type:   "aws_default_vpc",
+				ID:     *r.VpcId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

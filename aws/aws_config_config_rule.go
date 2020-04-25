@@ -22,8 +22,9 @@ func ListConfigConfigRule(client *Client) ([]Resource, error) {
 		for _, r := range resp.ConfigRules {
 
 			result = append(result, Resource{
-				Type: "aws_config_config_rule",
-				ID:   *r.ConfigRuleName,
+				Type:   "aws_config_config_rule",
+				ID:     *r.ConfigRuleName,
+				Region: client.configserviceconn.Config.Region,
 			})
 		}
 	}

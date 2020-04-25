@@ -21,8 +21,9 @@ func ListIamGroup(client *Client) ([]Resource, error) {
 
 			t := *r.CreateDate
 			result = append(result, Resource{
-				Type: "aws_iam_group",
-				ID:   *r.GroupName,
+				Type:   "aws_iam_group",
+				ID:     *r.GroupName,
+				Region: client.iamconn.Config.Region,
 
 				CreatedAt: &t,
 			})

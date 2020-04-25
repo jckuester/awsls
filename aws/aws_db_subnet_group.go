@@ -20,8 +20,9 @@ func ListDbSubnetGroup(client *Client) ([]Resource, error) {
 		for _, r := range page.DBSubnetGroups {
 
 			result = append(result, Resource{
-				Type: "aws_db_subnet_group",
-				ID:   *r.DBSubnetGroupName,
+				Type:   "aws_db_subnet_group",
+				ID:     *r.DBSubnetGroupName,
+				Region: client.rdsconn.Config.Region,
 			})
 		}
 	}

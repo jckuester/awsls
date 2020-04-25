@@ -27,9 +27,10 @@ func ListEip(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_eip",
-				ID:   *r.AllocationId,
-				Tags: tags,
+				Type:   "aws_eip",
+				ID:     *r.AllocationId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

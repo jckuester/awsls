@@ -27,9 +27,10 @@ func ListSubnet(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_subnet",
-				ID:   *r.SubnetId,
-				Tags: tags,
+				Type:   "aws_subnet",
+				ID:     *r.SubnetId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

@@ -22,8 +22,9 @@ func ListWafRateBasedRule(client *Client) ([]Resource, error) {
 		for _, r := range resp.Rules {
 
 			result = append(result, Resource{
-				Type: "aws_waf_rate_based_rule",
-				ID:   *r.RuleId,
+				Type:   "aws_waf_rate_based_rule",
+				ID:     *r.RuleId,
+				Region: client.wafconn.Config.Region,
 			})
 		}
 	}

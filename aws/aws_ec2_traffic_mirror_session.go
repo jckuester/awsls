@@ -27,9 +27,10 @@ func ListEc2TrafficMirrorSession(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_ec2_traffic_mirror_session",
-				ID:   *r.TrafficMirrorSessionId,
-				Tags: tags,
+				Type:   "aws_ec2_traffic_mirror_session",
+				ID:     *r.TrafficMirrorSessionId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

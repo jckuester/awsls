@@ -57,12 +57,14 @@ func mainExitCode() int {
 		err := os.Setenv("AWS_PROFILE", profile)
 		if err != nil {
 			log.WithError(err).Error("failed to set AWS profile")
+			return 1
 		}
 	}
 	if region != "" {
 		err := os.Setenv("AWS_DEFAULT_REGION", region)
 		if err != nil {
 			log.WithError(err).Error("failed to set AWS region")
+			return 1
 		}
 	}
 
@@ -75,6 +77,8 @@ func mainExitCode() int {
 
 	client, err := aws.NewClient()
 	if err != nil {
+		fmt.Fprint(os.Stderr, color.RedString("Error: %s\n", err))
+
 		return 1
 	}
 
@@ -97,7 +101,7 @@ func printResources(resources []aws.Resource) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.TabIndent)
 
 	for _, r := range resources {
-		fmt.Fprintf(w, "%s\t%s\t", r.Type, r.ID)
+		fmt.Fprintf(w, "%s\t%s\t%s\t", r.Type, r.ID, r.Region)
 
 		if r.CreatedAt != nil {
 			fmt.Fprintf(w, "%s\t", r.CreatedAt.Format("2006-01-02 15:04:05"))

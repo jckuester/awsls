@@ -27,9 +27,10 @@ func ListVpnGateway(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_vpn_gateway",
-				ID:   *r.VpnGatewayId,
-				Tags: tags,
+				Type:   "aws_vpn_gateway",
+				ID:     *r.VpnGatewayId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

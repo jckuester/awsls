@@ -22,8 +22,9 @@ func ListMqBroker(client *Client) ([]Resource, error) {
 		for _, r := range resp.BrokerSummaries {
 
 			result = append(result, Resource{
-				Type: "aws_mq_broker",
-				ID:   *r.BrokerId,
+				Type:   "aws_mq_broker",
+				ID:     *r.BrokerId,
+				Region: client.mqconn.Config.Region,
 			})
 		}
 	}

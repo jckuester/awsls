@@ -21,8 +21,9 @@ func ListMskConfiguration(client *Client) ([]Resource, error) {
 
 			t := *r.CreationTime
 			result = append(result, Resource{
-				Type: "aws_msk_configuration",
-				ID:   *r.Arn,
+				Type:   "aws_msk_configuration",
+				ID:     *r.Arn,
+				Region: client.kafkaconn.Config.Region,
 
 				CreatedAt: &t,
 			})

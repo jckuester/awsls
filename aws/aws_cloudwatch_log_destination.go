@@ -22,8 +22,9 @@ func ListCloudwatchLogDestination(client *Client) ([]Resource, error) {
 
 			t := time.Unix(0, *r.CreationTime*1000000).UTC()
 			result = append(result, Resource{
-				Type: "aws_cloudwatch_log_destination",
-				ID:   *r.DestinationName,
+				Type:   "aws_cloudwatch_log_destination",
+				ID:     *r.DestinationName,
+				Region: client.cloudwatchlogsconn.Config.Region,
 
 				CreatedAt: &t,
 			})

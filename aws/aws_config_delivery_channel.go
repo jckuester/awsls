@@ -22,8 +22,9 @@ func ListConfigDeliveryChannel(client *Client) ([]Resource, error) {
 		for _, r := range resp.DeliveryChannels {
 
 			result = append(result, Resource{
-				Type: "aws_config_delivery_channel",
-				ID:   *r.Name,
+				Type:   "aws_config_delivery_channel",
+				ID:     *r.Name,
+				Region: client.configserviceconn.Config.Region,
 			})
 		}
 	}

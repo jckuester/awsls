@@ -29,6 +29,7 @@ func ListEc2TransitGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_transit_gateway",
 				ID:        *r.TransitGatewayId,
+				Region:    client.ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

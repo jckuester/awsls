@@ -22,8 +22,9 @@ func ListWafregionalSizeConstraintSet(client *Client) ([]Resource, error) {
 		for _, r := range resp.SizeConstraintSets {
 
 			result = append(result, Resource{
-				Type: "aws_wafregional_size_constraint_set",
-				ID:   *r.SizeConstraintSetId,
+				Type:   "aws_wafregional_size_constraint_set",
+				ID:     *r.SizeConstraintSetId,
+				Region: client.wafregionalconn.Config.Region,
 			})
 		}
 	}

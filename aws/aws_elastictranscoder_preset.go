@@ -20,8 +20,9 @@ func ListElastictranscoderPreset(client *Client) ([]Resource, error) {
 		for _, r := range page.Presets {
 
 			result = append(result, Resource{
-				Type: "aws_elastictranscoder_preset",
-				ID:   *r.Id,
+				Type:   "aws_elastictranscoder_preset",
+				ID:     *r.Id,
+				Region: client.elastictranscoderconn.Config.Region,
 			})
 		}
 	}

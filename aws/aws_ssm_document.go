@@ -25,9 +25,10 @@ func ListSsmDocument(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_ssm_document",
-				ID:   *r.Name,
-				Tags: tags,
+				Type:   "aws_ssm_document",
+				ID:     *r.Name,
+				Region: client.ssmconn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

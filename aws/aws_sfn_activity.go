@@ -21,8 +21,9 @@ func ListSfnActivity(client *Client) ([]Resource, error) {
 
 			t := *r.CreationDate
 			result = append(result, Resource{
-				Type: "aws_sfn_activity",
-				ID:   *r.ActivityArn,
+				Type:   "aws_sfn_activity",
+				ID:     *r.ActivityArn,
+				Region: client.sfnconn.Config.Region,
 
 				CreatedAt: &t,
 			})

@@ -27,9 +27,10 @@ func ListNetworkAcl(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_network_acl",
-				ID:   *r.NetworkAclId,
-				Tags: tags,
+				Type:   "aws_network_acl",
+				ID:     *r.NetworkAclId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

@@ -25,9 +25,10 @@ func ListEc2TrafficMirrorFilter(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_ec2_traffic_mirror_filter",
-				ID:   *r.TrafficMirrorFilterId,
-				Tags: tags,
+				Type:   "aws_ec2_traffic_mirror_filter",
+				ID:     *r.TrafficMirrorFilterId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

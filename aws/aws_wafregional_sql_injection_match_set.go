@@ -22,8 +22,9 @@ func ListWafregionalSqlInjectionMatchSet(client *Client) ([]Resource, error) {
 		for _, r := range resp.SqlInjectionMatchSets {
 
 			result = append(result, Resource{
-				Type: "aws_wafregional_sql_injection_match_set",
-				ID:   *r.SqlInjectionMatchSetId,
+				Type:   "aws_wafregional_sql_injection_match_set",
+				ID:     *r.SqlInjectionMatchSetId,
+				Region: client.wafregionalconn.Config.Region,
 			})
 		}
 	}

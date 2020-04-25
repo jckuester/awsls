@@ -29,6 +29,7 @@ func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_capacity_reservation",
 				ID:        *r.CapacityReservationId,
+				Region:    client.ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

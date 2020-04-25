@@ -27,9 +27,10 @@ func ListRouteTable(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_route_table",
-				ID:   *r.RouteTableId,
-				Tags: tags,
+				Type:   "aws_route_table",
+				ID:     *r.RouteTableId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

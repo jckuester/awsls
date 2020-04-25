@@ -27,9 +27,10 @@ func ListDxTransitVirtualInterface(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_dx_transit_virtual_interface",
-				ID:   *r.VirtualInterfaceId,
-				Tags: tags,
+				Type:   "aws_dx_transit_virtual_interface",
+				ID:     *r.VirtualInterfaceId,
+				Region: client.directconnectconn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

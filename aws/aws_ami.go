@@ -35,6 +35,7 @@ func ListAmi(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ami",
 				ID:        *r.ImageId,
+				Region:    client.ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

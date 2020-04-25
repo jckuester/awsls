@@ -22,8 +22,9 @@ func ListWafIpset(client *Client) ([]Resource, error) {
 		for _, r := range resp.IPSets {
 
 			result = append(result, Resource{
-				Type: "aws_waf_ipset",
-				ID:   *r.IPSetId,
+				Type:   "aws_waf_ipset",
+				ID:     *r.IPSetId,
+				Region: client.wafconn.Config.Region,
 			})
 		}
 	}

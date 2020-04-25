@@ -20,8 +20,9 @@ func ListGlueJob(client *Client) ([]Resource, error) {
 		for _, r := range page.Jobs {
 
 			result = append(result, Resource{
-				Type: "aws_glue_job",
-				ID:   *r.Name,
+				Type:   "aws_glue_job",
+				ID:     *r.Name,
+				Region: client.glueconn.Config.Region,
 			})
 		}
 	}

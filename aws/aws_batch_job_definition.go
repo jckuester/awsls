@@ -20,8 +20,9 @@ func ListBatchJobDefinition(client *Client) ([]Resource, error) {
 		for _, r := range page.JobDefinitions {
 
 			result = append(result, Resource{
-				Type: "aws_batch_job_definition",
-				ID:   *r.JobDefinitionArn,
+				Type:   "aws_batch_job_definition",
+				ID:     *r.JobDefinitionArn,
+				Region: client.batchconn.Config.Region,
 			})
 		}
 	}

@@ -22,8 +22,9 @@ func ListCloudwatchEventRule(client *Client) ([]Resource, error) {
 		for _, r := range resp.Rules {
 
 			result = append(result, Resource{
-				Type: "aws_cloudwatch_event_rule",
-				ID:   *r.Name,
+				Type:   "aws_cloudwatch_event_rule",
+				ID:     *r.Name,
+				Region: client.cloudwatcheventsconn.Config.Region,
 			})
 		}
 	}

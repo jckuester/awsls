@@ -27,9 +27,10 @@ func ListSecurityGroup(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_security_group",
-				ID:   *r.GroupId,
-				Tags: tags,
+				Type:   "aws_security_group",
+				ID:     *r.GroupId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

@@ -27,9 +27,10 @@ func ListCustomerGateway(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_customer_gateway",
-				ID:   *r.CustomerGatewayId,
-				Tags: tags,
+				Type:   "aws_customer_gateway",
+				ID:     *r.CustomerGatewayId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

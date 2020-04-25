@@ -20,8 +20,9 @@ func ListDmsEndpoint(client *Client) ([]Resource, error) {
 		for _, r := range page.Endpoints {
 
 			result = append(result, Resource{
-				Type: "aws_dms_endpoint",
-				ID:   *r.EndpointIdentifier,
+				Type:   "aws_dms_endpoint",
+				ID:     *r.EndpointIdentifier,
+				Region: client.databasemigrationserviceconn.Config.Region,
 			})
 		}
 	}

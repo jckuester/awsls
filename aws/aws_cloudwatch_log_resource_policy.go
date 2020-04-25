@@ -22,8 +22,9 @@ func ListCloudwatchLogResourcePolicy(client *Client) ([]Resource, error) {
 		for _, r := range resp.ResourcePolicies {
 
 			result = append(result, Resource{
-				Type: "aws_cloudwatch_log_resource_policy",
-				ID:   *r.PolicyName,
+				Type:   "aws_cloudwatch_log_resource_policy",
+				ID:     *r.PolicyName,
+				Region: client.cloudwatchlogsconn.Config.Region,
 			})
 		}
 	}

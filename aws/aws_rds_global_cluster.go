@@ -20,8 +20,9 @@ func ListRdsGlobalCluster(client *Client) ([]Resource, error) {
 		for _, r := range page.GlobalClusters {
 
 			result = append(result, Resource{
-				Type: "aws_rds_global_cluster",
-				ID:   *r.GlobalClusterIdentifier,
+				Type:   "aws_rds_global_cluster",
+				ID:     *r.GlobalClusterIdentifier,
+				Region: client.rdsconn.Config.Region,
 			})
 		}
 	}

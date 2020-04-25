@@ -21,8 +21,9 @@ func ListDbInstance(client *Client) ([]Resource, error) {
 
 			t := *r.InstanceCreateTime
 			result = append(result, Resource{
-				Type: "aws_db_instance",
-				ID:   *r.DBInstanceIdentifier,
+				Type:   "aws_db_instance",
+				ID:     *r.DBInstanceIdentifier,
+				Region: client.rdsconn.Config.Region,
 
 				CreatedAt: &t,
 			})

@@ -27,9 +27,10 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_internet_gateway",
-				ID:   *r.InternetGatewayId,
-				Tags: tags,
+				Type:   "aws_internet_gateway",
+				ID:     *r.InternetGatewayId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

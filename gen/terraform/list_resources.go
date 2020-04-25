@@ -47,6 +47,7 @@ var listByTypeTmpl = template.Must(template.New("listByType").Parse(`import(
 type Resource struct {
 	Type string
 	ID string
+	Region string
 	Tags map[string]string
 	CreatedAt *time.Time
 }

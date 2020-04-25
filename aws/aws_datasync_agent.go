@@ -20,8 +20,9 @@ func ListDatasyncAgent(client *Client) ([]Resource, error) {
 		for _, r := range page.Agents {
 
 			result = append(result, Resource{
-				Type: "aws_datasync_agent",
-				ID:   *r.AgentArn,
+				Type:   "aws_datasync_agent",
+				ID:     *r.AgentArn,
+				Region: client.datasyncconn.Config.Region,
 			})
 		}
 	}

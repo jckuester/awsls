@@ -22,8 +22,9 @@ func ListWafregionalRegexMatchSet(client *Client) ([]Resource, error) {
 		for _, r := range resp.RegexMatchSets {
 
 			result = append(result, Resource{
-				Type: "aws_wafregional_regex_match_set",
-				ID:   *r.RegexMatchSetId,
+				Type:   "aws_wafregional_regex_match_set",
+				ID:     *r.RegexMatchSetId,
+				Region: client.wafregionalconn.Config.Region,
 			})
 		}
 	}

@@ -27,6 +27,7 @@ func ListIamUser(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_iam_user",
 				ID:        *r.UserName,
+				Region:    client.iamconn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

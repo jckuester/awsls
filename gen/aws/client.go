@@ -48,6 +48,7 @@ func clientGoCode(services []string) string {
 
 var clientTmpl = template.Must(template.New("client").Parse(`import (
 "context"
+"fmt"
 "github.com/aws/aws-sdk-go-v2/aws/external"
 "github.com/aws/aws-sdk-go-v2/service/sts"
 {{range .}}"github.com/aws/aws-sdk-go-v2/service/{{.}}"
@@ -60,7 +61,7 @@ accountid string
 func  NewClient() (*Client, error) {
 cfg, err := external.LoadDefaultAWSConfig()
 if err != nil {
-	panic("failed to load config, " + err.Error())
+	return nil, fmt.Errorf("failed to load config: %s", err)
 }
 
 client := &Client{

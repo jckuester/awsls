@@ -20,8 +20,9 @@ func ListLbTargetGroup(client *Client) ([]Resource, error) {
 		for _, r := range page.TargetGroups {
 
 			result = append(result, Resource{
-				Type: "aws_lb_target_group",
-				ID:   *r.TargetGroupArn,
+				Type:   "aws_lb_target_group",
+				ID:     *r.TargetGroupArn,
+				Region: client.elasticloadbalancingv2conn.Config.Region,
 			})
 		}
 	}

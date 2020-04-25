@@ -21,8 +21,9 @@ func ListIamAccessKey(client *Client) ([]Resource, error) {
 
 			t := *r.CreateDate
 			result = append(result, Resource{
-				Type: "aws_iam_access_key",
-				ID:   *r.AccessKeyId,
+				Type:   "aws_iam_access_key",
+				ID:     *r.AccessKeyId,
+				Region: client.iamconn.Config.Region,
 
 				CreatedAt: &t,
 			})

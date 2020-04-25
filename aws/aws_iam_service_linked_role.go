@@ -27,6 +27,7 @@ func ListIamServiceLinkedRole(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_iam_service_linked_role",
 				ID:        *r.Arn,
+				Region:    client.iamconn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -27,9 +27,10 @@ func ListApigatewayv2Api(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_apigatewayv2_api",
-				ID:   *r.ApiId,
-				Tags: tags,
+				Type:   "aws_apigatewayv2_api",
+				ID:     *r.ApiId,
+				Region: client.apigatewayv2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

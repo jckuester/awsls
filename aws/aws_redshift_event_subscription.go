@@ -25,9 +25,10 @@ func ListRedshiftEventSubscription(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_redshift_event_subscription",
-				ID:   *r.CustSubscriptionId,
-				Tags: tags,
+				Type:   "aws_redshift_event_subscription",
+				ID:     *r.CustSubscriptionId,
+				Region: client.redshiftconn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

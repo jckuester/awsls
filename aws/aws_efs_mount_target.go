@@ -25,8 +25,9 @@ func ListEfsMountTarget(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_efs_mount_target",
-				ID:   *r.MountTargetId,
+				Type:   "aws_efs_mount_target",
+				ID:     *r.MountTargetId,
+				Region: client.efsconn.Config.Region,
 			})
 		}
 	}

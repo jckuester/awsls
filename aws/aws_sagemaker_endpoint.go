@@ -21,8 +21,9 @@ func ListSagemakerEndpoint(client *Client) ([]Resource, error) {
 
 			t := *r.CreationTime
 			result = append(result, Resource{
-				Type: "aws_sagemaker_endpoint",
-				ID:   *r.EndpointName,
+				Type:   "aws_sagemaker_endpoint",
+				ID:     *r.EndpointName,
+				Region: client.sagemakerconn.Config.Region,
 
 				CreatedAt: &t,
 			})

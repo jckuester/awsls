@@ -27,9 +27,10 @@ func ListKeyPair(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_key_pair",
-				ID:   *r.KeyName,
-				Tags: tags,
+				Type:   "aws_key_pair",
+				ID:     *r.KeyName,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

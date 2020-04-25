@@ -20,8 +20,9 @@ func ListSnsPlatformApplication(client *Client) ([]Resource, error) {
 		for _, r := range page.PlatformApplications {
 
 			result = append(result, Resource{
-				Type: "aws_sns_platform_application",
-				ID:   *r.PlatformApplicationArn,
+				Type:   "aws_sns_platform_application",
+				ID:     *r.PlatformApplicationArn,
+				Region: client.snsconn.Config.Region,
 			})
 		}
 	}

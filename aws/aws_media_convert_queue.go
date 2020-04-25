@@ -20,8 +20,9 @@ func ListMediaConvertQueue(client *Client) ([]Resource, error) {
 		for _, r := range page.Queues {
 
 			result = append(result, Resource{
-				Type: "aws_media_convert_queue",
-				ID:   *r.Name,
+				Type:   "aws_media_convert_queue",
+				ID:     *r.Name,
+				Region: client.mediaconvertconn.Config.Region,
 			})
 		}
 	}

@@ -22,8 +22,9 @@ func ListCodebuildSourceCredential(client *Client) ([]Resource, error) {
 		for _, r := range resp.SourceCredentialsInfos {
 
 			result = append(result, Resource{
-				Type: "aws_codebuild_source_credential",
-				ID:   *r.Arn,
+				Type:   "aws_codebuild_source_credential",
+				ID:     *r.Arn,
+				Region: client.codebuildconn.Config.Region,
 			})
 		}
 	}

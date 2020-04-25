@@ -20,8 +20,9 @@ func ListAlbListener(client *Client) ([]Resource, error) {
 		for _, r := range page.Listeners {
 
 			result = append(result, Resource{
-				Type: "aws_alb_listener",
-				ID:   *r.ListenerArn,
+				Type:   "aws_alb_listener",
+				ID:     *r.ListenerArn,
+				Region: client.elasticloadbalancingv2conn.Config.Region,
 			})
 		}
 	}

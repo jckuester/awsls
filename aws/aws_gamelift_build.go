@@ -23,8 +23,9 @@ func ListGameliftBuild(client *Client) ([]Resource, error) {
 
 			t := *r.CreationTime
 			result = append(result, Resource{
-				Type: "aws_gamelift_build",
-				ID:   *r.BuildId,
+				Type:   "aws_gamelift_build",
+				ID:     *r.BuildId,
+				Region: client.gameliftconn.Config.Region,
 
 				CreatedAt: &t,
 			})

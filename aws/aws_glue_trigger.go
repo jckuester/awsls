@@ -20,8 +20,9 @@ func ListGlueTrigger(client *Client) ([]Resource, error) {
 		for _, r := range page.Triggers {
 
 			result = append(result, Resource{
-				Type: "aws_glue_trigger",
-				ID:   *r.Name,
+				Type:   "aws_glue_trigger",
+				ID:     *r.Name,
+				Region: client.glueconn.Config.Region,
 			})
 		}
 	}

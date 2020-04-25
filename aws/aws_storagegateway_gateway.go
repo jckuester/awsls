@@ -20,8 +20,9 @@ func ListStoragegatewayGateway(client *Client) ([]Resource, error) {
 		for _, r := range page.Gateways {
 
 			result = append(result, Resource{
-				Type: "aws_storagegateway_gateway",
-				ID:   *r.GatewayARN,
+				Type:   "aws_storagegateway_gateway",
+				ID:     *r.GatewayARN,
+				Region: client.storagegatewayconn.Config.Region,
 			})
 		}
 	}

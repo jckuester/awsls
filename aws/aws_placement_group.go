@@ -27,9 +27,10 @@ func ListPlacementGroup(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_placement_group",
-				ID:   *r.GroupName,
-				Tags: tags,
+				Type:   "aws_placement_group",
+				ID:     *r.GroupName,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

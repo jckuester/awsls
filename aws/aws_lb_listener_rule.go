@@ -22,8 +22,9 @@ func ListLbListenerRule(client *Client) ([]Resource, error) {
 		for _, r := range resp.Rules {
 
 			result = append(result, Resource{
-				Type: "aws_lb_listener_rule",
-				ID:   *r.RuleArn,
+				Type:   "aws_lb_listener_rule",
+				ID:     *r.RuleArn,
+				Region: client.elasticloadbalancingv2conn.Config.Region,
 			})
 		}
 	}

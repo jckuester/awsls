@@ -22,8 +22,9 @@ func ListDynamodbGlobalTable(client *Client) ([]Resource, error) {
 		for _, r := range resp.GlobalTables {
 
 			result = append(result, Resource{
-				Type: "aws_dynamodb_global_table",
-				ID:   *r.GlobalTableName,
+				Type:   "aws_dynamodb_global_table",
+				ID:     *r.GlobalTableName,
+				Region: client.dynamodbconn.Config.Region,
 			})
 		}
 	}

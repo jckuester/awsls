@@ -20,8 +20,9 @@ func ListElasticacheReplicationGroup(client *Client) ([]Resource, error) {
 		for _, r := range page.ReplicationGroups {
 
 			result = append(result, Resource{
-				Type: "aws_elasticache_replication_group",
-				ID:   *r.ReplicationGroupId,
+				Type:   "aws_elasticache_replication_group",
+				ID:     *r.ReplicationGroupId,
+				Region: client.elasticacheconn.Config.Region,
 			})
 		}
 	}

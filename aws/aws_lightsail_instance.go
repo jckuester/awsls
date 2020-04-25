@@ -27,9 +27,10 @@ func ListLightsailInstance(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_lightsail_instance",
-				ID:   *r.Name,
-				Tags: tags,
+				Type:   "aws_lightsail_instance",
+				ID:     *r.Name,
+				Region: client.lightsailconn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

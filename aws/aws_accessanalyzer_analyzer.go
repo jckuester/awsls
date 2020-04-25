@@ -25,9 +25,10 @@ func ListAccessanalyzerAnalyzer(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_accessanalyzer_analyzer",
-				ID:   *r.Name,
-				Tags: tags,
+				Type:   "aws_accessanalyzer_analyzer",
+				ID:     *r.Name,
+				Region: client.accessanalyzerconn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

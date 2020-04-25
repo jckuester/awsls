@@ -27,6 +27,7 @@ func ListNatGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_nat_gateway",
 				ID:        *r.NatGatewayId,
+				Region:    client.ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

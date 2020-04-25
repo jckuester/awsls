@@ -20,8 +20,9 @@ func ListGlueSecurityConfiguration(client *Client) ([]Resource, error) {
 		for _, r := range page.SecurityConfigurations {
 
 			result = append(result, Resource{
-				Type: "aws_glue_security_configuration",
-				ID:   *r.Name,
+				Type:   "aws_glue_security_configuration",
+				ID:     *r.Name,
+				Region: client.glueconn.Config.Region,
 			})
 		}
 	}

@@ -20,8 +20,9 @@ func ListAcmCertificate(client *Client) ([]Resource, error) {
 		for _, r := range page.CertificateSummaryList {
 
 			result = append(result, Resource{
-				Type: "aws_acm_certificate",
-				ID:   *r.CertificateArn,
+				Type:   "aws_acm_certificate",
+				ID:     *r.CertificateArn,
+				Region: client.acmconn.Config.Region,
 			})
 		}
 	}

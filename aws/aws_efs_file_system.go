@@ -29,6 +29,7 @@ func ListEfsFileSystem(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_efs_file_system",
 				ID:        *r.FileSystemId,
+				Region:    client.efsconn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

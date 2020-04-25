@@ -22,8 +22,9 @@ func ListOpsworksInstance(client *Client) ([]Resource, error) {
 		for _, r := range resp.Instances {
 
 			result = append(result, Resource{
-				Type: "aws_opsworks_instance",
-				ID:   *r.InstanceId,
+				Type:   "aws_opsworks_instance",
+				ID:     *r.InstanceId,
+				Region: client.opsworksconn.Config.Region,
 			})
 		}
 	}

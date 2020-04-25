@@ -25,9 +25,10 @@ func ListRedshiftCluster(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_redshift_cluster",
-				ID:   *r.ClusterIdentifier,
-				Tags: tags,
+				Type:   "aws_redshift_cluster",
+				ID:     *r.ClusterIdentifier,
+				Region: client.redshiftconn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

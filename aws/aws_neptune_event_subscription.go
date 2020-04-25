@@ -20,8 +20,9 @@ func ListNeptuneEventSubscription(client *Client) ([]Resource, error) {
 		for _, r := range page.EventSubscriptionsList {
 
 			result = append(result, Resource{
-				Type: "aws_neptune_event_subscription",
-				ID:   *r.CustSubscriptionId,
+				Type:   "aws_neptune_event_subscription",
+				ID:     *r.CustSubscriptionId,
+				Region: client.neptuneconn.Config.Region,
 			})
 		}
 	}

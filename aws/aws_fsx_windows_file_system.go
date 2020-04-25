@@ -29,6 +29,7 @@ func ListFsxWindowsFileSystem(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_fsx_windows_file_system",
 				ID:        *r.FileSystemId,
+				Region:    client.fsxconn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

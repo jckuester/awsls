@@ -21,8 +21,9 @@ func ListWorklinkFleet(client *Client) ([]Resource, error) {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{
-				Type: "aws_worklink_fleet",
-				ID:   *r.FleetArn,
+				Type:   "aws_worklink_fleet",
+				ID:     *r.FleetArn,
+				Region: client.worklinkconn.Config.Region,
 
 				CreatedAt: &t,
 			})

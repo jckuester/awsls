@@ -20,8 +20,9 @@ func ListTransferServer(client *Client) ([]Resource, error) {
 		for _, r := range page.Servers {
 
 			result = append(result, Resource{
-				Type: "aws_transfer_server",
-				ID:   *r.ServerId,
+				Type:   "aws_transfer_server",
+				ID:     *r.ServerId,
+				Region: client.transferconn.Config.Region,
 			})
 		}
 	}

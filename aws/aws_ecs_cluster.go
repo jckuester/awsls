@@ -27,9 +27,10 @@ func ListEcsCluster(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_ecs_cluster",
-				ID:   *r.ClusterArn,
-				Tags: tags,
+				Type:   "aws_ecs_cluster",
+				ID:     *r.ClusterArn,
+				Region: client.ecsconn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

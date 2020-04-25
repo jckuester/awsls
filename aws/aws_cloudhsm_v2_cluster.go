@@ -20,8 +20,9 @@ func ListCloudhsmV2Cluster(client *Client) ([]Resource, error) {
 		for _, r := range page.Clusters {
 
 			result = append(result, Resource{
-				Type: "aws_cloudhsm_v2_cluster",
-				ID:   *r.ClusterId,
+				Type:   "aws_cloudhsm_v2_cluster",
+				ID:     *r.ClusterId,
+				Region: client.cloudhsmv2conn.Config.Region,
 			})
 		}
 	}

@@ -27,9 +27,10 @@ func ListVpcEndpointService(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type: "aws_vpc_endpoint_service",
-				ID:   *r.ServiceId,
-				Tags: tags,
+				Type:   "aws_vpc_endpoint_service",
+				ID:     *r.ServiceId,
+				Region: client.ec2conn.Config.Region,
+				Tags:   tags,
 			})
 		}
 	}

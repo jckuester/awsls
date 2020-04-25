@@ -22,8 +22,9 @@ func ListLicensemanagerLicenseConfiguration(client *Client) ([]Resource, error) 
 		for _, r := range resp.LicenseConfigurations {
 
 			result = append(result, Resource{
-				Type: "aws_licensemanager_license_configuration",
-				ID:   *r.LicenseConfigurationArn,
+				Type:   "aws_licensemanager_license_configuration",
+				ID:     *r.LicenseConfigurationArn,
+				Region: client.licensemanagerconn.Config.Region,
 			})
 		}
 	}

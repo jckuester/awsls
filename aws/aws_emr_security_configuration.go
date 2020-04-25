@@ -20,8 +20,9 @@ func ListEmrSecurityConfiguration(client *Client) ([]Resource, error) {
 		for _, r := range page.SecurityConfigurations {
 
 			result = append(result, Resource{
-				Type: "aws_emr_security_configuration",
-				ID:   *r.Name,
+				Type:   "aws_emr_security_configuration",
+				ID:     *r.Name,
+				Region: client.emrconn.Config.Region,
 			})
 		}
 	}

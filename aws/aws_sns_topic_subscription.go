@@ -20,8 +20,9 @@ func ListSnsTopicSubscription(client *Client) ([]Resource, error) {
 		for _, r := range page.Subscriptions {
 
 			result = append(result, Resource{
-				Type: "aws_sns_topic_subscription",
-				ID:   *r.SubscriptionArn,
+				Type:   "aws_sns_topic_subscription",
+				ID:     *r.SubscriptionArn,
+				Region: client.snsconn.Config.Region,
 			})
 		}
 	}

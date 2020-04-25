@@ -22,8 +22,9 @@ func ListElasticBeanstalkApplication(client *Client) ([]Resource, error) {
 		for _, r := range resp.Applications {
 
 			result = append(result, Resource{
-				Type: "aws_elastic_beanstalk_application",
-				ID:   *r.ApplicationName,
+				Type:   "aws_elastic_beanstalk_application",
+				ID:     *r.ApplicationName,
+				Region: client.elasticbeanstalkconn.Config.Region,
 			})
 		}
 	}
