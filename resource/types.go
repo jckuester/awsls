@@ -292,7 +292,7 @@ var Types = []string{
 	"aws_kinesis_stream",
 	"aws_kinesis_analytics_application",
 	"aws_kinesis_video_stream",
-	"aws_kms_alias",
+	//"aws_kms_alias",
 	"aws_kms_external_key",
 	"aws_kms_grant",
 	"aws_kms_key",

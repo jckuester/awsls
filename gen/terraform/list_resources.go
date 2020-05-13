@@ -42,6 +42,8 @@ func listByTypeGoCode(listFunctionNames map[string]string) string {
 var listByTypeTmpl = template.Must(template.New("listByType").Parse(`import(
 "fmt"
 "time"
+
+terradozerRes "github.com/jckuester/terradozer/pkg/resource"
 )
 
 type Resource struct {
@@ -50,6 +52,7 @@ type Resource struct {
 	Region string
 	Tags map[string]string
 	CreatedAt *time.Time
+	*terradozerRes.Resource
 }
 
 func ListResourcesByType(client *Client, resourceType string) ([]Resource, error) {
