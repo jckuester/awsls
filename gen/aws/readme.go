@@ -88,7 +88,6 @@ Run, for example
 | {{ .Type }} | {{ if .Tags }} x {{ end }} | {{ if .CreationTime }} x {{ end }} | {{ if .Owner }} x {{ end }}
 {{ end }}
 	{{- end }}
-{{- end -}}
-| |
-{{ end }} 
+{{- end }}
+{{- end }}
 `))
