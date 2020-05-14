@@ -5,6 +5,7 @@ package aws
 import (
 	"fmt"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/apex/log"
@@ -164,6 +165,10 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 		}
 
 		if len(genResourceInfoPerService) > 0 {
+			sort.Slice(genResourceInfoPerService, func(i, j int) bool {
+				return genResourceInfoPerService[i].Type < genResourceInfoPerService[j].Type
+			})
+
 			genResourceInfo[service] = genResourceInfoPerService
 		}
 	}

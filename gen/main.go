@@ -76,7 +76,7 @@ func main() {
 
 	err = terraform.GenerateListResourcesByTypeFunction("../aws", listFunctionNames)
 	if err != nil {
-		log.WithError(err).Fatal("failed to generate list resource functions (all and by type)")
+		log.WithError(err).Fatal("failed to generate list resource function by type")
 	}
 
 	err = aws.WriteReadme("..", genResourceInfos)

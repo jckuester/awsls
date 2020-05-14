@@ -55,7 +55,7 @@ func readmeCode(resourceInfos map[string][]GeneratedResourceInfo) string {
 }
 
 var Readme = template.Must(template.New("readme").Parse(`
-{{ $infos :=.ResourceInfos }}
+{{ $infos := .ResourceInfos }}
 
 # awsls
 
@@ -75,14 +75,13 @@ Run, for example
 
     awsls aws_vpc
 
-## Supported resource types
+## Supported Resource Types
 
+| Service / Type | Tags | Creation Time | Owner
+| :------------- |:----:|:------------: | :---:
 {{ range .Services -}} 
 {{ $service := . -}}
-### {{ $service }} 
-
-| Resource Type  | Tags | Creation Time | Owner
-| :------------- |:----:|:------------: | :---:
+| **{{ $service }}** |
 {{ range $key, $value := $infos -}}
 	{{ if eq $key  $service -}}
 		{{ range $value -}}
@@ -90,5 +89,5 @@ Run, for example
 {{ end }}
 	{{- end }}
 {{- end }}
-{{ end }} 
+{{- end }}
 `))
