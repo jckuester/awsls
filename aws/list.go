@@ -24,10 +24,6 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListAccessanalyzerAnalyzer(client)
 	case "aws_acm_certificate":
 		return ListAcmCertificate(client)
-	case "aws_alb_listener":
-		return ListAlbListener(client)
-	case "aws_alb_listener_rule":
-		return ListAlbListenerRule(client)
 	case "aws_alb_target_group":
 		return ListAlbTargetGroup(client)
 	case "aws_ami":
@@ -116,10 +112,6 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListDbSecurityGroup(client)
 	case "aws_db_subnet_group":
 		return ListDbSubnetGroup(client)
-	case "aws_default_route_table":
-		return ListDefaultRouteTable(client)
-	case "aws_default_security_group":
-		return ListDefaultSecurityGroup(client)
 	case "aws_devicefarm_project":
 		return ListDevicefarmProject(client)
 	case "aws_dlm_lifecycle_policy":
@@ -178,8 +170,6 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListEcsCluster(client)
 	case "aws_efs_file_system":
 		return ListEfsFileSystem(client)
-	case "aws_efs_mount_target":
-		return ListEfsMountTarget(client)
 	case "aws_egress_only_internet_gateway":
 		return ListEgressOnlyInternetGateway(client)
 	case "aws_eip":
@@ -252,8 +242,6 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListKeyPair(client)
 	case "aws_kinesis_analytics_application":
 		return ListKinesisAnalyticsApplication(client)
-	case "aws_kms_alias":
-		return ListKmsAlias(client)
 	case "aws_kms_external_key":
 		return ListKmsExternalKey(client)
 	case "aws_kms_key":
@@ -266,10 +254,6 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListLaunchConfiguration(client)
 	case "aws_launch_template":
 		return ListLaunchTemplate(client)
-	case "aws_lb_listener":
-		return ListLbListener(client)
-	case "aws_lb_listener_rule":
-		return ListLbListenerRule(client)
 	case "aws_lb_target_group":
 		return ListLbTargetGroup(client)
 	case "aws_licensemanager_license_configuration":
@@ -304,8 +288,6 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListNetworkAcl(client)
 	case "aws_network_interface":
 		return ListNetworkInterface(client)
-	case "aws_opsworks_instance":
-		return ListOpsworksInstance(client)
 	case "aws_opsworks_stack":
 		return ListOpsworksStack(client)
 	case "aws_opsworks_user_profile":

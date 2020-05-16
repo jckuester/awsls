@@ -2,7 +2,7 @@
 
 **Note: This tool is still WIP**
 
-A list command for AWS resources. Supports listing of 210 resource types across
+A list command for AWS resources. Supports listing of 209 resource types across
 76 different services.
 
 
@@ -203,7 +203,6 @@ column shows which resource type supports tags, has a creation date, or can be f
 | **kinesisanalytics** |
 | aws_kinesis_analytics_application |  x  |  |
 | **kms** |
-| aws_kms_alias |  |  |
 | aws_kms_external_key |  x  |  |
 | aws_kms_key |  x  |  |
 | **lambda** |

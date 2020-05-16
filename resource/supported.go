@@ -115,7 +115,6 @@ var SupportedTypes = []string{
 	"aws_iot_topic_rule",
 	"aws_key_pair",
 	"aws_kinesis_analytics_application",
-	"aws_kms_alias",
 	"aws_kms_external_key",
 	"aws_kms_key",
 	"aws_lambda_event_source_mapping",
