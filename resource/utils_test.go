@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/jckuester/awsls/resource"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIsType(t *testing.T) {
@@ -14,12 +15,12 @@ func TestIsType(t *testing.T) {
 		want     bool
 	}{
 		{
-			name:     "valid resource type",
+			name:     "existing Terraform resource type",
 			givenArg: "aws_vpc",
 			want:     true,
 		},
 		{
-			name:     "non-existing resource type",
+			name:     "not existing Terraform resource type",
 			givenArg: "aws_foo",
 			want:     false,
 		},
@@ -27,45 +28,80 @@ func TestIsType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := resource.IsType(tt.givenArg); got != tt.want {
-				t.Errorf("IsResourceType() = %v, want %v", got, tt.want)
+				t.Errorf("IsType() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestMatchTypes(t *testing.T) {
+func TestIsSupportedType(t *testing.T) {
 	tests := []struct {
 		name     string
 		givenArg string
-		want     []string
+		want     bool
 	}{
 		{
-			name:     "no matches found",
-			givenArg: "aws_",
-			want:     []string{},
+			name:     "supported resource type",
+			givenArg: "aws_vpc",
+			want:     true,
 		},
 		{
-			name:     "with wildcard",
-			givenArg: "aws_iam_user*",
-			want: []string{
-				"aws_iam_user_group_membership",
-				"aws_iam_user_policy_attachment",
-				"aws_iam_user_policy",
-				"aws_iam_user_ssh_key",
-				"aws_iam_user",
-				"aws_iam_user_login_profile",
-			},
-		},
-		{
-			name:     "single resource, without wildcard",
-			givenArg: "aws_iam_user",
-			want:     []string{"aws_iam_user"},
+			name:     "not supported resource type",
+			givenArg: "aws_default_vpc",
+			want:     false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := resource.MatchTypes(tt.givenArg); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MatchTypes() = %v, want %v", got, tt.want)
+			if got := resource.IsSupportedType(tt.givenArg); got != tt.want {
+				t.Errorf("IsSupportedType() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatchSupportedTypes(t *testing.T) {
+	tests := []struct {
+		name    string
+		arg     string
+		want    []string
+		wantErr string
+	}{
+		{
+			name: "no match found",
+			arg:  "aws_",
+		},
+		{
+			name:    "invalid glob pattern",
+			arg:     "aws_[",
+			wantErr: "unexpected end of input",
+		},
+		{
+			name: "single resource matches, no wildcard",
+			arg:  "aws_iam_user",
+			want: []string{"aws_iam_user"},
+		},
+		{
+			name: "glob pattern with wildcard",
+			arg:  "aws_vpc*",
+			want: []string{
+				"aws_vpc",
+				"aws_vpc_endpoint",
+				"aws_vpc_endpoint_connection_notification",
+				"aws_vpc_endpoint_service",
+				"aws_vpc_peering_connection",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := resource.MatchSupportedTypes(tt.arg)
+			if tt.wantErr != "" {
+				assert.EqualError(t, err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MatchSupportedTypes() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

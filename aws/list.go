@@ -120,8 +120,6 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListDefaultRouteTable(client)
 	case "aws_default_security_group":
 		return ListDefaultSecurityGroup(client)
-	case "aws_default_vpc":
-		return ListDefaultVpc(client)
 	case "aws_devicefarm_project":
 		return ListDevicefarmProject(client)
 	case "aws_dlm_lifecycle_policy":

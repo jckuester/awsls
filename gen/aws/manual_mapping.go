@@ -27,6 +27,8 @@ var ExcludedResourceTypes = map[string]bool{
 	"aws_resourcegroups_group":          true,
 	"aws_datapipeline_pipeline":         true,
 	"aws_glue_classifier":               true,
+	// A normal VPC with "IsDefault" attribute set to true
+	"aws_default_vpc": true,
 }
 
 // manualMatchedListOps are list operations that could not be matched automatically

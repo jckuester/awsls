@@ -57,6 +57,19 @@ func mainExitCode() int {
 
 	fmt.Println()
 	defer fmt.Println()
+	resourceTypePattern := args[0]
+	matchedTypes, err := resource.MatchSupportedTypes(resourceTypePattern)
+	if err != nil {
+		fmt.Fprint(os.Stderr, color.RedString("Error: invalid glob pattern: %s\n", resourceTypePattern))
+
+		return 1
+	}
+
+	if len(matchedTypes) == 0 {
+		fmt.Fprint(os.Stderr, color.RedString("Error: no resource type found: %s\n", resourceTypePattern))
+
+		return 1
+	}
 
 	if profile != "" {
 		err := os.Setenv("AWS_PROFILE", profile)
@@ -104,9 +117,7 @@ func mainExitCode() int {
 		return 1
 	}
 
-	resourceTypePattern := args[0]
-
-	for _, rType := range resource.MatchTypes(resourceTypePattern) {
+	for _, rType := range matchedTypes {
 		resources, err := aws.ListResourcesByType(client, rType)
 		if err != nil {
 			fmt.Fprint(os.Stderr, color.RedString("Error: %s\n", err))

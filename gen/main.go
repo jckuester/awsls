@@ -79,6 +79,11 @@ func main() {
 		log.WithError(err).Fatal("failed to generate list resource function by type")
 	}
 
+	err = aws.GenerateSupportedResourceTypeList(outputPath, listFunctionNames)
+	if err != nil {
+		log.WithError(err).Fatal("failed to generate list supported resource types")
+	}
+
 	err = aws.WriteReadme("..", genResourceInfos)
 	if err != nil {
 		log.WithError(err).Fatal("failed to generate README")
