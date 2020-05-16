@@ -57,9 +57,9 @@ type Resource struct {
 
 func ListResourcesByType(client *Client, resourceType string) ([]Resource, error) {
 	switch resourceType {
-	{{range $key, $value := .}}case "{{ $key }}":
+	{{ range $key, $value := . }}case "{{ $key }}":
 	return List{{ $value }}(client)
-	{{end}}default:
+	{{ end }}default:
 		return nil, fmt.Errorf("resource type is not (yet) supported: %s", resourceType)
 	}
 }

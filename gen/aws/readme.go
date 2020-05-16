@@ -59,35 +59,40 @@ var Readme = template.Must(template.New("readme").Parse(`
 
 # awsls
 
-**Note: this tool is still WIP**
+**Note: This tool is still WIP**
 
-A list command for AWS. Supports listing of {{ .SupportedResourceTypeCount }} resource types across
+A list command for AWS resources. Supports listing of {{ .SupportedResourceTypeCount }} resource types across
 {{ len .Services }} different services.
 
-How can awsls cover so many resource types? The answer is that its code is generated; here is the 
+
+## How are so many resource types covered?
+
+The answer is that awsls is mainly code generated; here is the
 [code of the generator](./gen). Feel free to fork it and generate something else.
 
 ## Usage
 
-	awsls <resource_type>
+	awsls <resource_type glob pattern>
 
-Run, for example
+To list all VPCs, for example, run
 
     awsls aws_vpc
 
+or to list all resources
+
+    awsls "*"
+
 ## Supported Resource Types
 
+Currently, all resource types in the table below can be listed with awsls. The Tags, Creation Time, and Owner
+column shows which resource type supports tags, has a creation date, or can be filtered by account owner, respectively.
+
 | Service / Type | Tags | Creation Time | Owner
-| :------------- |:----:|:------------: | :---:
-{{ range .Services -}} 
-{{ $service := . -}}
-| **{{ $service }}** |
-{{ range $key, $value := $infos -}}
-	{{ if eq $key  $service -}}
-		{{ range $value -}}
-| {{ .Type }} | {{ if .Tags }} x {{ end }} | {{ if .CreationTime }} x {{ end }} | {{ if .Owner }} x {{ end }}
+| :------------- | :--: | :-----------: | :---:
+{{ range .Services }}{{ $service := . }}| **{{ $service }}** |
+{{ range $key, $value := $infos }}{{ if eq $key  $service -}}
+{{ range $value -}}
+| {{ .Type }} | {{ if .Tags }} x {{ end }} | {{ if .CreationTime }} x {{ end }} |{{ if .Owner }} x |{{ end }}
 {{ end }}
-	{{- end }}
-{{- end }}
-{{- end }}
+{{- end }}{{ end }}{{ end }}
 `))

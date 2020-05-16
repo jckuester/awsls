@@ -41,6 +41,11 @@ func main() {
 		log.WithError(err).Fatal("failed to generate map of resource type -> resource ID")
 	}
 
+	resourceTypesWithTags, err := terraform.GenerateResourceTypesWithTagsList(resourceTypes, outputPath)
+	if err != nil {
+		log.WithError(err).Fatal("failed to generate list of resource type that support tags")
+	}
+
 	apis, err := aws.APIs(awsSdkGoRepoPath)
 	if err != nil {
 		log.WithError(err).Fatal("failed to load AWS APIs")
@@ -70,7 +75,7 @@ func main() {
 	}
 
 	listFunctionNames, genResourceInfos := aws.GenerateListFunctions("../aws",
-		resourceServices, resourceIDs, apis)
+		resourceServices, resourceIDs, resourceTypesWithTags, apis)
 
 	log.Infof("Generated list functions: %d", len(listFunctionNames))
 

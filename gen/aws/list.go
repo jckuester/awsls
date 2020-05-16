@@ -20,8 +20,8 @@ type GeneratedResourceInfo struct {
 	Owner        bool
 }
 
-func GenerateListFunctions(outputPath string, resourceServices map[string]string,
-	resourceIDs map[string]string, apis api.APIs) (map[string]string, map[string][]GeneratedResourceInfo) {
+func GenerateListFunctions(outputPath string, resourceServices map[string]string, resourceIDs map[string]string,
+	resourceTypesWithTags []string, apis api.APIs) (map[string]string, map[string][]GeneratedResourceInfo) {
 	listFunctionNames := map[string]string{}
 	genResourceInfo := map[string][]GeneratedResourceInfo{}
 
@@ -131,8 +131,16 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 
 			op.GetTagsGoCode = GetTagsGoCode(outputField)
 
-			if op.GetTagsGoCode != "" {
-				genInfo.Tags = true
+			/*
+				if op.GetTagsGoCode != "" {
+					genInfo.Tags = true
+				}
+			*/
+
+			for _, rWithTags := range resourceTypesWithTags {
+				if rWithTags == rType {
+					genInfo.Tags = true
+				}
 			}
 
 			getTagCode, imports := GetCreationTimeGoCode(outputField)
@@ -233,8 +241,7 @@ func GetTagsGoCode(outputField *api.ShapeRef) string {
 			}
 		}
 
-		if strings.Contains(k, "Tags") {
-			// TODO handle TagValue
+		if strings.Contains(k, "Tag") {
 			log.Infof("tags: %s %s", k, v.Shape.Type)
 		}
 	}

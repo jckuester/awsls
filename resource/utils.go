@@ -51,3 +51,14 @@ func MatchSupportedTypes(globPattern string) ([]string, error) {
 	return result, nil
 }
 
+// SupportsTags returns true if the given resource type supports tags.
+func SupportsTags(s string) bool {
+	for _, t := range TypesWithTags {
+		if t == s {
+			return true
+		}
+	}
+
+	return false
+}
+

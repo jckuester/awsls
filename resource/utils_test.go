@@ -10,24 +10,24 @@ import (
 
 func TestIsType(t *testing.T) {
 	tests := []struct {
-		name     string
-		givenArg string
-		want     bool
+		name string
+		arg  string
+		want bool
 	}{
 		{
-			name:     "existing Terraform resource type",
-			givenArg: "aws_vpc",
-			want:     true,
+			name: "existing Terraform resource type",
+			arg:  "aws_vpc",
+			want: true,
 		},
 		{
-			name:     "not existing Terraform resource type",
-			givenArg: "aws_foo",
-			want:     false,
+			name: "not existing Terraform resource type",
+			arg:  "aws_foo",
+			want: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := resource.IsType(tt.givenArg); got != tt.want {
+			if got := resource.IsType(tt.arg); got != tt.want {
 				t.Errorf("IsType() = %v, want %v", got, tt.want)
 			}
 		})
@@ -36,24 +36,24 @@ func TestIsType(t *testing.T) {
 
 func TestIsSupportedType(t *testing.T) {
 	tests := []struct {
-		name     string
-		givenArg string
-		want     bool
+		name string
+		arg  string
+		want bool
 	}{
 		{
-			name:     "supported resource type",
-			givenArg: "aws_vpc",
-			want:     true,
+			name: "supported resource type",
+			arg:  "aws_vpc",
+			want: true,
 		},
 		{
-			name:     "not supported resource type",
-			givenArg: "aws_default_vpc",
-			want:     false,
+			name: "not supported resource type",
+			arg:  "aws_default_vpc",
+			want: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := resource.IsSupportedType(tt.givenArg); got != tt.want {
+			if got := resource.IsSupportedType(tt.arg); got != tt.want {
 				t.Errorf("IsSupportedType() = %v, want %v", got, tt.want)
 			}
 		})
@@ -102,6 +102,32 @@ func TestMatchSupportedTypes(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MatchSupportedTypes() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSupportsTags(t *testing.T) {
+	tests := []struct {
+		name string
+		arg  string
+		want bool
+	}{
+		{
+			name: "resource type supports tags",
+			arg:  "aws_vpc",
+			want: true,
+		},
+		{
+			name: "resource type doesn't support tags",
+			arg:  "aws_kms_alias",
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := resource.SupportsTags(tt.arg); got != tt.want {
+				t.Errorf("SupportsTags() = %v, want %v", got, tt.want)
 			}
 		})
 	}
