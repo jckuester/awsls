@@ -10,6 +10,7 @@ import (
 	"go/token"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -79,6 +80,8 @@ func ResourceTypes(providerRepoPath string) ([]string, error) {
 
 		return true
 	})
+
+	sort.Strings(result)
 
 	return result, nil
 }
