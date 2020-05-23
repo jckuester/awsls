@@ -91,7 +91,7 @@ func GetStates(resources []aws.Resource, provider *provider.TerraformProvider) [
 			defer sem.Release()
 
 			r := &resources[i]
-			r.Resource = terradozerRes.New(r.Type, r.ID, provider)
+			r.Resource = terradozerRes.New(r.Type, r.ID, nil, provider)
 
 			err := r.UpdateState()
 			if err != nil {

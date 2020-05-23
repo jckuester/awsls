@@ -75,6 +75,8 @@ github.com/aws/aws-sdk-go v1.30.5 h1:i+sSesaMrSxiUt3NJddOApe2mXK+VNBgfcmRTvNFrXM
 github.com/aws/aws-sdk-go v1.30.5/go.mod h1:5zCpMtNQVjRREroY7sYe8lOMRSxkhG6MZveU8YkpAk0=
 github.com/aws/aws-sdk-go-v2 v0.20.0 h1:/yefUjgMrda9PNFwWctBU63nL10CJMdBwkAmaQ4w4Hs=
 github.com/aws/aws-sdk-go-v2 v0.20.0/go.mod h1:2LhT7UgHOXK3UXONKI5OMgIyoQL6zTAw/jwIeX6yqzw=
+github.com/aws/aws-sdk-go-v2 v0.22.0 h1:mlixfS5HVzn7Sf3KVhjAIM2H3bB7uoTbLCtKHvteUfE=
+github.com/aws/aws-sdk-go-v2 v0.22.0/go.mod h1:2LhT7UgHOXK3UXONKI5OMgIyoQL6zTAw/jwIeX6yqzw=
 github.com/aybabtme/rgbterm v0.0.0-20170906152045-cc83f3b3ce59/go.mod h1:q/89r3U2H7sSsE2t6Kca0lfwTK8JdoNGS/yzM/4iH5I=
 github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f/go.mod h1:AuiFmCCPBSrqvVMvuqFuk0qogytodnVFVSN5CeJB8Gc=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
@@ -245,6 +247,10 @@ github.com/jckuester/terradozer v0.0.0-20200503103616-27cfb94c2ccf h1:ZSNzpqW9Q2
 github.com/jckuester/terradozer v0.0.0-20200503103616-27cfb94c2ccf/go.mod h1:KYrRcPbIiXgcRp7hG9fOBdAyvDnUx2aA9cjTqvKa4cI=
 github.com/jckuester/terradozer v0.0.0-20200505071321-36ef87ab4394 h1:7LmuH4Cm81Qsi0trqbnOmZ75xemFDhmzin0OoNL7aM4=
 github.com/jckuester/terradozer v0.0.0-20200505071321-36ef87ab4394/go.mod h1:KYrRcPbIiXgcRp7hG9fOBdAyvDnUx2aA9cjTqvKa4cI=
+github.com/jckuester/terradozer v0.0.0-20200522202131-ed33ac929141 h1:BowqT+JEJsqjPRWcTH7EOEEJuJlhKoh80MKZouM3pkE=
+github.com/jckuester/terradozer v0.0.0-20200522202131-ed33ac929141/go.mod h1:fc32wbKuGQHf17dmggX1O51swhUUEr344xb173I6mSA=
+github.com/jckuester/terradozer v0.0.0-20200523195146-e66de6fa55f3 h1:uba9ja+voKyereVEuM7YI6kDQO0W1890W+Y5MBWutI8=
+github.com/jckuester/terradozer v0.0.0-20200523195146-e66de6fa55f3/go.mod h1:KYrRcPbIiXgcRp7hG9fOBdAyvDnUx2aA9cjTqvKa4cI=
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
 github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af h1:pmfjZENx5imkbgOkpRUYLnmbU7UEFbjtDA2hxJ1ichM=
 github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
