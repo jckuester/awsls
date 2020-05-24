@@ -9,7 +9,9 @@ import (
 )
 
 func ListIamPolicy(client *Client) ([]Resource, error) {
-	req := client.iamconn.ListPoliciesRequest(&iam.ListPoliciesInput{})
+	req := client.iamconn.ListPoliciesRequest(&iam.ListPoliciesInput{
+		Scope: "Local",
+	})
 
 	var result []Resource
 

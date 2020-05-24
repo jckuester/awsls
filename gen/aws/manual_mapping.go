@@ -72,3 +72,9 @@ var ManualMatchedResourceID = map[string]string{
 	"aws_db_instance":          "DBInstanceIdentifier",
 	"aws_route53_zone":         "Id",
 }
+
+var Inputs = map[string]string{
+	"aws_iam_policy": `
+Scope: "Local",
+`,
+}

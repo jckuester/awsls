@@ -20,6 +20,7 @@ type Operation struct {
 	GetTagsGoCode         string
 	GetCreationTimeGoCode string
 	GetOwnerGoCode        string
+	Inputs                string
 	Imports               []string
 }
 
@@ -46,7 +47,7 @@ import(
 {{ $pagerType := printf "%sPaginator" .ExportedName -}}
 
 func  List{{.OpName}}(client *Client) ([]Resource, error) {
-    req := client.{{ .API.PackageName }}conn.{{ $reqType }}(&{{ .API.PackageName }}.{{ .InputRef.GoTypeElem }}{})
+    req := client.{{ .API.PackageName }}conn.{{ $reqType }}(&{{ .API.PackageName }}.{{ .InputRef.GoTypeElem }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
 
 	var result []Resource
 

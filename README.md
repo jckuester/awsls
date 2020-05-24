@@ -48,19 +48,19 @@ column shows which resource type supports tags, has a creation date, or can be f
 | **appsync** |
 | aws_appsync_graphql_api |  x  |  |
 | **athena** |
-| aws_athena_workgroup |  x  |  x  | x |
+| aws_athena_workgroup |  x  |  x  |
 | **autoscaling** |
-| aws_autoscaling_group |  x  |  x  | x |
-| aws_launch_configuration |  |  x  | x |
+| aws_autoscaling_group |  x  |  x  |
+| aws_launch_configuration |  |  x  |
 | **backup** |
-| aws_backup_plan |  x  |  x  | x |
-| aws_backup_vault |  x  |  x  | x |
+| aws_backup_plan |  x  |  x  |
+| aws_backup_vault |  x  |  x  |
 | **batch** |
 | aws_batch_compute_environment |  |  |
 | aws_batch_job_definition |  |  |
 | aws_batch_job_queue |  |  |
 | **cloudformation** |
-| aws_cloudformation_stack |  x  |  x  | x |
+| aws_cloudformation_stack |  x  |  x  |
 | aws_cloudformation_stack_set |  x  |  |
 | **cloudhsmv2** |
 | aws_cloudhsm_v2_cluster |  x  |  |
@@ -69,8 +69,8 @@ column shows which resource type supports tags, has a creation date, or can be f
 | **cloudwatchevents** |
 | aws_cloudwatch_event_rule |  x  |  |
 | **cloudwatchlogs** |
-| aws_cloudwatch_log_destination |  |  x  | x |
-| aws_cloudwatch_log_group |  x  |  x  | x |
+| aws_cloudwatch_log_destination |  |  x  |
+| aws_cloudwatch_log_group |  x  |  x  |
 | aws_cloudwatch_log_resource_policy |  |  |
 | **codebuild** |
 | aws_codebuild_source_credential |  |  |
@@ -116,31 +116,31 @@ column shows which resource type supports tags, has a creation date, or can be f
 | aws_ami |  x  |  x  | x |
 | aws_customer_gateway |  x  |  |
 | aws_ebs_snapshot |  x  |  x  | x |
-| aws_ebs_volume |  x  |  x  | x |
+| aws_ebs_volume |  x  |  x  |
 | aws_ec2_capacity_reservation |  x  |  x  | x |
-| aws_ec2_client_vpn_endpoint |  x  |  x  | x |
-| aws_ec2_fleet |  x  |  x  | x |
+| aws_ec2_client_vpn_endpoint |  x  |  x  |
+| aws_ec2_fleet |  x  |  x  |
 | aws_ec2_traffic_mirror_filter |  x  |  |
-| aws_ec2_traffic_mirror_session |  x  |  |
-| aws_ec2_traffic_mirror_target |  x  |  |
+| aws_ec2_traffic_mirror_session |  x  |  | x |
+| aws_ec2_traffic_mirror_target |  x  |  | x |
 | aws_ec2_transit_gateway |  x  |  x  | x |
-| aws_ec2_transit_gateway_route_table |  x  |  x  | x |
-| aws_ec2_transit_gateway_vpc_attachment |  x  |  x  | x |
+| aws_ec2_transit_gateway_route_table |  x  |  x  |
+| aws_ec2_transit_gateway_vpc_attachment |  x  |  x  |
 | aws_egress_only_internet_gateway |  x  |  |
 | aws_eip |  x  |  |
-| aws_internet_gateway |  x  |  |
+| aws_internet_gateway |  x  |  | x |
 | aws_key_pair |  x  |  |
-| aws_launch_template |  x  |  x  | x |
-| aws_nat_gateway |  x  |  x  | x |
-| aws_network_acl |  x  |  |
-| aws_network_interface |  x  |  |
+| aws_launch_template |  x  |  x  |
+| aws_nat_gateway |  x  |  x  |
+| aws_network_acl |  x  |  | x |
+| aws_network_interface |  x  |  | x |
 | aws_placement_group |  x  |  |
-| aws_route_table |  x  |  |
-| aws_security_group |  x  |  |
-| aws_spot_fleet_request |  x  |  x  | x |
-| aws_spot_instance_request |  x  |  x  | x |
-| aws_subnet |  x  |  |
-| aws_vpc |  x  |  |
+| aws_route_table |  x  |  | x |
+| aws_security_group |  x  |  | x |
+| aws_spot_fleet_request |  x  |  x  |
+| aws_spot_instance_request |  x  |  x  |
+| aws_subnet |  x  |  | x |
+| aws_vpc |  x  |  | x |
 | aws_vpc_endpoint |  x  |  x  | x |
 | aws_vpc_endpoint_connection_notification |  |  |
 | aws_vpc_endpoint_service |  x  |  |
@@ -159,7 +159,7 @@ column shows which resource type supports tags, has a creation date, or can be f
 | aws_elastic_beanstalk_application_version |  x  |  |
 | aws_elastic_beanstalk_environment |  x  |  |
 | **elasticloadbalancing** |
-| aws_elb |  x  |  x  | x |
+| aws_elb |  x  |  x  |
 | **elasticloadbalancingv2** |
 | aws_alb_target_group |  x  |  |
 | aws_lb_target_group |  x  |  |
@@ -172,34 +172,34 @@ column shows which resource type supports tags, has a creation date, or can be f
 | aws_fsx_lustre_file_system |  x  |  x  | x |
 | aws_fsx_windows_file_system |  x  |  x  | x |
 | **gamelift** |
-| aws_gamelift_alias |  x  |  x  | x |
-| aws_gamelift_build |  x  |  x  | x |
+| aws_gamelift_alias |  x  |  x  |
+| aws_gamelift_build |  x  |  x  |
 | aws_gamelift_game_session_queue |  x  |  |
 | **globalaccelerator** |
-| aws_globalaccelerator_accelerator |  x  |  x  | x |
+| aws_globalaccelerator_accelerator |  x  |  x  |
 | **glue** |
-| aws_glue_crawler |  x  |  x  | x |
+| aws_glue_crawler |  x  |  x  |
 | aws_glue_job |  x  |  |
 | aws_glue_security_configuration |  |  |
 | aws_glue_trigger |  x  |  |
 | **iam** |
-| aws_iam_access_key |  |  x  | x |
-| aws_iam_group |  |  x  | x |
-| aws_iam_instance_profile |  |  x  | x |
-| aws_iam_policy |  |  x  | x |
-| aws_iam_role |  x  |  x  | x |
+| aws_iam_access_key |  |  x  |
+| aws_iam_group |  |  x  |
+| aws_iam_instance_profile |  |  x  |
+| aws_iam_policy |  |  x  |
+| aws_iam_role |  x  |  x  |
 | aws_iam_server_certificate |  |  |
-| aws_iam_service_linked_role |  |  x  | x |
-| aws_iam_user |  x  |  x  | x |
+| aws_iam_service_linked_role |  |  x  |
+| aws_iam_user |  x  |  x  |
 | **iot** |
-| aws_iot_certificate |  |  x  | x |
+| aws_iot_certificate |  |  x  |
 | aws_iot_policy |  |  |
 | aws_iot_thing |  |  |
 | aws_iot_thing_type |  |  |
 | aws_iot_topic_rule |  |  |
 | **kafka** |
-| aws_msk_cluster |  x  |  x  | x |
-| aws_msk_configuration |  |  x  | x |
+| aws_msk_cluster |  x  |  x  |
+| aws_msk_configuration |  |  x  |
 | **kinesisanalytics** |
 | aws_kinesis_analytics_application |  x  |  |
 | **kms** |
@@ -220,7 +220,7 @@ column shows which resource type supports tags, has a creation date, or can be f
 | **mediapackage** |
 | aws_media_package_channel |  x  |  |
 | **mediastore** |
-| aws_media_store_container |  x  |  x  | x |
+| aws_media_store_container |  x  |  x  |
 | **mq** |
 | aws_mq_broker |  x  |  |
 | aws_mq_configuration |  x  |  |
@@ -233,9 +233,9 @@ column shows which resource type supports tags, has a creation date, or can be f
 | aws_qldb_ledger |  x  |  |
 | **rds** |
 | aws_db_event_subscription |  x  |  |
-| aws_db_instance |  x  |  x  | x |
+| aws_db_instance |  x  |  x  |
 | aws_db_parameter_group |  x  |  |
-| aws_db_security_group |  x  |  |
+| aws_db_security_group |  x  |  | x |
 | aws_db_subnet_group |  x  |  |
 | aws_rds_global_cluster |  |  |
 | **redshift** |
@@ -247,20 +247,20 @@ column shows which resource type supports tags, has a creation date, or can be f
 | aws_route53_health_check |  x  |  |
 | aws_route53_zone |  x  |  |
 | **route53resolver** |
-| aws_route53_resolver_endpoint |  x  |  x  | x |
-| aws_route53_resolver_rule |  x  |  |
+| aws_route53_resolver_endpoint |  x  |  x  |
+| aws_route53_resolver_rule |  x  |  | x |
 | aws_route53_resolver_rule_association |  |  |
 | **s3** |
-| aws_s3_bucket |  x  |  x  | x |
+| aws_s3_bucket |  x  |  x  |
 | **sagemaker** |
-| aws_sagemaker_endpoint |  x  |  x  | x |
-| aws_sagemaker_model |  x  |  x  | x |
+| aws_sagemaker_endpoint |  x  |  x  |
+| aws_sagemaker_model |  x  |  x  |
 | **secretsmanager** |
 | aws_secretsmanager_secret |  x  |  |
 | **servicecatalog** |
-| aws_servicecatalog_portfolio |  x  |  x  | x |
+| aws_servicecatalog_portfolio |  x  |  x  |
 | **servicediscovery** |
-| aws_service_discovery_service |  |  x  | x |
+| aws_service_discovery_service |  |  x  |
 | **ses** |
 | aws_ses_active_receipt_rule_set |  |  |
 | aws_ses_configuration_set |  |  |
@@ -268,8 +268,8 @@ column shows which resource type supports tags, has a creation date, or can be f
 | aws_ses_receipt_rule_set |  |  |
 | aws_ses_template |  |  |
 | **sfn** |
-| aws_sfn_activity |  x  |  x  | x |
-| aws_sfn_state_machine |  x  |  x  | x |
+| aws_sfn_activity |  x  |  x  |
+| aws_sfn_state_machine |  x  |  x  |
 | **sns** |
 | aws_sns_platform_application |  |  |
 | aws_sns_topic |  x  |  |
@@ -312,6 +312,6 @@ column shows which resource type supports tags, has a creation date, or can be f
 | aws_wafregional_web_acl |  x  |  |
 | aws_wafregional_xss_match_set |  |  |
 | **worklink** |
-| aws_worklink_fleet |  |  x  | x |
+| aws_worklink_fleet |  |  x  |
 | **workspaces** |
 | aws_workspaces_ip_group |  x  |  |

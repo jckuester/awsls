@@ -129,6 +129,8 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 				Type: rType,
 			}
 
+			op.Inputs = Inputs[rType]
+
 			op.GetTagsGoCode = GetTagsGoCode(outputField)
 
 			/*
@@ -154,7 +156,7 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 
 			op.GetOwnerGoCode = GetOwnerGoCode(outputField)
 
-			if op.GetCreationTimeGoCode != "" {
+			if op.GetOwnerGoCode != "" {
 				genInfo.Owner = true
 			}
 
