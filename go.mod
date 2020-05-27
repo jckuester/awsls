@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v0.22.0
 	github.com/fatih/color v1.9.0
 	github.com/gobwas/glob v0.2.3
+	github.com/gruntwork-io/terratest v0.23.0
 	github.com/jckuester/terradozer v0.0.0-20200523195146-e66de6fa55f3
 	github.com/onsi/gomega v1.9.0
 	github.com/pkg/errors v0.9.1

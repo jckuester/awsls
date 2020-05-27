@@ -27,7 +27,7 @@ func mainExitCode() int {
 	var logDebug bool
 	var profile string
 	var region string
-	var attribute string
+	var attributes internal.Attributes
 	var version bool
 
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
@@ -39,7 +39,7 @@ func mainExitCode() int {
 	flags.BoolVar(&logDebug, "debug", false, "Enable debug logging")
 	flags.StringVar(&profile, "profile", "", "Use a specific named profile from your AWS credential file")
 	flags.StringVar(&region, "region", "", "The region to list resources in")
-	flags.StringVar(&attribute, "attribute", "", "A Terraform attribute to show for each resource")
+	flags.Var(&attributes, "attributes", "Comma-separated list of attributes to show for each resource")
 	flags.BoolVar(&version, "version", false, "Show application version")
 
 	_ = flags.Parse(os.Args[1:])
@@ -130,7 +130,7 @@ func mainExitCode() int {
 			continue
 		}
 
-		hasAttr, err := resource.HasAttribute(attribute, rType, awsTerraformProvider)
+		hasAttrs, err := resource.HasAttributes(attributes, rType, awsTerraformProvider)
 		if err != nil {
 			fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: "+
 				"%s\n", err))
@@ -138,53 +138,69 @@ func mainExitCode() int {
 			continue
 		}
 
-		if hasAttr {
+		if len(hasAttrs) > 0 {
+			// for performance reasons, only load the state if this resource type has all the attributes
 			resourcesWithStates := resource.GetStates(resources, awsTerraformProvider)
-			printResources(resourcesWithStates, hasAttr, attribute)
+			printResources(resourcesWithStates, hasAttrs, attributes)
 
 			continue
 		}
 
-		printResources(resources, hasAttr, attribute)
+		printResources(resources, hasAttrs, attributes)
 	}
 
 	return 0
 }
 
-func printResources(resources []aws.Resource, hasAttr bool, attribute string) {
+func printResources(resources []aws.Resource, hasAttrs map[string]bool, attributes []string) {
 	const padding = 3
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.TabIndent)
 
-	// header
-	fmt.Fprintf(w, "TYPE\tID\tREGION\tCREATED\t%s\t\n", strings.ToUpper(attribute))
+	printHeader(w, attributes)
 
 	for _, r := range resources {
-		fmt.Fprintf(w, "%s\t%s\t%s\t", r.Type, r.ID, r.Region)
+		fmt.Fprintf(w, "%s\t%s\t%s", r.Type, r.ID, r.Region)
 
 		if r.CreatedAt != nil {
-			fmt.Fprintf(w, "%s\t", r.CreatedAt.Format("2006-01-02 15:04:05"))
+			fmt.Fprintf(w, "\t%s", r.CreatedAt.Format("2006-01-02 15:04:05"))
 		} else {
-			fmt.Fprint(w, "N/A\t")
+			fmt.Fprint(w, "\tN/A")
 		}
 
-		v := "N/A"
+		for _, attr := range attributes {
+			v := "N/A"
 
-		if hasAttr {
-			var err error
-			v, err = resource.GetAttribute(attribute, &r)
-			if err != nil {
-				log.WithFields(log.Fields{
-					"type": r.Type,
-					"id":   r.ID}).WithError(err).Debug("failed to get attribute")
-				v = "error"
+			_, ok := hasAttrs[attr]
+
+			if ok {
+				var err error
+				v, err = resource.GetAttribute(attr, &r)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"type": r.Type,
+						"id":   r.ID}).WithError(err).Debug("failed to get attribute")
+					v = "error"
+				}
 			}
+
+			fmt.Fprintf(w, "\t%s", v)
 		}
 
-		fmt.Fprintf(w, "%s\t\n", v)
+		fmt.Fprintf(w, "\t\n")
 	}
 
 	w.Flush()
 	fmt.Println()
+}
+
+func printHeader(w *tabwriter.Writer, attributes []string) {
+	fmt.Fprintf(w, "TYPE\tID\tREGION\tCREATED")
+
+	for _, attribute := range attributes {
+		fmt.Fprintf(w, "\t%s", strings.ToUpper(attribute))
+	}
+
+	fmt.Fprintf(w, "\t\n")
 }
 
 func printHelp(fs *flag.FlagSet) {
