@@ -106,18 +106,24 @@ func GetStates(resources []aws.Resource, provider *provider.TerraformProvider) [
 	return resources
 }
 
-func HasAttribute(attrName, terraformType string, provider *provider.TerraformProvider) (bool, error) {
+// HasAttributes returns only the attributes that the given Terraform resource type supports out of a given
+// list of attributes.
+func HasAttributes(attributes []string, terraformType string, provider *provider.TerraformProvider) (map[string]bool, error) {
 	schema, err := provider.GetSchemaForResource(terraformType)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	_, ok := schema.Block.Attributes[attrName]
-	if ok {
-		return true, nil
+	result := map[string]bool{}
+
+	for _, attr := range attributes {
+		_, ok := schema.Block.Attributes[attr]
+		if ok {
+			result[attr] = true
+		}
 	}
 
-	return false, nil
+	return result, nil
 }
 
 // GetAttribute returns any Terraform attribute of a resource by name.
