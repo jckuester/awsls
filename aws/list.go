@@ -226,6 +226,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListIamServiceLinkedRole(client)
 	case "aws_iam_user":
 		return ListIamUser(client)
+	case "aws_instance":
+		return ListInstance(client)
 	case "aws_internet_gateway":
 		return ListInternetGateway(client)
 	case "aws_iot_certificate":

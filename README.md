@@ -128,6 +128,7 @@ column shows which resource type supports tags, has a creation date, or can be f
 | aws_ec2_transit_gateway_vpc_attachment |  x  |  x  |
 | aws_egress_only_internet_gateway |  x  |  |
 | aws_eip |  x  |  |
+| aws_instance |  x  | x | x |
 | aws_internet_gateway |  x  |  | x |
 | aws_key_pair |  x  |  |
 | aws_launch_template |  x  |  x  |

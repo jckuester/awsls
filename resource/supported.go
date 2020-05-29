@@ -107,6 +107,7 @@ var SupportedTypes = []string{
 	"aws_iam_server_certificate",
 	"aws_iam_service_linked_role",
 	"aws_iam_user",
+	"aws_instance",
 	"aws_internet_gateway",
 	"aws_iot_certificate",
 	"aws_iot_policy",
