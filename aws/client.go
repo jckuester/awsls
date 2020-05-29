@@ -6,6 +6,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apex/log"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/accessanalyzer"
 	"github.com/aws/aws-sdk-go-v2/service/acm"
@@ -365,4 +369,40 @@ func NewClient() (*Client, error) {
 	client.accountid = *resp.Account
 
 	return client, nil
+}
+
+func GetRegionsForService(service string, client *Client) []string {
+	req := client.ssmconn.GetParametersByPathRequest(&ssm.GetParametersByPathInput{
+		// active services
+		//Path: aws.String("/aws/service/global-infrastructure/regions"),
+		Path: aws.String(fmt.Sprintf("/aws/service/global-infrastructure/services/%s/regions", service)),
+	})
+
+	resp, err := req.Send(context.Background())
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	var result []string
+	for _, parameter := range resp.GetParametersByPathOutput.Parameters {
+		result = append(result, aws.StringValue(parameter.Value))
+	}
+
+	return result
+}
+
+func GetEnabledRegionsForAccount(client *Client) []string {
+	req := client.ec2conn.DescribeRegionsRequest(&ec2.DescribeRegionsInput{})
+
+	resp, err := req.Send(context.Background())
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	var result []string
+	for _, region := range resp.Regions {
+		result = append(result, aws.StringValue(region.RegionName))
+	}
+
+	return result
 }
