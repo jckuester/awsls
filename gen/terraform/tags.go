@@ -16,7 +16,8 @@ import (
 	"github.com/jckuester/terradozer/pkg/provider"
 )
 
-// GenerateResourceTypesWithTagsList generates code of a list of Terraform resource types that support tags.
+// GenerateResourceTypesWithTagsList generates code of a list of Terraform resource types that support tags
+// and writes the code to directory outputPath.
 func GenerateResourceTypesWithTagsList(resourceTypes []string, outputPath string) ([]string, error) {
 	provider, err := provider.Init("aws", 10*time.Second)
 	if err != nil {

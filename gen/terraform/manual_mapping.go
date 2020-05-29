@@ -2,8 +2,8 @@
 
 package terraform
 
-// ManualResourceServiceMap manually matches resources to its AWS service since the
-// service couldn't be automatically identified.
+// ManualResourceServiceMap manually matches some resources to its AWS service since the
+// service couldn't be automatically discovered.
 var ManualResourceServiceMap = map[string]string{
 	"aws_alb":                                 "elasticloadbalancingv2",
 	"aws_autoscaling_group":                   "autoscaling",

@@ -91,7 +91,7 @@ func GetStates(resources []aws.Resource, provider *provider.TerraformProvider) [
 			defer sem.Release()
 
 			r := &resources[i]
-			r.Resource = terradozerRes.New(r.Type, r.ID, nil, provider)
+			r.UpdatableResource = terradozerRes.New(r.Type, r.ID, nil, provider)
 
 			err := r.UpdateState()
 			if err != nil {
@@ -128,7 +128,7 @@ func HasAttributes(attributes []string, terraformType string, provider *provider
 
 // GetAttribute returns any Terraform attribute of a resource by name.
 func GetAttribute(name string, r *aws.Resource) (string, error) {
-	if r.Resource == nil {
+	if r.UpdatableResource == nil {
 		return "", fmt.Errorf("resource is nil")
 	}
 
