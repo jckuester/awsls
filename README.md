@@ -1,19 +1,22 @@
 # awsls
 
-**Note: This tool is still WIP**
+A Unix-style list command for AWS resources. It [supports listing of over 200 types of resources](#supported-resources)
+across 76 different AWS services.
 
-A list command for AWS resources. Supports listing of 209 resource types across
-76 different services.
+The goal is to support all AWS resources that are also covered by Terraform (currently over 500) without writing much
+code but rather generating it. If you are interested, [the code of the generator is here](./gen); feel free to fork it
+and generate something else.
+
+# Example
+
+![](img/instance.gif)
 
 
-## How are so many resource types covered?
-
-The answer is that awsls is mainly code generated; here is the
-[code of the generator](./gen). Feel free to fork it and generate something else.
+![](img/iam.gif)
 
 ## Usage
 
-	awsls <resource_type glob pattern>
+	awsls [flags] <resource_type glob pattern>
 
 To list all VPCs, for example, run
 
@@ -23,9 +26,21 @@ or to list all resources
 
     awsls "*"
 
-## Supported Resource Types
+## Installation
 
-Currently, all resource types in the table below can be listed with awsls. The Tags, Creation Time, and Owner
+It's recommended to install a specific version of awsls available on the
+[releases page](https://github.com/jckuester/awsls/releases).
+
+Here is the recommended way to install awsls v0.1.0:
+
+```bash
+# install it into ./bin/
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.1.0
+```
+
+## Supported resources
+
+Currently, all types of resources in the table below can be listed with awsls. The Tags, Creation Time, and Owner
 column shows which resource type supports tags, has a creation date, or can be filtered by account owner, respectively.
 
 | Service / Type | Tags | Creation Time | Owner
