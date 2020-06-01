@@ -39,4 +39,4 @@ build: ## Build binary
 	go build
 
 .PHONY: build
-ci: generate build test-all lint # Run all the tests and code checks
+ci: generate build test-all # Run all the tests and code checks

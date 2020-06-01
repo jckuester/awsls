@@ -101,7 +101,7 @@ func mainExitCode() int {
 	// suppress provider debug and info logs
 	log.SetLevel(log.ErrorLevel)
 
-	awsTerraformProvider, err := provider.Init("aws", 10*time.Second)
+	awsTerraformProvider, err := provider.Init("aws", "~/.awsls", 10*time.Second)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("Error:️ failed to initialize Terraform AWS provider: %s\n", err))
 		return 1
@@ -139,7 +139,8 @@ func mainExitCode() int {
 		}
 
 		if len(hasAttrs) > 0 {
-			// for performance reasons, only load the state if this resource type has all the attributes
+			// for performance reasons, only load the state if at least one attribute needs to be displayed
+			// for this resource type
 			resourcesWithStates := resource.GetStates(resources, awsTerraformProvider)
 			printResources(resourcesWithStates, hasAttrs, attributes)
 
@@ -212,7 +213,7 @@ const help = `
 awsls - list AWS resources.
 
 USAGE:
-  $ awsls [flags] [<resource_type glob pattern>]
+  $ awsls [flags] <resource_type glob pattern>
 
 FLAGS:
 `

@@ -1,0 +1,15 @@
+builds:
+  - goos:
+    - darwin
+    - windows
+    - linux
+    - freebsd
+    env:
+      - CGO_ENABLED=0
+    ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
+
+archives:
+  - format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip

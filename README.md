@@ -1,16 +1,33 @@
 # awsls
 
-A Unix-style list command for AWS resources. It [supports listing of over 200 types of resources](#supported-resources)
+[![Release](https://img.shields.io/github/release/jckuester/awsls.svg?style=for-the-badge)](https://github.com/jckuester/awsls/releases/latest)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
+[![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
+
+A list command for AWS resources. It supports listing of [over 200 types of resources](#supported-resources)
 across 76 different AWS services.
+ 
+The goal is to support every AWS resource that is also covered by Terraform (currently over 500) without adding
+much code but rather generating it. If you are interested, the code of the list function generator is [here](./gen).
 
-The goal is to support all AWS resources that are also covered by Terraform (currently over 500) without writing much
-code but rather generating it. If you are interested, [the code of the generator is here](./gen); feel free to fork it
-and generate something else.
+If you run into issues with any resources, please open an issue or ping me on [Twitter](https://twitter.com/jckuester).
 
-# Example
+Happy listing!
+
+## Example
+
+(**Note:** In the examples below, credentials and region for the AWS account you want to list resources in have been set
+via the usual [environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html), e.g.,
+`AWS_PROFILE=<myaccount>` and `AWS_DEFAULT_REGION=<myregion>`, but can also be provided via `-profile` and `-region` flag.)
+
+Terraform resource names are used to tell awsls which resources to list. For example, `awsls aws_instance` shows
+all EC2 instances. In addition to the default attributes `TYPE`, `ID`, `REGION`, and `CREATED` timestamp, additional attributes
+can be displayed via the `-attributes <comma-separated list>` flag. Every attribute in the Terraform documentation 
+([here](https://www.terraform.io/docs/providers/aws/r/instance.html) are the attributes for `aws_instance`) is a valid one:
 
 ![](img/instance.gif)
 
+To list multiple resource types at once, use glob patterns. For example, `awsls "aws_iam_*` lists all IAM resources:
 
 ![](img/iam.gif)
 
@@ -18,13 +35,7 @@ and generate something else.
 
 	awsls [flags] <resource_type glob pattern>
 
-To list all VPCs, for example, run
-
-    awsls aws_vpc
-
-or to list all resources
-
-    awsls "*"
+To see options available run `awsls --help`.
 
 ## Installation
 
@@ -40,8 +51,9 @@ curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh |
 
 ## Supported resources
 
-Currently, all types of resources in the table below can be listed with awsls. The Tags, Creation Time, and Owner
-column shows which resource type supports tags, has a creation date, or can be filtered by account owner, respectively.
+Currently, all types of resources in the table below can be listed with awsls. The `Tags` column shows if a resource
+supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
+resources are pre-filtered by account ID.
 
 | Service / Type | Tags | Creation Time | Owner
 | :------------- | :--: | :-----------: | :---:
