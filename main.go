@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	stdlog "log"
 	"os"
+	"runtime"
 	"strings"
 	"text/tabwriter"
 	"time"
@@ -17,6 +18,13 @@ import (
 	"github.com/jckuester/awsls/internal"
 	"github.com/jckuester/awsls/resource"
 	"github.com/jckuester/terradozer/pkg/provider"
+)
+
+//nolint:gochecknoglobals
+var (
+	version = "dev"
+	commit  = "?"
+	date    = "?"
 )
 
 func main() {
@@ -58,7 +66,7 @@ func mainExitCode() int {
 	}
 
 	if version {
-		fmt.Println(internal.BuildVersionString())
+		fmt.Println(buildVersionString())
 		return 0
 	}
 
@@ -207,6 +215,16 @@ func printHeader(w *tabwriter.Writer, attributes []string) {
 func printHelp(fs *flag.FlagSet) {
 	fmt.Fprintf(os.Stderr, "\n"+strings.TrimSpace(help)+"\n")
 	fs.PrintDefaults()
+}
+
+func buildVersionString() string {
+	var result = fmt.Sprintf("version: %s", version)
+
+	result = fmt.Sprintf("%s\ncommit: %s", result, commit)
+	result = fmt.Sprintf("%s\nbuilt at: %s", result, date)
+	result = fmt.Sprintf("%s\nusing: %s", result, runtime.Version())
+
+	return result
 }
 
 const help = `
