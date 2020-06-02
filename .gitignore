@@ -1,2 +1,6 @@
+*.backup
+*.tfstate
+.awsls/
 .terraform/
-.awsls
+bin/
+coverage.txt
