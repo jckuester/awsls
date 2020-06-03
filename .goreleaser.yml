@@ -6,7 +6,7 @@ builds:
     - freebsd
     env:
       - CGO_ENABLED=0
-    ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
+    ldflags: -s -w -X github.com/jckuester/awsls/internal.version={{.Version}} -X github.com/jckuester/awsls/internal.commit={{.ShortCommit}} -X github.com/jckuester/awsls/internal.date={{.Date}}
 
 archives:
   - format: tar.gz
