@@ -34,7 +34,10 @@ func (o *Operation) GoCode() string {
 	return strings.TrimSpace(buf.String())
 }
 
-var listResourcesOperationTmpl = template.Must(template.New("listResourcesOperation").Parse(`
+var listResourcesOperationTmpl = template.Must(template.New("listResourcesOperation").Funcs(
+	template.FuncMap{
+		"Title": strings.Title,
+	}).Parse(`
 import(
 	"context"
 	{{ range .Imports }}"{{ . }}"
@@ -47,7 +50,7 @@ import(
 {{ $pagerType := printf "%sPaginator" .ExportedName -}}
 
 func  List{{.OpName}}(client *Client) ([]Resource, error) {
-    req := client.{{ .API.PackageName }}conn.{{ $reqType }}(&{{ .API.PackageName }}.{{ .InputRef.GoTypeElem }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
+    req := client.{{ .API.PackageName | Title }}conn.{{ $reqType }}(&{{ .API.PackageName }}.{{ .InputRef.GoTypeElem }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
 
 	var result []Resource
 
@@ -63,7 +66,7 @@ func  List{{.OpName}}(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type: "{{ .TerraformType }}",
 				ID: *r.{{ .ResourceID }},
-				Region: client.{{ .API.PackageName }}conn.Config.Region,
+				Region: client.{{ .API.PackageName | Title }}conn.Config.Region,
 				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
 				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
 			})
@@ -89,7 +92,7 @@ func  List{{.OpName}}(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type: "{{ .TerraformType }}",
 				ID: *r.{{ .ResourceID }},
-				Region: client.{{ .API.PackageName }}conn.Config.Region,
+				Region: client.{{ .API.PackageName | Title }}conn.Config.Region,
 				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
 				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
 			})
