@@ -70,6 +70,8 @@ resources are pre-filtered by account ID.
 | aws_api_gateway_vpc_link |  x  |  |
 | **apigatewayv2** |
 | aws_apigatewayv2_api |  x  |  |
+| aws_apigatewayv2_domain_name |  x  |  |
+| aws_apigatewayv2_vpc_link |  x  |  |
 | **appmesh** |
 | aws_appmesh_mesh |  x  |  |
 | **appsync** |
@@ -141,16 +143,17 @@ resources are pre-filtered by account ID.
 | aws_dynamodb_global_table |  |  |
 | **ec2** |
 | aws_ami |  x  |  x  | x |
-| aws_customer_gateway |  x  |  |
 | aws_ebs_snapshot |  x  |  x  | x |
 | aws_ebs_volume |  x  |  x  |
 | aws_ec2_capacity_reservation |  x  |  x  | x |
 | aws_ec2_client_vpn_endpoint |  x  |  x  |
 | aws_ec2_fleet |  x  |  x  |
+| aws_ec2_local_gateway_route_table_vpc_association |  x  |  |
 | aws_ec2_traffic_mirror_filter |  x  |  |
 | aws_ec2_traffic_mirror_session |  x  |  | x |
 | aws_ec2_traffic_mirror_target |  x  |  | x |
 | aws_ec2_transit_gateway |  x  |  x  | x |
+| aws_ec2_transit_gateway_peering_attachment |  x  |  x  |
 | aws_ec2_transit_gateway_route_table |  x  |  x  |
 | aws_ec2_transit_gateway_vpc_attachment |  x  |  x  |
 | aws_egress_only_internet_gateway |  x  |  |
@@ -179,6 +182,7 @@ resources are pre-filtered by account ID.
 | **ecs** |
 | aws_ecs_cluster |  x  |  |
 | **efs** |
+| aws_efs_access_point |  x  |  | x |
 | aws_efs_file_system |  x  |  x  | x |
 | **elasticache** |
 | aws_elasticache_replication_group |  x  |  |
@@ -224,7 +228,7 @@ resources are pre-filtered by account ID.
 | aws_iot_policy |  |  |
 | aws_iot_thing |  |  |
 | aws_iot_thing_type |  |  |
-| aws_iot_topic_rule |  |  |
+| aws_iot_topic_rule |  x  |  |
 | **kafka** |
 | aws_msk_cluster |  x  |  x  |
 | aws_msk_configuration |  |  x  |
@@ -264,6 +268,7 @@ resources are pre-filtered by account ID.
 | aws_db_instance |  x  |  x  |
 | aws_db_parameter_group |  x  |  |
 | aws_db_security_group |  x  |  | x |
+| aws_db_snapshot |  x  |  x  |
 | aws_db_subnet_group |  x  |  |
 | aws_rds_global_cluster |  |  |
 | **redshift** |
@@ -288,7 +293,7 @@ resources are pre-filtered by account ID.
 | **servicecatalog** |
 | aws_servicecatalog_portfolio |  x  |  x  |
 | **servicediscovery** |
-| aws_service_discovery_service |  |  x  |
+| aws_service_discovery_service |  x  |  x  |
 | **ses** |
 | aws_ses_active_receipt_rule_set |  |  |
 | aws_ses_configuration_set |  |  |
@@ -339,6 +344,8 @@ resources are pre-filtered by account ID.
 | aws_wafregional_sql_injection_match_set |  |  |
 | aws_wafregional_web_acl |  x  |  |
 | aws_wafregional_xss_match_set |  |  |
+| **wafv2** |
+| aws_wafv2_web_acl_logging_configuration |  |  |
 | **worklink** |
 | aws_worklink_fleet |  |  x  |
 | **workspaces** |

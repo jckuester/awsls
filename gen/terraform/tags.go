@@ -19,7 +19,7 @@ import (
 // GenerateResourceTypesWithTagsList generates code of a list of Terraform resource types that support tags
 // and writes the code to directory outputPath.
 func GenerateResourceTypesWithTagsList(resourceTypes []string, outputPath string) ([]string, error) {
-	provider, err := provider.Init("aws", 10*time.Second)
+	provider, err := provider.Init("aws", "~/.awsls", 10*time.Second)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize Terraform AWS provider: %s", err)
 	}

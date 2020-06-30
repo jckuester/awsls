@@ -42,6 +42,10 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListApiGatewayVpcLink(client)
 	case "aws_apigatewayv2_api":
 		return ListApigatewayv2Api(client)
+	case "aws_apigatewayv2_domain_name":
+		return ListApigatewayv2DomainName(client)
+	case "aws_apigatewayv2_vpc_link":
+		return ListApigatewayv2VpcLink(client)
 	case "aws_appmesh_mesh":
 		return ListAppmeshMesh(client)
 	case "aws_appsync_graphql_api":
@@ -92,8 +96,6 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListConfigDeliveryChannel(client)
 	case "aws_cur_report_definition":
 		return ListCurReportDefinition(client)
-	case "aws_customer_gateway":
-		return ListCustomerGateway(client)
 	case "aws_datasync_agent":
 		return ListDatasyncAgent(client)
 	case "aws_datasync_task":
@@ -110,6 +112,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListDbParameterGroup(client)
 	case "aws_db_security_group":
 		return ListDbSecurityGroup(client)
+	case "aws_db_snapshot":
+		return ListDbSnapshot(client)
 	case "aws_db_subnet_group":
 		return ListDbSubnetGroup(client)
 	case "aws_devicefarm_project":
@@ -152,6 +156,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListEc2ClientVpnEndpoint(client)
 	case "aws_ec2_fleet":
 		return ListEc2Fleet(client)
+	case "aws_ec2_local_gateway_route_table_vpc_association":
+		return ListEc2LocalGatewayRouteTableVpcAssociation(client)
 	case "aws_ec2_traffic_mirror_filter":
 		return ListEc2TrafficMirrorFilter(client)
 	case "aws_ec2_traffic_mirror_session":
@@ -160,6 +166,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListEc2TrafficMirrorTarget(client)
 	case "aws_ec2_transit_gateway":
 		return ListEc2TransitGateway(client)
+	case "aws_ec2_transit_gateway_peering_attachment":
+		return ListEc2TransitGatewayPeeringAttachment(client)
 	case "aws_ec2_transit_gateway_route_table":
 		return ListEc2TransitGatewayRouteTable(client)
 	case "aws_ec2_transit_gateway_vpc_attachment":
@@ -168,6 +176,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListEcrRepository(client)
 	case "aws_ecs_cluster":
 		return ListEcsCluster(client)
+	case "aws_efs_access_point":
+		return ListEfsAccessPoint(client)
 	case "aws_efs_file_system":
 		return ListEfsFileSystem(client)
 	case "aws_egress_only_internet_gateway":
@@ -436,6 +446,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListWafregionalWebAcl(client)
 	case "aws_wafregional_xss_match_set":
 		return ListWafregionalXssMatchSet(client)
+	case "aws_wafv2_web_acl_logging_configuration":
+		return ListWafv2WebAclLoggingConfiguration(client)
 	case "aws_worklink_fleet":
 		return ListWorklinkFleet(client)
 	case "aws_workspaces_ip_group":

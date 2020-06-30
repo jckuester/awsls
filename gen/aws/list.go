@@ -111,10 +111,19 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 						log.WithFields(log.Fields{
 							"resource":   rType,
 							"candidates": resourceIDCandidates,
-						}).Warnf("multiple name field candidates as resource ID")
+						}).Warnf("found multiple name field ID candidates as resource ID for NAME_PLACEHOLDER")
 
 						continue
 					}
+
+					if len(resourceIDCandidates) == 0 {
+						log.WithFields(log.Fields{
+							"resource": rType,
+						}).Warnf("found no name field candidates as resource ID for NAME_PLACEHOLDER")
+
+						continue
+					}
+
 					resourceID = resourceIDCandidates[0]
 				}
 			}
@@ -359,6 +368,22 @@ func GetListOperationCandidates(resourceType, service string, apis api.APIs) []O
 }
 
 func exactMatch(terraformType string, operations []*api.Operation, opPrefix string) *api.Operation {
+	plurals := pluralizeListFunctionCandidateNames(terraformType)
+
+	for _, t := range plurals {
+		for _, op := range operations {
+			opNoPrefix := strings.ToLower(strings.TrimPrefix(op.ExportedName, opPrefix))
+
+			if t == opNoPrefix {
+				return op
+			}
+		}
+	}
+
+	return nil
+}
+
+func pluralizeListFunctionCandidateNames(terraformType string) []string {
 	tNoPrefix := strings.TrimPrefix(terraformType, "aws_")
 	tSplit := strings.Split(tNoPrefix, "_")
 
@@ -374,18 +399,7 @@ func exactMatch(terraformType string, operations []*api.Operation, opPrefix stri
 			plural = append(plural, strings.TrimSuffix(c, "y")+"ies")
 		}
 	}
-
-	for _, t := range plural {
-		for _, op := range operations {
-			opNoPrefix := strings.ToLower(strings.TrimPrefix(op.ExportedName, opPrefix))
-
-			if t == opNoPrefix {
-				return op
-			}
-		}
-	}
-
-	return nil
+	return plural
 }
 
 // operationsOfService returns the operations with a given prefix that belong to a service.
