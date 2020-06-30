@@ -376,10 +376,14 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListSsmDocument(client)
 	case "aws_ssm_maintenance_window":
 		return ListSsmMaintenanceWindow(client)
+	case "aws_ssm_parameter":
+		return ListSsmParameter(client)
 	case "aws_ssm_patch_baseline":
 		return ListSsmPatchBaseline(client)
 	case "aws_ssm_patch_group":
 		return ListSsmPatchGroup(client)
+	case "aws_ssm_resource_data_sync":
+		return ListSsmResourceDataSync(client)
 	case "aws_storagegateway_gateway":
 		return ListStoragegatewayGateway(client)
 	case "aws_subnet":

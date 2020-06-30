@@ -51,7 +51,7 @@ curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh |
 
 ## Supported resources
 
-Currently, all types of resources in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 217 resource types across 77 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered by account ID.
 
@@ -312,8 +312,10 @@ resources are pre-filtered by account ID.
 | aws_ssm_association |  |  |
 | aws_ssm_document |  x  |  |
 | aws_ssm_maintenance_window |  x  |  |
+| aws_ssm_parameter |  x  |  |
 | aws_ssm_patch_baseline |  x  |  |
 | aws_ssm_patch_group |  |  |
+| aws_ssm_resource_data_sync |  |  |
 | **storagegateway** |
 | aws_storagegateway_gateway |  x  |  |
 | **transfer** |

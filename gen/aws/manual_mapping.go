@@ -57,6 +57,9 @@ var ManualMatchedListOps = map[string]string{
 	"aws_elb":                  "DescribeLoadBalancers",
 	"aws_route53_zone":         "ListHostedZones",
 	"aws_cloudformation_stack": "DescribeStacks",
+	// GetParameters has required input fields, so DescribeParameters it is
+	"aws_ssm_parameter":          "DescribeParameters",
+	"aws_ssm_resource_data_sync": "ListResourceDataSync",
 }
 
 var ManualMatchedOutputFields = map[string]string{
