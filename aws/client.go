@@ -115,6 +115,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/transfer"
 	"github.com/aws/aws-sdk-go-v2/service/waf"
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
+	"github.com/aws/aws-sdk-go-v2/service/wafv2"
 	"github.com/aws/aws-sdk-go-v2/service/worklink"
 	"github.com/aws/aws-sdk-go-v2/service/workspaces"
 	"github.com/aws/aws-sdk-go-v2/service/xray"
@@ -230,6 +231,7 @@ type Client struct {
 	transferconn                  *transfer.Client
 	wafconn                       *waf.Client
 	wafregionalconn               *wafregional.Client
+	wafv2conn                     *wafv2.Client
 	worklinkconn                  *worklink.Client
 	workspacesconn                *workspaces.Client
 	xrayconn                      *xray.Client
@@ -350,6 +352,7 @@ func NewClient() (*Client, error) {
 		transferconn:                  transfer.New(cfg),
 		wafconn:                       waf.New(cfg),
 		wafregionalconn:               wafregional.New(cfg),
+		wafv2conn:                     wafv2.New(cfg),
 		worklinkconn:                  worklink.New(cfg),
 		workspacesconn:                workspaces.New(cfg),
 		xrayconn:                      xray.New(cfg),

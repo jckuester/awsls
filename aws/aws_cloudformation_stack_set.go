@@ -13,13 +13,11 @@ func ListCloudformationStackSet(client *Client) ([]Resource, error) {
 
 	var result []Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
+	p := cloudformation.NewListStackSetsPaginator(req)
+	for p.Next(context.Background()) {
+		page := p.CurrentPage()
 
-	if len(resp.Summaries) > 0 {
-		for _, r := range resp.Summaries {
+		for _, r := range page.Summaries {
 
 			result = append(result, Resource{
 				Type:   "aws_cloudformation_stack_set",
@@ -27,6 +25,10 @@ func ListCloudformationStackSet(client *Client) ([]Resource, error) {
 				Region: client.cloudformationconn.Config.Region,
 			})
 		}
+	}
+
+	if err := p.Err(); err != nil {
+		return nil, err
 	}
 
 	return result, nil

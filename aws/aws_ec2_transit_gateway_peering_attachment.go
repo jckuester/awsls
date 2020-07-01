@@ -8,25 +8,25 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func ListSpotFleetRequest(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeSpotFleetRequestsRequest(&ec2.DescribeSpotFleetRequestsInput{})
+func ListEc2TransitGatewayPeeringAttachment(client *Client) ([]Resource, error) {
+	req := client.ec2conn.DescribeTransitGatewayPeeringAttachmentsRequest(&ec2.DescribeTransitGatewayPeeringAttachmentsInput{})
 
 	var result []Resource
 
-	p := ec2.NewDescribeSpotFleetRequestsPaginator(req)
+	p := ec2.NewDescribeTransitGatewayPeeringAttachmentsPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
-		for _, r := range page.SpotFleetRequestConfigs {
+		for _, r := range page.TransitGatewayPeeringAttachments {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {
 				tags[*t.Key] = *t.Value
 			}
-			t := *r.CreateTime
+			t := *r.CreationTime
 			result = append(result, Resource{
-				Type:      "aws_spot_fleet_request",
-				ID:        *r.SpotFleetRequestId,
+				Type:      "aws_ec2_transit_gateway_peering_attachment",
+				ID:        *r.TransitGatewayAttachmentId,
 				Region:    client.ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,

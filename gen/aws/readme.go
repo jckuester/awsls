@@ -59,33 +59,11 @@ var Readme = template.Must(template.New("readme").Parse(`
 
 # awsls
 
-**Note: This tool is still WIP**
-
-A list command for AWS resources. Supports listing of {{ .SupportedResourceTypeCount }} resource types across
-{{ len .Services }} different services.
-
-
-## How are so many resource types covered?
-
-The answer is that awsls is mainly code generated; here is the
-[code of the generator](./gen). Feel free to fork it and generate something else.
-
-## Usage
-
-	awsls <resource_type glob pattern>
-
-To list all VPCs, for example, run
-
-    awsls aws_vpc
-
-or to list all resources
-
-    awsls "*"
-
 ## Supported Resource Types
 
-Currently, all resource types in the table below can be listed with awsls. The Tags, Creation Time, and Owner
-column shows which resource type supports tags, has a creation date, or can be filtered by account owner, respectively.
+Currently, all {{ .SupportedResourceTypeCount }} resource types across {{ len .Services }} services in the table below can be
+listed with awsls. The "Tags" column shows if a resource supports displaying tags, the "Creation Time" column if a
+resource has a creation timestamp, and the "Owner" column if resources are pre-filtered by account ID.
 
 | Service / Type | Tags | Creation Time | Owner
 | :------------- | :--: | :-----------: | :---:
