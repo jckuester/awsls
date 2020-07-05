@@ -238,10 +238,14 @@ type Client struct {
 	Xrayconn                      *xray.Client
 }
 
-func NewClient() (*Client, error) {
+func NewClient(region string) (*Client, error) {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load config: %s", err)
+	}
+
+	if region != "" {
+		cfg.Region = region
 	}
 
 	client := &Client{

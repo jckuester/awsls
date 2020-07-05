@@ -90,12 +90,19 @@ func mainExitCode() int {
 			return 1
 		}
 	}
-	if region != "" {
-		err := os.Setenv("AWS_DEFAULT_REGION", region)
-		if err != nil {
-			log.WithError(err).Error("failed to set AWS region")
-			return 1
-		}
+
+	client, err := aws.NewClient(region)
+	if err != nil {
+		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
+
+		return 1
+	}
+	log.Debugf("using region: %s\n", client.Region)
+
+	err = os.Setenv("AWS_DEFAULT_REGION", client.Region)
+	if err != nil {
+		log.WithError(err).Error("failed to set AWS region")
+		return 1
 	}
 
 	// suppress provider debug and info logs
@@ -110,14 +117,6 @@ func mainExitCode() int {
 	if logDebug {
 		log.SetLevel(log.DebugLevel)
 	}
-
-	client, err := aws.NewClient()
-	if err != nil {
-		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
-
-		return 1
-	}
-	log.Debugf("using region: %s\n", client.Region)
 
 	for _, rType := range matchedTypes {
 		resources, err := aws.ListResourcesByType(client, rType)
