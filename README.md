@@ -42,11 +42,11 @@ To see options available run `awsls --help`.
 It's recommended to install a specific version of awsls available on the
 [releases page](https://github.com/jckuester/awsls/releases).
 
-Here is the recommended way to install awsls v0.1.2:
+Here is the recommended way to install awsls v0.3.0:
 
 ```bash
 # install it into ./bin/
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.1.2
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.3.0
 ```
 
 ## Supported resources
