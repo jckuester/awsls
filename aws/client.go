@@ -122,7 +122,8 @@ import (
 )
 
 type Client struct {
-	accountid                     string
+	Accountid                     string
+	Region                        string
 	Accessanalyzerconn            *accessanalyzer.Client
 	Acmconn                       *acm.Client
 	Acmpcaconn                    *acmpca.Client
@@ -364,7 +365,9 @@ func NewClient() (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	client.accountid = *resp.Account
+
+	client.Accountid = *resp.Account
+	client.Region = cfg.Region
 
 	return client, nil
 }

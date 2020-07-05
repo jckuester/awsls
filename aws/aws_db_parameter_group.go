@@ -22,7 +22,7 @@ func ListDbParameterGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_db_parameter_group",
 				ID:     *r.DBParameterGroupName,
-				Region: client.Rdsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

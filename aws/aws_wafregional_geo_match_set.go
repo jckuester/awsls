@@ -24,7 +24,7 @@ func ListWafregionalGeoMatchSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_geo_match_set",
 				ID:     *r.GeoMatchSetId,
-				Region: client.Wafregionalconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

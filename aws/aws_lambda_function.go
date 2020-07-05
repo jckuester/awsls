@@ -22,7 +22,7 @@ func ListLambdaFunction(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lambda_function",
 				ID:     *r.FunctionName,
-				Region: client.Lambdaconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

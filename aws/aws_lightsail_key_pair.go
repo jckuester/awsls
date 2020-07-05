@@ -29,7 +29,7 @@ func ListLightsailKeyPair(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lightsail_key_pair",
 				ID:     *r.Name,
-				Region: client.Lightsailconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

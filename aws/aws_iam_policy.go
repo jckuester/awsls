@@ -25,7 +25,7 @@ func ListIamPolicy(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iam_policy",
 				ID:     *r.Arn,
-				Region: client.Iamconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

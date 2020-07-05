@@ -22,7 +22,7 @@ func ListSsmAssociation(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_association",
 				ID:     *r.AssociationId,
-				Region: client.Ssmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

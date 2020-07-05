@@ -22,7 +22,7 @@ func ListDmsCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dms_certificate",
 				ID:     *r.CertificateIdentifier,
-				Region: client.Databasemigrationserviceconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

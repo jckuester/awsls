@@ -18,7 +18,7 @@ func ListEc2TrafficMirrorTarget(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TrafficMirrorTargets {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListEc2TrafficMirrorTarget(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ec2_traffic_mirror_target",
 				ID:     *r.TrafficMirrorTargetId,
-				Region: client.Ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

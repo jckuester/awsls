@@ -22,7 +22,7 @@ func ListRoute53ResolverRuleAssociation(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_route53_resolver_rule_association",
 				ID:     *r.Id,
-				Region: client.Route53resolverconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

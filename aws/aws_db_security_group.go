@@ -18,14 +18,14 @@ func ListDbSecurityGroup(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.DBSecurityGroups {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 
 			result = append(result, Resource{
 				Type:   "aws_db_security_group",
 				ID:     *r.DBSecurityGroupName,
-				Region: client.Rdsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -24,7 +24,7 @@ func ListWafregionalIpset(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_ipset",
 				ID:     *r.IPSetId,
-				Region: client.Wafregionalconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

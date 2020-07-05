@@ -18,7 +18,7 @@ func ListEfsAccessPoint(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.AccessPoints {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListEfsAccessPoint(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_efs_access_point",
 				ID:     *r.AccessPointId,
-				Region: client.Efsconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

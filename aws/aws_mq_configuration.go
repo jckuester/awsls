@@ -29,7 +29,7 @@ func ListMqConfiguration(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_mq_configuration",
 				ID:     *r.Id,
-				Region: client.Mqconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

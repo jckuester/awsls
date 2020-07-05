@@ -23,7 +23,7 @@ func ListMediaStoreContainer(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_media_store_container",
 				ID:     *r.Name,
-				Region: client.Mediastoreconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

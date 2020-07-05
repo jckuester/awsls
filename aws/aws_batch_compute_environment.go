@@ -22,7 +22,7 @@ func ListBatchComputeEnvironment(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_batch_compute_environment",
 				ID:     *r.ComputeEnvironmentName,
-				Region: client.Batchconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

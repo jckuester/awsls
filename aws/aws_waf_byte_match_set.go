@@ -24,7 +24,7 @@ func ListWafByteMatchSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_byte_match_set",
 				ID:     *r.ByteMatchSetId,
-				Region: client.Wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

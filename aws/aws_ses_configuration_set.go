@@ -24,7 +24,7 @@ func ListSesConfigurationSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ses_configuration_set",
 				ID:     *r.Name,
-				Region: client.Sesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -22,7 +22,7 @@ func ListCodestarnotificationsNotificationRule(client *Client) ([]Resource, erro
 			result = append(result, Resource{
 				Type:   "aws_codestarnotifications_notification_rule",
 				ID:     *r.Arn,
-				Region: client.Codestarnotificationsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

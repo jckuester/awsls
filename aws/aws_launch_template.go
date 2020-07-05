@@ -27,7 +27,7 @@ func ListLaunchTemplate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_launch_template",
 				ID:        *r.LaunchTemplateId,
-				Region:    client.Ec2conn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

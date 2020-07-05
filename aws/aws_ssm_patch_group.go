@@ -24,7 +24,7 @@ func ListSsmPatchGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_patch_group",
 				ID:     *r.PatchGroup,
-				Region: client.Ssmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -24,7 +24,7 @@ func ListSsmMaintenanceWindow(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_maintenance_window",
 				ID:     *r.WindowId,
-				Region: client.Ssmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

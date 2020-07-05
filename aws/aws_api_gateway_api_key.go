@@ -27,7 +27,7 @@ func ListApiGatewayApiKey(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_api_gateway_api_key",
 				ID:     *r.Id,
-				Region: client.Apigatewayconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

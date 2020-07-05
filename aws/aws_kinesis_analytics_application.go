@@ -24,7 +24,7 @@ func ListKinesisAnalyticsApplication(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_kinesis_analytics_application",
 				ID:     *r.ApplicationARN,
-				Region: client.Kinesisanalyticsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

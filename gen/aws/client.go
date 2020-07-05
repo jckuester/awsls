@@ -57,7 +57,8 @@ var clientTmpl = template.Must(template.New("client").Funcs(
 {{range .}}"github.com/aws/aws-sdk-go-v2/service/{{.}}"
 {{end}})
 type Client struct {
-accountid string
+Accountid string
+Region string
 {{ range . }}{{ . | Title }}conn *{{.}}.Client
 {{end}}}
 
@@ -77,7 +78,9 @@ resp, err := req.Send(context.Background())
 if err != nil {
 	return nil, err
 }
-client.accountid = *resp.Account
+
+client.Accountid = *resp.Account
+client.Region = cfg.Region
 
 return client, nil
 }

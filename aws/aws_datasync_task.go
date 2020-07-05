@@ -22,7 +22,7 @@ func ListDatasyncTask(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_datasync_task",
 				ID:     *r.TaskArn,
-				Region: client.Datasyncconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

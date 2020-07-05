@@ -18,7 +18,7 @@ func ListVpc(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Vpcs {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListVpc(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_vpc",
 				ID:     *r.VpcId,
-				Region: client.Ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

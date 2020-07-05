@@ -24,7 +24,7 @@ func ListGameliftGameSessionQueue(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_gamelift_game_session_queue",
 				ID:     *r.Name,
-				Region: client.Gameliftconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

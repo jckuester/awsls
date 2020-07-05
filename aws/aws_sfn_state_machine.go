@@ -23,7 +23,7 @@ func ListSfnStateMachine(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_sfn_state_machine",
 				ID:     *r.StateMachineArn,
-				Region: client.Sfnconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

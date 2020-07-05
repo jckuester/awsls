@@ -22,7 +22,7 @@ func ListCloudhsmV2Cluster(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudhsm_v2_cluster",
 				ID:     *r.ClusterId,
-				Region: client.Cloudhsmv2conn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

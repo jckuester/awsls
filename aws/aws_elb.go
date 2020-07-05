@@ -23,7 +23,7 @@ func ListElb(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elb",
 				ID:     *r.LoadBalancerName,
-				Region: client.Elasticloadbalancingconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

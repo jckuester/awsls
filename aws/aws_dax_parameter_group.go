@@ -24,7 +24,7 @@ func ListDaxParameterGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dax_parameter_group",
 				ID:     *r.ParameterGroupName,
-				Region: client.Daxconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

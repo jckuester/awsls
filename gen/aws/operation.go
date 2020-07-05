@@ -66,7 +66,7 @@ func  List{{.OpName}}(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type: "{{ .TerraformType }}",
 				ID: *r.{{ .ResourceID }},
-				Region: client.{{ .API.PackageName | Title }}conn.Config.Region,
+				Region: client.Region,
 				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
 				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
 			})
@@ -92,7 +92,7 @@ func  List{{.OpName}}(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type: "{{ .TerraformType }}",
 				ID: *r.{{ .ResourceID }},
-				Region: client.{{ .API.PackageName | Title }}conn.Config.Region,
+				Region: client.Region,
 				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
 				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
 			})

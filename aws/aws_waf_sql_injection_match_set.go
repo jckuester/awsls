@@ -24,7 +24,7 @@ func ListWafSqlInjectionMatchSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_sql_injection_match_set",
 				ID:     *r.SqlInjectionMatchSetId,
-				Region: client.Wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

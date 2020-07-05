@@ -24,7 +24,7 @@ func ListOpsworksStack(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_opsworks_stack",
 				ID:     *r.StackId,
-				Region: client.Opsworksconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

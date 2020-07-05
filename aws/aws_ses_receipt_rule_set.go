@@ -24,7 +24,7 @@ func ListSesReceiptRuleSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ses_receipt_rule_set",
 				ID:     *r.Name,
-				Region: client.Sesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

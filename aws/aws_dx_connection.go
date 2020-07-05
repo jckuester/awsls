@@ -29,7 +29,7 @@ func ListDxConnection(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dx_connection",
 				ID:     *r.ConnectionId,
-				Region: client.Directconnectconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

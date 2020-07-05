@@ -23,7 +23,7 @@ func ListMskConfiguration(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_msk_configuration",
 				ID:     *r.Arn,
-				Region: client.Kafkaconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

@@ -22,7 +22,7 @@ func ListEcrRepository(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ecr_repository",
 				ID:     *r.RepositoryName,
-				Region: client.Ecrconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

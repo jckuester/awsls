@@ -24,7 +24,7 @@ func ListWafRule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_rule",
 				ID:     *r.RuleId,
-				Region: client.Wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

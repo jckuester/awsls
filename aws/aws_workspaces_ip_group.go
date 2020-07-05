@@ -24,7 +24,7 @@ func ListWorkspacesIpGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_workspaces_ip_group",
 				ID:     *r.GroupId,
-				Region: client.Workspacesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

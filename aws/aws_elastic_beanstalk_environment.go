@@ -24,7 +24,7 @@ func ListElasticBeanstalkEnvironment(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elastic_beanstalk_environment",
 				ID:     *r.EnvironmentId,
-				Region: client.Elasticbeanstalkconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -29,7 +29,7 @@ func ListAppsyncGraphqlApi(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_appsync_graphql_api",
 				ID:     *r.ApiId,
-				Region: client.Appsyncconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

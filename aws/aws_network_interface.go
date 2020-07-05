@@ -18,14 +18,14 @@ func ListNetworkInterface(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.NetworkInterfaces {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 
 			result = append(result, Resource{
 				Type:   "aws_network_interface",
 				ID:     *r.NetworkInterfaceId,
-				Region: client.Ec2conn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

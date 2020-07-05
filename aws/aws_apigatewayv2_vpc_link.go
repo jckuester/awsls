@@ -29,7 +29,7 @@ func ListApigatewayv2VpcLink(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_apigatewayv2_vpc_link",
 				ID:     *r.VpcLinkId,
-				Region: client.Apigatewayv2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

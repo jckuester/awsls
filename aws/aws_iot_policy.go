@@ -24,7 +24,7 @@ func ListIotPolicy(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iot_policy",
 				ID:     *r.PolicyName,
-				Region: client.Iotconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

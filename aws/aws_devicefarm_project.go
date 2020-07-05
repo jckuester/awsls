@@ -22,7 +22,7 @@ func ListDevicefarmProject(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_devicefarm_project",
 				ID:     *r.Arn,
-				Region: client.Devicefarmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

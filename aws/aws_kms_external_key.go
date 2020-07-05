@@ -22,7 +22,7 @@ func ListKmsExternalKey(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_kms_external_key",
 				ID:     *r.KeyId,
-				Region: client.Kmsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

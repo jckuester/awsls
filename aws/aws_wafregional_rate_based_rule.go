@@ -24,7 +24,7 @@ func ListWafregionalRateBasedRule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_rate_based_rule",
 				ID:     *r.RuleId,
-				Region: client.Wafregionalconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

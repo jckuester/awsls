@@ -24,7 +24,7 @@ func ListConfigConfigurationRecorder(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_config_configuration_recorder",
 				ID:     *r.Name,
-				Region: client.Configserviceconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

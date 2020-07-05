@@ -25,7 +25,7 @@ func ListS3Bucket(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_s3_bucket",
 				ID:     *r.Name,
-				Region: client.S3conn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

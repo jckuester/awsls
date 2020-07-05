@@ -22,7 +22,7 @@ func ListCloudformationStackSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudformation_stack_set",
 				ID:     *r.StackSetName,
-				Region: client.Cloudformationconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

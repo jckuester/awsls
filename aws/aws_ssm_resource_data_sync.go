@@ -24,7 +24,7 @@ func ListSsmResourceDataSync(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_resource_data_sync",
 				ID:     *r.SyncName,
-				Region: client.Ssmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

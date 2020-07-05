@@ -29,7 +29,7 @@ func ListDxPrivateVirtualInterface(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dx_private_virtual_interface",
 				ID:     *r.VirtualInterfaceId,
-				Region: client.Directconnectconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

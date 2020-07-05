@@ -22,7 +22,7 @@ func ListAppmeshMesh(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_appmesh_mesh",
 				ID:     *r.MeshName,
-				Region: client.Appmeshconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

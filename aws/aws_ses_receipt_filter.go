@@ -24,7 +24,7 @@ func ListSesReceiptFilter(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ses_receipt_filter",
 				ID:     *r.Name,
-				Region: client.Sesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

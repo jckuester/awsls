@@ -24,7 +24,7 @@ func ListWafRegexPatternSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_regex_pattern_set",
 				ID:     *r.RegexPatternSetId,
-				Region: client.Wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

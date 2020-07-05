@@ -22,7 +22,7 @@ func ListQldbLedger(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_qldb_ledger",
 				ID:     *r.Name,
-				Region: client.Qldbconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

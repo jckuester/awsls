@@ -29,7 +29,7 @@ func ListRedshiftSnapshotSchedule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_redshift_snapshot_schedule",
 				ID:     *r.ScheduleIdentifier,
-				Region: client.Redshiftconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

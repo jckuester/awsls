@@ -22,7 +22,7 @@ func ListCurReportDefinition(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cur_report_definition",
 				ID:     *r.ReportName,
-				Region: client.Costandusagereportserviceconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

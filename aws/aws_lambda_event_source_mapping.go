@@ -22,7 +22,7 @@ func ListLambdaEventSourceMapping(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lambda_event_source_mapping",
 				ID:     *r.UUID,
-				Region: client.Lambdaconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

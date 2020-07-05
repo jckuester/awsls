@@ -27,7 +27,7 @@ func ListMediaPackageChannel(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_media_package_channel",
 				ID:     *r.Id,
-				Region: client.Mediapackageconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

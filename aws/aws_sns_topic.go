@@ -22,7 +22,7 @@ func ListSnsTopic(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_sns_topic",
 				ID:     *r.TopicArn,
-				Region: client.Snsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

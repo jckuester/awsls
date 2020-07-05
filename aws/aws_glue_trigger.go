@@ -22,7 +22,7 @@ func ListGlueTrigger(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_glue_trigger",
 				ID:     *r.Name,
-				Region: client.Glueconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

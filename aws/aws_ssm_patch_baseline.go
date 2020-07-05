@@ -24,7 +24,7 @@ func ListSsmPatchBaseline(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_patch_baseline",
 				ID:     *r.BaselineId,
-				Region: client.Ssmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

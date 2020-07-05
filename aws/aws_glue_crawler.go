@@ -23,7 +23,7 @@ func ListGlueCrawler(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_glue_crawler",
 				ID:     *r.Name,
-				Region: client.Glueconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

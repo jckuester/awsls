@@ -22,7 +22,7 @@ func ListSsmParameter(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_parameter",
 				ID:     *r.Name,
-				Region: client.Ssmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

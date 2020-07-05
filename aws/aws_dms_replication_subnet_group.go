@@ -22,7 +22,7 @@ func ListDmsReplicationSubnetGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dms_replication_subnet_group",
 				ID:     *r.ReplicationSubnetGroupIdentifier,
-				Region: client.Databasemigrationserviceconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

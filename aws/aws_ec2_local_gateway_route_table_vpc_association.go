@@ -27,7 +27,7 @@ func ListEc2LocalGatewayRouteTableVpcAssociation(client *Client) ([]Resource, er
 			result = append(result, Resource{
 				Type:   "aws_ec2_local_gateway_route_table_vpc_association",
 				ID:     *r.LocalGatewayRouteTableVpcAssociationId,
-				Region: client.Ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

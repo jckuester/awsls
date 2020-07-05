@@ -22,7 +22,7 @@ func ListElastictranscoderPreset(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elastictranscoder_preset",
 				ID:     *r.Id,
-				Region: client.Elastictranscoderconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

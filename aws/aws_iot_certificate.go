@@ -25,7 +25,7 @@ func ListIotCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iot_certificate",
 				ID:     *r.CertificateId,
-				Region: client.Iotconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

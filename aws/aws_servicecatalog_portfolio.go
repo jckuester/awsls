@@ -23,7 +23,7 @@ func ListServicecatalogPortfolio(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_servicecatalog_portfolio",
 				ID:     *r.Id,
-				Region: client.Servicecatalogconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

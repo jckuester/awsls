@@ -22,7 +22,7 @@ func ListDbEventSubscription(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_db_event_subscription",
 				ID:     *r.CustSubscriptionId,
-				Region: client.Rdsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

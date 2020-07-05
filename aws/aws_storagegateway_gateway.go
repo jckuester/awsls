@@ -22,7 +22,7 @@ func ListStoragegatewayGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_storagegateway_gateway",
 				ID:     *r.GatewayARN,
-				Region: client.Storagegatewayconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

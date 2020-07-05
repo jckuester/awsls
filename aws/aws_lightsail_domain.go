@@ -29,7 +29,7 @@ func ListLightsailDomain(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lightsail_domain",
 				ID:     *r.Name,
-				Region: client.Lightsailconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

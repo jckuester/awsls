@@ -24,7 +24,7 @@ func ListOpsworksUserProfile(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_opsworks_user_profile",
 				ID:     *r.IamUserArn,
-				Region: client.Opsworksconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

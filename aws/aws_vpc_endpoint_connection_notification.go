@@ -22,7 +22,7 @@ func ListVpcEndpointConnectionNotification(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_vpc_endpoint_connection_notification",
 				ID:     *r.ConnectionNotificationId,
-				Region: client.Ec2conn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -22,7 +22,7 @@ func ListRoute53HealthCheck(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_route53_health_check",
 				ID:     *r.Id,
-				Region: client.Route53conn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

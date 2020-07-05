@@ -22,7 +22,7 @@ func ListAcmCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_acm_certificate",
 				ID:     *r.CertificateArn,
-				Region: client.Acmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

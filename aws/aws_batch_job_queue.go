@@ -22,7 +22,7 @@ func ListBatchJobQueue(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_batch_job_queue",
 				ID:     *r.JobQueueArn,
-				Region: client.Batchconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

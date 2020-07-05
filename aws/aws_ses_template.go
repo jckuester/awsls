@@ -24,7 +24,7 @@ func ListSesTemplate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ses_template",
 				ID:     *r.Name,
-				Region: client.Sesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

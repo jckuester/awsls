@@ -22,7 +22,7 @@ func ListCloudwatchDashboard(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudwatch_dashboard",
 				ID:     *r.DashboardName,
-				Region: client.Cloudwatchconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

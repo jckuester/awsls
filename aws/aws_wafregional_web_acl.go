@@ -24,7 +24,7 @@ func ListWafregionalWebAcl(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_web_acl",
 				ID:     *r.WebACLId,
-				Region: client.Wafregionalconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

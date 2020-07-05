@@ -22,7 +22,7 @@ func ListIamServerCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iam_server_certificate",
 				ID:     *r.ServerCertificateId,
-				Region: client.Iamconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -29,7 +29,7 @@ func ListDxLag(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dx_lag",
 				ID:     *r.LagId,
-				Region: client.Directconnectconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

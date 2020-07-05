@@ -22,7 +22,7 @@ func ListCodecommitRepository(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_codecommit_repository",
 				ID:     *r.RepositoryName,
-				Region: client.Codecommitconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -27,7 +27,7 @@ func ListCodepipelineWebhook(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_codepipeline_webhook",
 				ID:     *r.Arn,
-				Region: client.Codepipelineconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

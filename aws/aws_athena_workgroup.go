@@ -23,7 +23,7 @@ func ListAthenaWorkgroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_athena_workgroup",
 				ID:     *r.Name,
-				Region: client.Athenaconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

@@ -24,7 +24,7 @@ func ListDaxSubnetGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dax_subnet_group",
 				ID:     *r.SubnetGroupName,
-				Region: client.Daxconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

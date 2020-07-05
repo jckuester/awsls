@@ -22,7 +22,7 @@ func ListDmsReplicationTask(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dms_replication_task",
 				ID:     *r.ReplicationTaskIdentifier,
-				Region: client.Databasemigrationserviceconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

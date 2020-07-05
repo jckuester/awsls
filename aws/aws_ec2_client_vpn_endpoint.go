@@ -31,7 +31,7 @@ func ListEc2ClientVpnEndpoint(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_client_vpn_endpoint",
 				ID:        *r.ClientVpnEndpointId,
-				Region:    client.Ec2conn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

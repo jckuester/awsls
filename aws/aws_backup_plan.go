@@ -23,7 +23,7 @@ func ListBackupPlan(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_backup_plan",
 				ID:     *r.BackupPlanId,
-				Region: client.Backupconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

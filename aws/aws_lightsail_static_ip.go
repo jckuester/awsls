@@ -24,7 +24,7 @@ func ListLightsailStaticIp(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lightsail_static_ip",
 				ID:     *r.Name,
-				Region: client.Lightsailconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

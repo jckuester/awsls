@@ -23,7 +23,7 @@ func ListIamGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iam_group",
 				ID:     *r.GroupName,
-				Region: client.Iamconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})
