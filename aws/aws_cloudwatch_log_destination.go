@@ -10,7 +10,7 @@ import (
 )
 
 func ListCloudwatchLogDestination(client *Client) ([]Resource, error) {
-	req := client.cloudwatchlogsconn.DescribeDestinationsRequest(&cloudwatchlogs.DescribeDestinationsInput{})
+	req := client.Cloudwatchlogsconn.DescribeDestinationsRequest(&cloudwatchlogs.DescribeDestinationsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListCloudwatchLogDestination(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudwatch_log_destination",
 				ID:     *r.DestinationName,
-				Region: client.cloudwatchlogsconn.Config.Region,
+				Region: client.Cloudwatchlogsconn.Config.Region,
 
 				CreatedAt: &t,
 			})

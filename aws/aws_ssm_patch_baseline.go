@@ -9,7 +9,7 @@ import (
 )
 
 func ListSsmPatchBaseline(client *Client) ([]Resource, error) {
-	req := client.ssmconn.DescribePatchBaselinesRequest(&ssm.DescribePatchBaselinesInput{})
+	req := client.Ssmconn.DescribePatchBaselinesRequest(&ssm.DescribePatchBaselinesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListSsmPatchBaseline(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_patch_baseline",
 				ID:     *r.BaselineId,
-				Region: client.ssmconn.Config.Region,
+				Region: client.Ssmconn.Config.Region,
 			})
 		}
 	}

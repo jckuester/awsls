@@ -9,7 +9,7 @@ import (
 )
 
 func ListRoute53ResolverRule(client *Client) ([]Resource, error) {
-	req := client.route53resolverconn.ListResolverRulesRequest(&route53resolver.ListResolverRulesInput{})
+	req := client.Route53resolverconn.ListResolverRulesRequest(&route53resolver.ListResolverRulesInput{})
 
 	var result []Resource
 
@@ -25,7 +25,7 @@ func ListRoute53ResolverRule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_route53_resolver_rule",
 				ID:     *r.Id,
-				Region: client.route53resolverconn.Config.Region,
+				Region: client.Route53resolverconn.Config.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListDbInstance(client *Client) ([]Resource, error) {
-	req := client.rdsconn.DescribeDBInstancesRequest(&rds.DescribeDBInstancesInput{})
+	req := client.Rdsconn.DescribeDBInstancesRequest(&rds.DescribeDBInstancesInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListDbInstance(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_db_instance",
 				ID:     *r.DBInstanceIdentifier,
-				Region: client.rdsconn.Config.Region,
+				Region: client.Rdsconn.Config.Region,
 
 				CreatedAt: &t,
 			})

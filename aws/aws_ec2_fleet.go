@@ -9,7 +9,7 @@ import (
 )
 
 func ListEc2Fleet(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeFleetsRequest(&ec2.DescribeFleetsInput{})
+	req := client.Ec2conn.DescribeFleetsRequest(&ec2.DescribeFleetsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListEc2Fleet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_fleet",
 				ID:        *r.FleetId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

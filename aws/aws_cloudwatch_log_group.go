@@ -10,7 +10,7 @@ import (
 )
 
 func ListCloudwatchLogGroup(client *Client) ([]Resource, error) {
-	req := client.cloudwatchlogsconn.DescribeLogGroupsRequest(&cloudwatchlogs.DescribeLogGroupsInput{})
+	req := client.Cloudwatchlogsconn.DescribeLogGroupsRequest(&cloudwatchlogs.DescribeLogGroupsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListCloudwatchLogGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudwatch_log_group",
 				ID:     *r.LogGroupName,
-				Region: client.cloudwatchlogsconn.Config.Region,
+				Region: client.Cloudwatchlogsconn.Config.Region,
 
 				CreatedAt: &t,
 			})

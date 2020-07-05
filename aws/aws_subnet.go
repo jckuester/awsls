@@ -9,7 +9,7 @@ import (
 )
 
 func ListSubnet(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeSubnetsRequest(&ec2.DescribeSubnetsInput{})
+	req := client.Ec2conn.DescribeSubnetsRequest(&ec2.DescribeSubnetsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListSubnet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_subnet",
 				ID:     *r.SubnetId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Ec2conn.Config.Region,
 				Tags:   tags,
 			})
 		}

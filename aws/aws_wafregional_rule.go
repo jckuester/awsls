@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafregionalRule(client *Client) ([]Resource, error) {
-	req := client.wafregionalconn.ListRulesRequest(&wafregional.ListRulesInput{})
+	req := client.Wafregionalconn.ListRulesRequest(&wafregional.ListRulesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafregionalRule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_rule",
 				ID:     *r.RuleId,
-				Region: client.wafregionalconn.Config.Region,
+				Region: client.Wafregionalconn.Config.Region,
 			})
 		}
 	}

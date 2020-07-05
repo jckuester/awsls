@@ -9,7 +9,7 @@ import (
 )
 
 func ListRedshiftSnapshotCopyGrant(client *Client) ([]Resource, error) {
-	req := client.redshiftconn.DescribeSnapshotCopyGrantsRequest(&redshift.DescribeSnapshotCopyGrantsInput{})
+	req := client.Redshiftconn.DescribeSnapshotCopyGrantsRequest(&redshift.DescribeSnapshotCopyGrantsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListRedshiftSnapshotCopyGrant(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_redshift_snapshot_copy_grant",
 				ID:     *r.SnapshotCopyGrantName,
-				Region: client.redshiftconn.Config.Region,
+				Region: client.Redshiftconn.Config.Region,
 				Tags:   tags,
 			})
 		}

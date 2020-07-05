@@ -9,7 +9,7 @@ import (
 )
 
 func ListLightsailDomain(client *Client) ([]Resource, error) {
-	req := client.lightsailconn.GetDomainsRequest(&lightsail.GetDomainsInput{})
+	req := client.Lightsailconn.GetDomainsRequest(&lightsail.GetDomainsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListLightsailDomain(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lightsail_domain",
 				ID:     *r.Name,
-				Region: client.lightsailconn.Config.Region,
+				Region: client.Lightsailconn.Config.Region,
 				Tags:   tags,
 			})
 		}

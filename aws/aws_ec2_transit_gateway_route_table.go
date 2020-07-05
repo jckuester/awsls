@@ -9,7 +9,7 @@ import (
 )
 
 func ListEc2TransitGatewayRouteTable(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeTransitGatewayRouteTablesRequest(&ec2.DescribeTransitGatewayRouteTablesInput{})
+	req := client.Ec2conn.DescribeTransitGatewayRouteTablesRequest(&ec2.DescribeTransitGatewayRouteTablesInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListEc2TransitGatewayRouteTable(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_transit_gateway_route_table",
 				ID:        *r.TransitGatewayRouteTableId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

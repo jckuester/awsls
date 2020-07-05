@@ -9,7 +9,7 @@ import (
 )
 
 func ListServiceDiscoveryService(client *Client) ([]Resource, error) {
-	req := client.servicediscoveryconn.ListServicesRequest(&servicediscovery.ListServicesInput{})
+	req := client.Servicediscoveryconn.ListServicesRequest(&servicediscovery.ListServicesInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListServiceDiscoveryService(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_service_discovery_service",
 				ID:     *r.Id,
-				Region: client.servicediscoveryconn.Config.Region,
+				Region: client.Servicediscoveryconn.Config.Region,
 
 				CreatedAt: &t,
 			})

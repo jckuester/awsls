@@ -9,7 +9,7 @@ import (
 )
 
 func ListApiGatewayRestApi(client *Client) ([]Resource, error) {
-	req := client.apigatewayconn.GetRestApisRequest(&apigateway.GetRestApisInput{})
+	req := client.Apigatewayconn.GetRestApisRequest(&apigateway.GetRestApisInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListApiGatewayRestApi(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_api_gateway_rest_api",
 				ID:     *r.Id,
-				Region: client.apigatewayconn.Config.Region,
+				Region: client.Apigatewayconn.Config.Region,
 				Tags:   tags,
 			})
 		}

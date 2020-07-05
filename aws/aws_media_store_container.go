@@ -9,7 +9,7 @@ import (
 )
 
 func ListMediaStoreContainer(client *Client) ([]Resource, error) {
-	req := client.mediastoreconn.ListContainersRequest(&mediastore.ListContainersInput{})
+	req := client.Mediastoreconn.ListContainersRequest(&mediastore.ListContainersInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListMediaStoreContainer(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_media_store_container",
 				ID:     *r.Name,
-				Region: client.mediastoreconn.Config.Region,
+				Region: client.Mediastoreconn.Config.Region,
 
 				CreatedAt: &t,
 			})

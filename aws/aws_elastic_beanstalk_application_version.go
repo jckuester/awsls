@@ -9,7 +9,7 @@ import (
 )
 
 func ListElasticBeanstalkApplicationVersion(client *Client) ([]Resource, error) {
-	req := client.elasticbeanstalkconn.DescribeApplicationVersionsRequest(&elasticbeanstalk.DescribeApplicationVersionsInput{})
+	req := client.Elasticbeanstalkconn.DescribeApplicationVersionsRequest(&elasticbeanstalk.DescribeApplicationVersionsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListElasticBeanstalkApplicationVersion(client *Client) ([]Resource, error) 
 			result = append(result, Resource{
 				Type:   "aws_elastic_beanstalk_application_version",
 				ID:     *r.ApplicationName,
-				Region: client.elasticbeanstalkconn.Config.Region,
+				Region: client.Elasticbeanstalkconn.Config.Region,
 			})
 		}
 	}

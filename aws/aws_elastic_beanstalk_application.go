@@ -9,7 +9,7 @@ import (
 )
 
 func ListElasticBeanstalkApplication(client *Client) ([]Resource, error) {
-	req := client.elasticbeanstalkconn.DescribeApplicationsRequest(&elasticbeanstalk.DescribeApplicationsInput{})
+	req := client.Elasticbeanstalkconn.DescribeApplicationsRequest(&elasticbeanstalk.DescribeApplicationsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListElasticBeanstalkApplication(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elastic_beanstalk_application",
 				ID:     *r.ApplicationName,
-				Region: client.elasticbeanstalkconn.Config.Region,
+				Region: client.Elasticbeanstalkconn.Config.Region,
 			})
 		}
 	}

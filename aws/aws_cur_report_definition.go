@@ -9,7 +9,7 @@ import (
 )
 
 func ListCurReportDefinition(client *Client) ([]Resource, error) {
-	req := client.costandusagereportserviceconn.DescribeReportDefinitionsRequest(&costandusagereportservice.DescribeReportDefinitionsInput{})
+	req := client.Costandusagereportserviceconn.DescribeReportDefinitionsRequest(&costandusagereportservice.DescribeReportDefinitionsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListCurReportDefinition(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cur_report_definition",
 				ID:     *r.ReportName,
-				Region: client.costandusagereportserviceconn.Config.Region,
+				Region: client.Costandusagereportserviceconn.Config.Region,
 			})
 		}
 	}

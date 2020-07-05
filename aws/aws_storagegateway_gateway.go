@@ -9,7 +9,7 @@ import (
 )
 
 func ListStoragegatewayGateway(client *Client) ([]Resource, error) {
-	req := client.storagegatewayconn.ListGatewaysRequest(&storagegateway.ListGatewaysInput{})
+	req := client.Storagegatewayconn.ListGatewaysRequest(&storagegateway.ListGatewaysInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListStoragegatewayGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_storagegateway_gateway",
 				ID:     *r.GatewayARN,
-				Region: client.storagegatewayconn.Config.Region,
+				Region: client.Storagegatewayconn.Config.Region,
 			})
 		}
 	}

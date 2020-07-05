@@ -9,7 +9,7 @@ import (
 )
 
 func ListCloudformationStack(client *Client) ([]Resource, error) {
-	req := client.cloudformationconn.DescribeStacksRequest(&cloudformation.DescribeStacksInput{})
+	req := client.Cloudformationconn.DescribeStacksRequest(&cloudformation.DescribeStacksInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListCloudformationStack(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_cloudformation_stack",
 				ID:        *r.StackId,
-				Region:    client.cloudformationconn.Config.Region,
+				Region:    client.Cloudformationconn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -9,7 +9,7 @@ import (
 )
 
 func ListDaxParameterGroup(client *Client) ([]Resource, error) {
-	req := client.daxconn.DescribeParameterGroupsRequest(&dax.DescribeParameterGroupsInput{})
+	req := client.Daxconn.DescribeParameterGroupsRequest(&dax.DescribeParameterGroupsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListDaxParameterGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dax_parameter_group",
 				ID:     *r.ParameterGroupName,
-				Region: client.daxconn.Config.Region,
+				Region: client.Daxconn.Config.Region,
 			})
 		}
 	}

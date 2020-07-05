@@ -9,7 +9,7 @@ import (
 )
 
 func ListSesReceiptFilter(client *Client) ([]Resource, error) {
-	req := client.sesconn.ListReceiptFiltersRequest(&ses.ListReceiptFiltersInput{})
+	req := client.Sesconn.ListReceiptFiltersRequest(&ses.ListReceiptFiltersInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListSesReceiptFilter(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ses_receipt_filter",
 				ID:     *r.Name,
-				Region: client.sesconn.Config.Region,
+				Region: client.Sesconn.Config.Region,
 			})
 		}
 	}

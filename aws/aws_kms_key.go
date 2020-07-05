@@ -9,7 +9,7 @@ import (
 )
 
 func ListKmsKey(client *Client) ([]Resource, error) {
-	req := client.kmsconn.ListKeysRequest(&kms.ListKeysInput{})
+	req := client.Kmsconn.ListKeysRequest(&kms.ListKeysInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListKmsKey(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_kms_key",
 				ID:     *r.KeyId,
-				Region: client.kmsconn.Config.Region,
+				Region: client.Kmsconn.Config.Region,
 			})
 		}
 	}

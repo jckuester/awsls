@@ -9,7 +9,7 @@ import (
 )
 
 func ListS3Bucket(client *Client) ([]Resource, error) {
-	req := client.s3conn.ListBucketsRequest(&s3.ListBucketsInput{})
+	req := client.S3conn.ListBucketsRequest(&s3.ListBucketsInput{})
 
 	var result []Resource
 
@@ -25,7 +25,7 @@ func ListS3Bucket(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_s3_bucket",
 				ID:     *r.Name,
-				Region: client.s3conn.Config.Region,
+				Region: client.S3conn.Config.Region,
 
 				CreatedAt: &t,
 			})

@@ -9,7 +9,7 @@ import (
 )
 
 func ListDatasyncAgent(client *Client) ([]Resource, error) {
-	req := client.datasyncconn.ListAgentsRequest(&datasync.ListAgentsInput{})
+	req := client.Datasyncconn.ListAgentsRequest(&datasync.ListAgentsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListDatasyncAgent(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_datasync_agent",
 				ID:     *r.AgentArn,
-				Region: client.datasyncconn.Config.Region,
+				Region: client.Datasyncconn.Config.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListEgressOnlyInternetGateway(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeEgressOnlyInternetGatewaysRequest(&ec2.DescribeEgressOnlyInternetGatewaysInput{})
+	req := client.Ec2conn.DescribeEgressOnlyInternetGatewaysRequest(&ec2.DescribeEgressOnlyInternetGatewaysInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListEgressOnlyInternetGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_egress_only_internet_gateway",
 				ID:     *r.EgressOnlyInternetGatewayId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Ec2conn.Config.Region,
 				Tags:   tags,
 			})
 		}

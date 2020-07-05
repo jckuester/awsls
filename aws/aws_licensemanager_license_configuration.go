@@ -9,7 +9,7 @@ import (
 )
 
 func ListLicensemanagerLicenseConfiguration(client *Client) ([]Resource, error) {
-	req := client.licensemanagerconn.ListLicenseConfigurationsRequest(&licensemanager.ListLicenseConfigurationsInput{})
+	req := client.Licensemanagerconn.ListLicenseConfigurationsRequest(&licensemanager.ListLicenseConfigurationsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListLicensemanagerLicenseConfiguration(client *Client) ([]Resource, error) 
 			result = append(result, Resource{
 				Type:   "aws_licensemanager_license_configuration",
 				ID:     *r.LicenseConfigurationArn,
-				Region: client.licensemanagerconn.Config.Region,
+				Region: client.Licensemanagerconn.Config.Region,
 			})
 		}
 	}

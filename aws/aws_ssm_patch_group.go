@@ -9,7 +9,7 @@ import (
 )
 
 func ListSsmPatchGroup(client *Client) ([]Resource, error) {
-	req := client.ssmconn.DescribePatchGroupsRequest(&ssm.DescribePatchGroupsInput{})
+	req := client.Ssmconn.DescribePatchGroupsRequest(&ssm.DescribePatchGroupsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListSsmPatchGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_patch_group",
 				ID:     *r.PatchGroup,
-				Region: client.ssmconn.Config.Region,
+				Region: client.Ssmconn.Config.Region,
 			})
 		}
 	}

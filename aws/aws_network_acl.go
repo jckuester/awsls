@@ -9,7 +9,7 @@ import (
 )
 
 func ListNetworkAcl(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeNetworkAclsRequest(&ec2.DescribeNetworkAclsInput{})
+	req := client.Ec2conn.DescribeNetworkAclsRequest(&ec2.DescribeNetworkAclsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListNetworkAcl(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_network_acl",
 				ID:     *r.NetworkAclId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Ec2conn.Config.Region,
 				Tags:   tags,
 			})
 		}

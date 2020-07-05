@@ -9,7 +9,7 @@ import (
 )
 
 func ListRedshiftSnapshotSchedule(client *Client) ([]Resource, error) {
-	req := client.redshiftconn.DescribeSnapshotSchedulesRequest(&redshift.DescribeSnapshotSchedulesInput{})
+	req := client.Redshiftconn.DescribeSnapshotSchedulesRequest(&redshift.DescribeSnapshotSchedulesInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListRedshiftSnapshotSchedule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_redshift_snapshot_schedule",
 				ID:     *r.ScheduleIdentifier,
-				Region: client.redshiftconn.Config.Region,
+				Region: client.Redshiftconn.Config.Region,
 				Tags:   tags,
 			})
 		}

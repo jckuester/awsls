@@ -9,7 +9,7 @@ import (
 )
 
 func ListSnsTopicSubscription(client *Client) ([]Resource, error) {
-	req := client.snsconn.ListSubscriptionsRequest(&sns.ListSubscriptionsInput{})
+	req := client.Snsconn.ListSubscriptionsRequest(&sns.ListSubscriptionsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListSnsTopicSubscription(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_sns_topic_subscription",
 				ID:     *r.SubscriptionArn,
-				Region: client.snsconn.Config.Region,
+				Region: client.Snsconn.Config.Region,
 			})
 		}
 	}

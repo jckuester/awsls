@@ -9,7 +9,7 @@ import (
 )
 
 func ListFsxLustreFileSystem(client *Client) ([]Resource, error) {
-	req := client.fsxconn.DescribeFileSystemsRequest(&fsx.DescribeFileSystemsInput{})
+	req := client.Fsxconn.DescribeFileSystemsRequest(&fsx.DescribeFileSystemsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListFsxLustreFileSystem(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_fsx_lustre_file_system",
 				ID:        *r.FileSystemId,
-				Region:    client.fsxconn.Config.Region,
+				Region:    client.Fsxconn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

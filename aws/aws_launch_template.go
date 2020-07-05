@@ -9,7 +9,7 @@ import (
 )
 
 func ListLaunchTemplate(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeLaunchTemplatesRequest(&ec2.DescribeLaunchTemplatesInput{})
+	req := client.Ec2conn.DescribeLaunchTemplatesRequest(&ec2.DescribeLaunchTemplatesInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListLaunchTemplate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_launch_template",
 				ID:        *r.LaunchTemplateId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -9,7 +9,7 @@ import (
 )
 
 func ListElastictranscoderPreset(client *Client) ([]Resource, error) {
-	req := client.elastictranscoderconn.ListPresetsRequest(&elastictranscoder.ListPresetsInput{})
+	req := client.Elastictranscoderconn.ListPresetsRequest(&elastictranscoder.ListPresetsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListElastictranscoderPreset(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elastictranscoder_preset",
 				ID:     *r.Id,
-				Region: client.elastictranscoderconn.Config.Region,
+				Region: client.Elastictranscoderconn.Config.Region,
 			})
 		}
 	}

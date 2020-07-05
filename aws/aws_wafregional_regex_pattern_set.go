@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafregionalRegexPatternSet(client *Client) ([]Resource, error) {
-	req := client.wafregionalconn.ListRegexPatternSetsRequest(&wafregional.ListRegexPatternSetsInput{})
+	req := client.Wafregionalconn.ListRegexPatternSetsRequest(&wafregional.ListRegexPatternSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafregionalRegexPatternSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_regex_pattern_set",
 				ID:     *r.RegexPatternSetId,
-				Region: client.wafregionalconn.Config.Region,
+				Region: client.Wafregionalconn.Config.Region,
 			})
 		}
 	}

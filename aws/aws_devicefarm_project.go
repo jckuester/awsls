@@ -9,7 +9,7 @@ import (
 )
 
 func ListDevicefarmProject(client *Client) ([]Resource, error) {
-	req := client.devicefarmconn.ListProjectsRequest(&devicefarm.ListProjectsInput{})
+	req := client.Devicefarmconn.ListProjectsRequest(&devicefarm.ListProjectsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListDevicefarmProject(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_devicefarm_project",
 				ID:     *r.Arn,
-				Region: client.devicefarmconn.Config.Region,
+				Region: client.Devicefarmconn.Config.Region,
 			})
 		}
 	}

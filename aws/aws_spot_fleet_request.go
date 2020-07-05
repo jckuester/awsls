@@ -9,7 +9,7 @@ import (
 )
 
 func ListSpotFleetRequest(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeSpotFleetRequestsRequest(&ec2.DescribeSpotFleetRequestsInput{})
+	req := client.Ec2conn.DescribeSpotFleetRequestsRequest(&ec2.DescribeSpotFleetRequestsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListSpotFleetRequest(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_spot_fleet_request",
 				ID:        *r.SpotFleetRequestId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

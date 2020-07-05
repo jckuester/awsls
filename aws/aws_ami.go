@@ -10,7 +10,7 @@ import (
 )
 
 func ListAmi(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeImagesRequest(&ec2.DescribeImagesInput{})
+	req := client.Ec2conn.DescribeImagesRequest(&ec2.DescribeImagesInput{})
 
 	var result []Resource
 
@@ -35,7 +35,7 @@ func ListAmi(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ami",
 				ID:        *r.ImageId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

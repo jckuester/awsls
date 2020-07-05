@@ -9,7 +9,7 @@ import (
 )
 
 func ListSfnActivity(client *Client) ([]Resource, error) {
-	req := client.sfnconn.ListActivitiesRequest(&sfn.ListActivitiesInput{})
+	req := client.Sfnconn.ListActivitiesRequest(&sfn.ListActivitiesInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListSfnActivity(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_sfn_activity",
 				ID:     *r.ActivityArn,
-				Region: client.sfnconn.Config.Region,
+				Region: client.Sfnconn.Config.Region,
 
 				CreatedAt: &t,
 			})

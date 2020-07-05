@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafregionalGeoMatchSet(client *Client) ([]Resource, error) {
-	req := client.wafregionalconn.ListGeoMatchSetsRequest(&wafregional.ListGeoMatchSetsInput{})
+	req := client.Wafregionalconn.ListGeoMatchSetsRequest(&wafregional.ListGeoMatchSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafregionalGeoMatchSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_geo_match_set",
 				ID:     *r.GeoMatchSetId,
-				Region: client.wafregionalconn.Config.Region,
+				Region: client.Wafregionalconn.Config.Region,
 			})
 		}
 	}

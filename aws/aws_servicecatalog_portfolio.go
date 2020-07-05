@@ -9,7 +9,7 @@ import (
 )
 
 func ListServicecatalogPortfolio(client *Client) ([]Resource, error) {
-	req := client.servicecatalogconn.ListPortfoliosRequest(&servicecatalog.ListPortfoliosInput{})
+	req := client.Servicecatalogconn.ListPortfoliosRequest(&servicecatalog.ListPortfoliosInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListServicecatalogPortfolio(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_servicecatalog_portfolio",
 				ID:     *r.Id,
-				Region: client.servicecatalogconn.Config.Region,
+				Region: client.Servicecatalogconn.Config.Region,
 
 				CreatedAt: &t,
 			})

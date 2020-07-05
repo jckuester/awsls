@@ -9,7 +9,7 @@ import (
 )
 
 func ListIamUser(client *Client) ([]Resource, error) {
-	req := client.iamconn.ListUsersRequest(&iam.ListUsersInput{})
+	req := client.Iamconn.ListUsersRequest(&iam.ListUsersInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListIamUser(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_iam_user",
 				ID:        *r.UserName,
-				Region:    client.iamconn.Config.Region,
+				Region:    client.Iamconn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

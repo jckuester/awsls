@@ -9,7 +9,7 @@ import (
 )
 
 func ListIamPolicy(client *Client) ([]Resource, error) {
-	req := client.iamconn.ListPoliciesRequest(&iam.ListPoliciesInput{
+	req := client.Iamconn.ListPoliciesRequest(&iam.ListPoliciesInput{
 		Scope: "Local",
 	})
 
@@ -25,7 +25,7 @@ func ListIamPolicy(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iam_policy",
 				ID:     *r.Arn,
-				Region: client.iamconn.Config.Region,
+				Region: client.Iamconn.Config.Region,
 
 				CreatedAt: &t,
 			})

@@ -9,7 +9,7 @@ import (
 )
 
 func ListAlbTargetGroup(client *Client) ([]Resource, error) {
-	req := client.elasticloadbalancingv2conn.DescribeTargetGroupsRequest(&elasticloadbalancingv2.DescribeTargetGroupsInput{})
+	req := client.Elasticloadbalancingv2conn.DescribeTargetGroupsRequest(&elasticloadbalancingv2.DescribeTargetGroupsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListAlbTargetGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_alb_target_group",
 				ID:     *r.TargetGroupArn,
-				Region: client.elasticloadbalancingv2conn.Config.Region,
+				Region: client.Elasticloadbalancingv2conn.Config.Region,
 			})
 		}
 	}

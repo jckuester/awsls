@@ -9,7 +9,7 @@ import (
 )
 
 func ListGlueJob(client *Client) ([]Resource, error) {
-	req := client.glueconn.GetJobsRequest(&glue.GetJobsInput{})
+	req := client.Glueconn.GetJobsRequest(&glue.GetJobsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListGlueJob(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_glue_job",
 				ID:     *r.Name,
-				Region: client.glueconn.Config.Region,
+				Region: client.Glueconn.Config.Region,
 			})
 		}
 	}

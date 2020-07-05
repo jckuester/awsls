@@ -9,7 +9,7 @@ import (
 )
 
 func ListCloudhsmV2Cluster(client *Client) ([]Resource, error) {
-	req := client.cloudhsmv2conn.DescribeClustersRequest(&cloudhsmv2.DescribeClustersInput{})
+	req := client.Cloudhsmv2conn.DescribeClustersRequest(&cloudhsmv2.DescribeClustersInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListCloudhsmV2Cluster(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudhsm_v2_cluster",
 				ID:     *r.ClusterId,
-				Region: client.cloudhsmv2conn.Config.Region,
+				Region: client.Cloudhsmv2conn.Config.Region,
 			})
 		}
 	}

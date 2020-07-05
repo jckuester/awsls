@@ -9,7 +9,7 @@ import (
 )
 
 func ListLightsailStaticIp(client *Client) ([]Resource, error) {
-	req := client.lightsailconn.GetStaticIpsRequest(&lightsail.GetStaticIpsInput{})
+	req := client.Lightsailconn.GetStaticIpsRequest(&lightsail.GetStaticIpsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListLightsailStaticIp(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lightsail_static_ip",
 				ID:     *r.Name,
-				Region: client.lightsailconn.Config.Region,
+				Region: client.Lightsailconn.Config.Region,
 			})
 		}
 	}

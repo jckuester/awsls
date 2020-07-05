@@ -9,7 +9,7 @@ import (
 )
 
 func ListIamServerCertificate(client *Client) ([]Resource, error) {
-	req := client.iamconn.ListServerCertificatesRequest(&iam.ListServerCertificatesInput{})
+	req := client.Iamconn.ListServerCertificatesRequest(&iam.ListServerCertificatesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListIamServerCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iam_server_certificate",
 				ID:     *r.ServerCertificateId,
-				Region: client.iamconn.Config.Region,
+				Region: client.Iamconn.Config.Region,
 			})
 		}
 	}

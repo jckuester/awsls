@@ -9,7 +9,7 @@ import (
 )
 
 func ListAcmCertificate(client *Client) ([]Resource, error) {
-	req := client.acmconn.ListCertificatesRequest(&acm.ListCertificatesInput{})
+	req := client.Acmconn.ListCertificatesRequest(&acm.ListCertificatesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListAcmCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_acm_certificate",
 				ID:     *r.CertificateArn,
-				Region: client.acmconn.Config.Region,
+				Region: client.Acmconn.Config.Region,
 			})
 		}
 	}

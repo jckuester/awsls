@@ -9,7 +9,7 @@ import (
 )
 
 func ListIamRole(client *Client) ([]Resource, error) {
-	req := client.iamconn.ListRolesRequest(&iam.ListRolesInput{})
+	req := client.Iamconn.ListRolesRequest(&iam.ListRolesInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListIamRole(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_iam_role",
 				ID:        *r.RoleName,
-				Region:    client.iamconn.Config.Region,
+				Region:    client.Iamconn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

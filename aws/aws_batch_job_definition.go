@@ -9,7 +9,7 @@ import (
 )
 
 func ListBatchJobDefinition(client *Client) ([]Resource, error) {
-	req := client.batchconn.DescribeJobDefinitionsRequest(&batch.DescribeJobDefinitionsInput{})
+	req := client.Batchconn.DescribeJobDefinitionsRequest(&batch.DescribeJobDefinitionsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListBatchJobDefinition(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_batch_job_definition",
 				ID:     *r.JobDefinitionArn,
-				Region: client.batchconn.Config.Region,
+				Region: client.Batchconn.Config.Region,
 			})
 		}
 	}

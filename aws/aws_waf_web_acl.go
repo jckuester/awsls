@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafWebAcl(client *Client) ([]Resource, error) {
-	req := client.wafconn.ListWebACLsRequest(&waf.ListWebACLsInput{})
+	req := client.Wafconn.ListWebACLsRequest(&waf.ListWebACLsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafWebAcl(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_web_acl",
 				ID:     *r.WebACLId,
-				Region: client.wafconn.Config.Region,
+				Region: client.Wafconn.Config.Region,
 			})
 		}
 	}

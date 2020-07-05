@@ -10,7 +10,7 @@ import (
 )
 
 func ListRoute53ResolverEndpoint(client *Client) ([]Resource, error) {
-	req := client.route53resolverconn.ListResolverEndpointsRequest(&route53resolver.ListResolverEndpointsInput{})
+	req := client.Route53resolverconn.ListResolverEndpointsRequest(&route53resolver.ListResolverEndpointsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListRoute53ResolverEndpoint(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_route53_resolver_endpoint",
 				ID:     *r.Id,
-				Region: client.route53resolverconn.Config.Region,
+				Region: client.Route53resolverconn.Config.Region,
 
 				CreatedAt: &t,
 			})

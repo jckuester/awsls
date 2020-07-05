@@ -9,7 +9,7 @@ import (
 )
 
 func ListApiGatewayClientCertificate(client *Client) ([]Resource, error) {
-	req := client.apigatewayconn.GetClientCertificatesRequest(&apigateway.GetClientCertificatesInput{})
+	req := client.Apigatewayconn.GetClientCertificatesRequest(&apigateway.GetClientCertificatesInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListApiGatewayClientCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_api_gateway_client_certificate",
 				ID:     *r.ClientCertificateId,
-				Region: client.apigatewayconn.Config.Region,
+				Region: client.Apigatewayconn.Config.Region,
 				Tags:   tags,
 			})
 		}

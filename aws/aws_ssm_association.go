@@ -9,7 +9,7 @@ import (
 )
 
 func ListSsmAssociation(client *Client) ([]Resource, error) {
-	req := client.ssmconn.ListAssociationsRequest(&ssm.ListAssociationsInput{})
+	req := client.Ssmconn.ListAssociationsRequest(&ssm.ListAssociationsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListSsmAssociation(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_association",
 				ID:     *r.AssociationId,
-				Region: client.ssmconn.Config.Region,
+				Region: client.Ssmconn.Config.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeCapacityReservationsRequest(&ec2.DescribeCapacityReservationsInput{})
+	req := client.Ec2conn.DescribeCapacityReservationsRequest(&ec2.DescribeCapacityReservationsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_capacity_reservation",
 				ID:        *r.CapacityReservationId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

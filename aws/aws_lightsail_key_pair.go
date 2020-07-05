@@ -9,7 +9,7 @@ import (
 )
 
 func ListLightsailKeyPair(client *Client) ([]Resource, error) {
-	req := client.lightsailconn.GetKeyPairsRequest(&lightsail.GetKeyPairsInput{})
+	req := client.Lightsailconn.GetKeyPairsRequest(&lightsail.GetKeyPairsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListLightsailKeyPair(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lightsail_key_pair",
 				ID:     *r.Name,
-				Region: client.lightsailconn.Config.Region,
+				Region: client.Lightsailconn.Config.Region,
 				Tags:   tags,
 			})
 		}

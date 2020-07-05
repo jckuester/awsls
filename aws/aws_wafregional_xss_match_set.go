@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafregionalXssMatchSet(client *Client) ([]Resource, error) {
-	req := client.wafregionalconn.ListXssMatchSetsRequest(&wafregional.ListXssMatchSetsInput{})
+	req := client.Wafregionalconn.ListXssMatchSetsRequest(&wafregional.ListXssMatchSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafregionalXssMatchSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_xss_match_set",
 				ID:     *r.XssMatchSetId,
-				Region: client.wafregionalconn.Config.Region,
+				Region: client.Wafregionalconn.Config.Region,
 			})
 		}
 	}

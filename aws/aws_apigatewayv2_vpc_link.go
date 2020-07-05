@@ -9,7 +9,7 @@ import (
 )
 
 func ListApigatewayv2VpcLink(client *Client) ([]Resource, error) {
-	req := client.apigatewayv2conn.GetVpcLinksRequest(&apigatewayv2.GetVpcLinksInput{})
+	req := client.Apigatewayv2conn.GetVpcLinksRequest(&apigatewayv2.GetVpcLinksInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListApigatewayv2VpcLink(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_apigatewayv2_vpc_link",
 				ID:     *r.VpcLinkId,
-				Region: client.apigatewayv2conn.Config.Region,
+				Region: client.Apigatewayv2conn.Config.Region,
 				Tags:   tags,
 			})
 		}

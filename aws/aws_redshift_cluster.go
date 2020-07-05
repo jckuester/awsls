@@ -9,7 +9,7 @@ import (
 )
 
 func ListRedshiftCluster(client *Client) ([]Resource, error) {
-	req := client.redshiftconn.DescribeClustersRequest(&redshift.DescribeClustersInput{})
+	req := client.Redshiftconn.DescribeClustersRequest(&redshift.DescribeClustersInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListRedshiftCluster(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_redshift_cluster",
 				ID:     *r.ClusterIdentifier,
-				Region: client.redshiftconn.Config.Region,
+				Region: client.Redshiftconn.Config.Region,
 				Tags:   tags,
 			})
 		}

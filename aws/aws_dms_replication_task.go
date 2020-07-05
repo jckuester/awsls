@@ -9,7 +9,7 @@ import (
 )
 
 func ListDmsReplicationTask(client *Client) ([]Resource, error) {
-	req := client.databasemigrationserviceconn.DescribeReplicationTasksRequest(&databasemigrationservice.DescribeReplicationTasksInput{})
+	req := client.Databasemigrationserviceconn.DescribeReplicationTasksRequest(&databasemigrationservice.DescribeReplicationTasksInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListDmsReplicationTask(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dms_replication_task",
 				ID:     *r.ReplicationTaskIdentifier,
-				Region: client.databasemigrationserviceconn.Config.Region,
+				Region: client.Databasemigrationserviceconn.Config.Region,
 			})
 		}
 	}

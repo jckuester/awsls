@@ -9,7 +9,7 @@ import (
 )
 
 func ListSecurityGroup(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeSecurityGroupsRequest(&ec2.DescribeSecurityGroupsInput{})
+	req := client.Ec2conn.DescribeSecurityGroupsRequest(&ec2.DescribeSecurityGroupsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListSecurityGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_security_group",
 				ID:     *r.GroupId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Ec2conn.Config.Region,
 				Tags:   tags,
 			})
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListDxLag(client *Client) ([]Resource, error) {
-	req := client.directconnectconn.DescribeLagsRequest(&directconnect.DescribeLagsInput{})
+	req := client.Directconnectconn.DescribeLagsRequest(&directconnect.DescribeLagsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListDxLag(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dx_lag",
 				ID:     *r.LagId,
-				Region: client.directconnectconn.Config.Region,
+				Region: client.Directconnectconn.Config.Region,
 				Tags:   tags,
 			})
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListAthenaWorkgroup(client *Client) ([]Resource, error) {
-	req := client.athenaconn.ListWorkGroupsRequest(&athena.ListWorkGroupsInput{})
+	req := client.Athenaconn.ListWorkGroupsRequest(&athena.ListWorkGroupsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListAthenaWorkgroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_athena_workgroup",
 				ID:     *r.Name,
-				Region: client.athenaconn.Config.Region,
+				Region: client.Athenaconn.Config.Region,
 
 				CreatedAt: &t,
 			})

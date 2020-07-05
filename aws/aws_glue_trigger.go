@@ -9,7 +9,7 @@ import (
 )
 
 func ListGlueTrigger(client *Client) ([]Resource, error) {
-	req := client.glueconn.GetTriggersRequest(&glue.GetTriggersInput{})
+	req := client.Glueconn.GetTriggersRequest(&glue.GetTriggersInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListGlueTrigger(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_glue_trigger",
 				ID:     *r.Name,
-				Region: client.glueconn.Config.Region,
+				Region: client.Glueconn.Config.Region,
 			})
 		}
 	}

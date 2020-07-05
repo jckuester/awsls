@@ -9,7 +9,7 @@ import (
 )
 
 func ListApiGatewayApiKey(client *Client) ([]Resource, error) {
-	req := client.apigatewayconn.GetApiKeysRequest(&apigateway.GetApiKeysInput{})
+	req := client.Apigatewayconn.GetApiKeysRequest(&apigateway.GetApiKeysInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListApiGatewayApiKey(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_api_gateway_api_key",
 				ID:     *r.Id,
-				Region: client.apigatewayconn.Config.Region,
+				Region: client.Apigatewayconn.Config.Region,
 				Tags:   tags,
 			})
 		}

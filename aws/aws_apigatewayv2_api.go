@@ -9,7 +9,7 @@ import (
 )
 
 func ListApigatewayv2Api(client *Client) ([]Resource, error) {
-	req := client.apigatewayv2conn.GetApisRequest(&apigatewayv2.GetApisInput{})
+	req := client.Apigatewayv2conn.GetApisRequest(&apigatewayv2.GetApisInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListApigatewayv2Api(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_apigatewayv2_api",
 				ID:     *r.ApiId,
-				Region: client.apigatewayv2conn.Config.Region,
+				Region: client.Apigatewayv2conn.Config.Region,
 				Tags:   tags,
 			})
 		}

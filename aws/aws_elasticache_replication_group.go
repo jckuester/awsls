@@ -9,7 +9,7 @@ import (
 )
 
 func ListElasticacheReplicationGroup(client *Client) ([]Resource, error) {
-	req := client.elasticacheconn.DescribeReplicationGroupsRequest(&elasticache.DescribeReplicationGroupsInput{})
+	req := client.Elasticacheconn.DescribeReplicationGroupsRequest(&elasticache.DescribeReplicationGroupsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListElasticacheReplicationGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elasticache_replication_group",
 				ID:     *r.ReplicationGroupId,
-				Region: client.elasticacheconn.Config.Region,
+				Region: client.Elasticacheconn.Config.Region,
 			})
 		}
 	}

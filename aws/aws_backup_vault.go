@@ -9,7 +9,7 @@ import (
 )
 
 func ListBackupVault(client *Client) ([]Resource, error) {
-	req := client.backupconn.ListBackupVaultsRequest(&backup.ListBackupVaultsInput{})
+	req := client.Backupconn.ListBackupVaultsRequest(&backup.ListBackupVaultsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListBackupVault(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_backup_vault",
 				ID:     *r.BackupVaultName,
-				Region: client.backupconn.Config.Region,
+				Region: client.Backupconn.Config.Region,
 
 				CreatedAt: &t,
 			})

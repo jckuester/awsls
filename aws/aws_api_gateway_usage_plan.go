@@ -9,7 +9,7 @@ import (
 )
 
 func ListApiGatewayUsagePlan(client *Client) ([]Resource, error) {
-	req := client.apigatewayconn.GetUsagePlansRequest(&apigateway.GetUsagePlansInput{})
+	req := client.Apigatewayconn.GetUsagePlansRequest(&apigateway.GetUsagePlansInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListApiGatewayUsagePlan(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_api_gateway_usage_plan",
 				ID:     *r.Id,
-				Region: client.apigatewayconn.Config.Region,
+				Region: client.Apigatewayconn.Config.Region,
 				Tags:   tags,
 			})
 		}

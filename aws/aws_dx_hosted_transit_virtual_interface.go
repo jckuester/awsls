@@ -9,7 +9,7 @@ import (
 )
 
 func ListDxHostedTransitVirtualInterface(client *Client) ([]Resource, error) {
-	req := client.directconnectconn.DescribeVirtualInterfacesRequest(&directconnect.DescribeVirtualInterfacesInput{})
+	req := client.Directconnectconn.DescribeVirtualInterfacesRequest(&directconnect.DescribeVirtualInterfacesInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListDxHostedTransitVirtualInterface(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dx_hosted_transit_virtual_interface",
 				ID:     *r.VirtualInterfaceId,
-				Region: client.directconnectconn.Config.Region,
+				Region: client.Directconnectconn.Config.Region,
 				Tags:   tags,
 			})
 		}

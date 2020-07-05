@@ -9,7 +9,7 @@ import (
 )
 
 func ListRoute53ResolverRuleAssociation(client *Client) ([]Resource, error) {
-	req := client.route53resolverconn.ListResolverRuleAssociationsRequest(&route53resolver.ListResolverRuleAssociationsInput{})
+	req := client.Route53resolverconn.ListResolverRuleAssociationsRequest(&route53resolver.ListResolverRuleAssociationsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListRoute53ResolverRuleAssociation(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_route53_resolver_rule_association",
 				ID:     *r.Id,
-				Region: client.route53resolverconn.Config.Region,
+				Region: client.Route53resolverconn.Config.Region,
 			})
 		}
 	}

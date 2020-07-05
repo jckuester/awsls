@@ -9,7 +9,7 @@ import (
 )
 
 func ListEc2TransitGatewayVpcAttachment(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeTransitGatewayVpcAttachmentsRequest(&ec2.DescribeTransitGatewayVpcAttachmentsInput{})
+	req := client.Ec2conn.DescribeTransitGatewayVpcAttachmentsRequest(&ec2.DescribeTransitGatewayVpcAttachmentsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListEc2TransitGatewayVpcAttachment(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_transit_gateway_vpc_attachment",
 				ID:        *r.TransitGatewayAttachmentId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

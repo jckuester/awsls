@@ -9,7 +9,7 @@ import (
 )
 
 func ListMediaPackageChannel(client *Client) ([]Resource, error) {
-	req := client.mediapackageconn.ListChannelsRequest(&mediapackage.ListChannelsInput{})
+	req := client.Mediapackageconn.ListChannelsRequest(&mediapackage.ListChannelsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListMediaPackageChannel(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_media_package_channel",
 				ID:     *r.Id,
-				Region: client.mediapackageconn.Config.Region,
+				Region: client.Mediapackageconn.Config.Region,
 				Tags:   tags,
 			})
 		}

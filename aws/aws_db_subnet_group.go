@@ -9,7 +9,7 @@ import (
 )
 
 func ListDbSubnetGroup(client *Client) ([]Resource, error) {
-	req := client.rdsconn.DescribeDBSubnetGroupsRequest(&rds.DescribeDBSubnetGroupsInput{})
+	req := client.Rdsconn.DescribeDBSubnetGroupsRequest(&rds.DescribeDBSubnetGroupsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListDbSubnetGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_db_subnet_group",
 				ID:     *r.DBSubnetGroupName,
-				Region: client.rdsconn.Config.Region,
+				Region: client.Rdsconn.Config.Region,
 			})
 		}
 	}

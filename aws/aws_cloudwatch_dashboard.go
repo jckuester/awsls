@@ -9,7 +9,7 @@ import (
 )
 
 func ListCloudwatchDashboard(client *Client) ([]Resource, error) {
-	req := client.cloudwatchconn.ListDashboardsRequest(&cloudwatch.ListDashboardsInput{})
+	req := client.Cloudwatchconn.ListDashboardsRequest(&cloudwatch.ListDashboardsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListCloudwatchDashboard(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudwatch_dashboard",
 				ID:     *r.DashboardName,
-				Region: client.cloudwatchconn.Config.Region,
+				Region: client.Cloudwatchconn.Config.Region,
 			})
 		}
 	}

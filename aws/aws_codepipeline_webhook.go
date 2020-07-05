@@ -9,7 +9,7 @@ import (
 )
 
 func ListCodepipelineWebhook(client *Client) ([]Resource, error) {
-	req := client.codepipelineconn.ListWebhooksRequest(&codepipeline.ListWebhooksInput{})
+	req := client.Codepipelineconn.ListWebhooksRequest(&codepipeline.ListWebhooksInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListCodepipelineWebhook(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_codepipeline_webhook",
 				ID:     *r.Arn,
-				Region: client.codepipelineconn.Config.Region,
+				Region: client.Codepipelineconn.Config.Region,
 				Tags:   tags,
 			})
 		}

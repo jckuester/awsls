@@ -9,7 +9,7 @@ import (
 )
 
 func ListMskConfiguration(client *Client) ([]Resource, error) {
-	req := client.kafkaconn.ListConfigurationsRequest(&kafka.ListConfigurationsInput{})
+	req := client.Kafkaconn.ListConfigurationsRequest(&kafka.ListConfigurationsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListMskConfiguration(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_msk_configuration",
 				ID:     *r.Arn,
-				Region: client.kafkaconn.Config.Region,
+				Region: client.Kafkaconn.Config.Region,
 
 				CreatedAt: &t,
 			})

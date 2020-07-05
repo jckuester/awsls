@@ -9,7 +9,7 @@ import (
 )
 
 func ListDbEventSubscription(client *Client) ([]Resource, error) {
-	req := client.rdsconn.DescribeEventSubscriptionsRequest(&rds.DescribeEventSubscriptionsInput{})
+	req := client.Rdsconn.DescribeEventSubscriptionsRequest(&rds.DescribeEventSubscriptionsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListDbEventSubscription(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_db_event_subscription",
 				ID:     *r.CustSubscriptionId,
-				Region: client.rdsconn.Config.Region,
+				Region: client.Rdsconn.Config.Region,
 			})
 		}
 	}

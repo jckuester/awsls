@@ -9,7 +9,7 @@ import (
 )
 
 func ListNatGateway(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeNatGatewaysRequest(&ec2.DescribeNatGatewaysInput{})
+	req := client.Ec2conn.DescribeNatGatewaysRequest(&ec2.DescribeNatGatewaysInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListNatGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_nat_gateway",
 				ID:        *r.NatGatewayId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Ec2conn.Config.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

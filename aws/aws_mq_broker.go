@@ -9,7 +9,7 @@ import (
 )
 
 func ListMqBroker(client *Client) ([]Resource, error) {
-	req := client.mqconn.ListBrokersRequest(&mq.ListBrokersInput{})
+	req := client.Mqconn.ListBrokersRequest(&mq.ListBrokersInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListMqBroker(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_mq_broker",
 				ID:     *r.BrokerId,
-				Region: client.mqconn.Config.Region,
+				Region: client.Mqconn.Config.Region,
 			})
 		}
 	}

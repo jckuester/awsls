@@ -9,7 +9,7 @@ import (
 )
 
 func ListIamGroup(client *Client) ([]Resource, error) {
-	req := client.iamconn.ListGroupsRequest(&iam.ListGroupsInput{})
+	req := client.Iamconn.ListGroupsRequest(&iam.ListGroupsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListIamGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iam_group",
 				ID:     *r.GroupName,
-				Region: client.iamconn.Config.Region,
+				Region: client.Iamconn.Config.Region,
 
 				CreatedAt: &t,
 			})

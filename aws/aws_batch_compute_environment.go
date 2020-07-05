@@ -9,7 +9,7 @@ import (
 )
 
 func ListBatchComputeEnvironment(client *Client) ([]Resource, error) {
-	req := client.batchconn.DescribeComputeEnvironmentsRequest(&batch.DescribeComputeEnvironmentsInput{})
+	req := client.Batchconn.DescribeComputeEnvironmentsRequest(&batch.DescribeComputeEnvironmentsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListBatchComputeEnvironment(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_batch_compute_environment",
 				ID:     *r.ComputeEnvironmentName,
-				Region: client.batchconn.Config.Region,
+				Region: client.Batchconn.Config.Region,
 			})
 		}
 	}

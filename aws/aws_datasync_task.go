@@ -9,7 +9,7 @@ import (
 )
 
 func ListDatasyncTask(client *Client) ([]Resource, error) {
-	req := client.datasyncconn.ListTasksRequest(&datasync.ListTasksInput{})
+	req := client.Datasyncconn.ListTasksRequest(&datasync.ListTasksInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListDatasyncTask(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_datasync_task",
 				ID:     *r.TaskArn,
-				Region: client.datasyncconn.Config.Region,
+				Region: client.Datasyncconn.Config.Region,
 			})
 		}
 	}

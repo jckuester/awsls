@@ -9,7 +9,7 @@ import (
 )
 
 func ListElastictranscoderPipeline(client *Client) ([]Resource, error) {
-	req := client.elastictranscoderconn.ListPipelinesRequest(&elastictranscoder.ListPipelinesInput{})
+	req := client.Elastictranscoderconn.ListPipelinesRequest(&elastictranscoder.ListPipelinesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListElastictranscoderPipeline(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elastictranscoder_pipeline",
 				ID:     *r.Id,
-				Region: client.elastictranscoderconn.Config.Region,
+				Region: client.Elastictranscoderconn.Config.Region,
 			})
 		}
 	}

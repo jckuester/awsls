@@ -9,7 +9,7 @@ import (
 )
 
 func ListConfigDeliveryChannel(client *Client) ([]Resource, error) {
-	req := client.configserviceconn.DescribeDeliveryChannelsRequest(&configservice.DescribeDeliveryChannelsInput{})
+	req := client.Configserviceconn.DescribeDeliveryChannelsRequest(&configservice.DescribeDeliveryChannelsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListConfigDeliveryChannel(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_config_delivery_channel",
 				ID:     *r.Name,
-				Region: client.configserviceconn.Config.Region,
+				Region: client.Configserviceconn.Config.Region,
 			})
 		}
 	}

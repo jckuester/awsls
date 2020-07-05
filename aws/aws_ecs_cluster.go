@@ -9,7 +9,7 @@ import (
 )
 
 func ListEcsCluster(client *Client) ([]Resource, error) {
-	req := client.ecsconn.DescribeClustersRequest(&ecs.DescribeClustersInput{})
+	req := client.Ecsconn.DescribeClustersRequest(&ecs.DescribeClustersInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListEcsCluster(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ecs_cluster",
 				ID:     *r.ClusterArn,
-				Region: client.ecsconn.Config.Region,
+				Region: client.Ecsconn.Config.Region,
 				Tags:   tags,
 			})
 		}

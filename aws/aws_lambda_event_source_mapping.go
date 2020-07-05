@@ -9,7 +9,7 @@ import (
 )
 
 func ListLambdaEventSourceMapping(client *Client) ([]Resource, error) {
-	req := client.lambdaconn.ListEventSourceMappingsRequest(&lambda.ListEventSourceMappingsInput{})
+	req := client.Lambdaconn.ListEventSourceMappingsRequest(&lambda.ListEventSourceMappingsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListLambdaEventSourceMapping(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lambda_event_source_mapping",
 				ID:     *r.UUID,
-				Region: client.lambdaconn.Config.Region,
+				Region: client.Lambdaconn.Config.Region,
 			})
 		}
 	}

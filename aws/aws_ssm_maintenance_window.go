@@ -9,7 +9,7 @@ import (
 )
 
 func ListSsmMaintenanceWindow(client *Client) ([]Resource, error) {
-	req := client.ssmconn.DescribeMaintenanceWindowsRequest(&ssm.DescribeMaintenanceWindowsInput{})
+	req := client.Ssmconn.DescribeMaintenanceWindowsRequest(&ssm.DescribeMaintenanceWindowsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListSsmMaintenanceWindow(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_maintenance_window",
 				ID:     *r.WindowId,
-				Region: client.ssmconn.Config.Region,
+				Region: client.Ssmconn.Config.Region,
 			})
 		}
 	}

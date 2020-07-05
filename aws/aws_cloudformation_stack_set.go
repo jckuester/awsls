@@ -9,7 +9,7 @@ import (
 )
 
 func ListCloudformationStackSet(client *Client) ([]Resource, error) {
-	req := client.cloudformationconn.ListStackSetsRequest(&cloudformation.ListStackSetsInput{})
+	req := client.Cloudformationconn.ListStackSetsRequest(&cloudformation.ListStackSetsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListCloudformationStackSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudformation_stack_set",
 				ID:     *r.StackSetName,
-				Region: client.cloudformationconn.Config.Region,
+				Region: client.Cloudformationconn.Config.Region,
 			})
 		}
 	}

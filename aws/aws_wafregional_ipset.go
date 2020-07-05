@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafregionalIpset(client *Client) ([]Resource, error) {
-	req := client.wafregionalconn.ListIPSetsRequest(&wafregional.ListIPSetsInput{})
+	req := client.Wafregionalconn.ListIPSetsRequest(&wafregional.ListIPSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafregionalIpset(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_ipset",
 				ID:     *r.IPSetId,
-				Region: client.wafregionalconn.Config.Region,
+				Region: client.Wafregionalconn.Config.Region,
 			})
 		}
 	}

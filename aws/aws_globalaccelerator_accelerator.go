@@ -9,7 +9,7 @@ import (
 )
 
 func ListGlobalacceleratorAccelerator(client *Client) ([]Resource, error) {
-	req := client.globalacceleratorconn.ListAcceleratorsRequest(&globalaccelerator.ListAcceleratorsInput{})
+	req := client.Globalacceleratorconn.ListAcceleratorsRequest(&globalaccelerator.ListAcceleratorsInput{})
 
 	var result []Resource
 
@@ -25,7 +25,7 @@ func ListGlobalacceleratorAccelerator(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_globalaccelerator_accelerator",
 				ID:     *r.AcceleratorArn,
-				Region: client.globalacceleratorconn.Config.Region,
+				Region: client.Globalacceleratorconn.Config.Region,
 
 				CreatedAt: &t,
 			})

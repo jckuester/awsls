@@ -9,7 +9,7 @@ import (
 )
 
 func ListDbSecurityGroup(client *Client) ([]Resource, error) {
-	req := client.rdsconn.DescribeDBSecurityGroupsRequest(&rds.DescribeDBSecurityGroupsInput{})
+	req := client.Rdsconn.DescribeDBSecurityGroupsRequest(&rds.DescribeDBSecurityGroupsInput{})
 
 	var result []Resource
 
@@ -25,7 +25,7 @@ func ListDbSecurityGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_db_security_group",
 				ID:     *r.DBSecurityGroupName,
-				Region: client.rdsconn.Config.Region,
+				Region: client.Rdsconn.Config.Region,
 			})
 		}
 	}

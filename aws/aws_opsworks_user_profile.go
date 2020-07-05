@@ -9,7 +9,7 @@ import (
 )
 
 func ListOpsworksUserProfile(client *Client) ([]Resource, error) {
-	req := client.opsworksconn.DescribeUserProfilesRequest(&opsworks.DescribeUserProfilesInput{})
+	req := client.Opsworksconn.DescribeUserProfilesRequest(&opsworks.DescribeUserProfilesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListOpsworksUserProfile(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_opsworks_user_profile",
 				ID:     *r.IamUserArn,
-				Region: client.opsworksconn.Config.Region,
+				Region: client.Opsworksconn.Config.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListEfsAccessPoint(client *Client) ([]Resource, error) {
-	req := client.efsconn.DescribeAccessPointsRequest(&efs.DescribeAccessPointsInput{})
+	req := client.Efsconn.DescribeAccessPointsRequest(&efs.DescribeAccessPointsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListEfsAccessPoint(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_efs_access_point",
 				ID:     *r.AccessPointId,
-				Region: client.efsconn.Config.Region,
+				Region: client.Efsconn.Config.Region,
 				Tags:   tags,
 			})
 		}

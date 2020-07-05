@@ -9,7 +9,7 @@ import (
 )
 
 func ListEc2TrafficMirrorFilter(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeTrafficMirrorFiltersRequest(&ec2.DescribeTrafficMirrorFiltersInput{})
+	req := client.Ec2conn.DescribeTrafficMirrorFiltersRequest(&ec2.DescribeTrafficMirrorFiltersInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListEc2TrafficMirrorFilter(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ec2_traffic_mirror_filter",
 				ID:     *r.TrafficMirrorFilterId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Ec2conn.Config.Region,
 				Tags:   tags,
 			})
 		}
