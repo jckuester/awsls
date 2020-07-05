@@ -12,6 +12,7 @@ require (
 	github.com/jckuester/terradozer v0.1.2
 	github.com/onsi/gomega v1.9.0
 	github.com/pkg/errors v0.9.1
+	github.com/spf13/pflag v1.0.3
 	github.com/stretchr/testify v1.5.1
 	github.com/zclconf/go-cty v1.4.0
 )

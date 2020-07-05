@@ -43,7 +43,7 @@ func TestAcc_Attributes(t *testing.T) {
 	}{
 		{
 			name:       "single attributes",
-			attributes: []string{"-attributes", "tags", "aws_vpc"},
+			attributes: []string{"--attributes", "tags", "aws_vpc"},
 			expectedLogs: []string{
 				"REGION      CREATED   TAGS",
 				"us-west-2   N/A       bar=baz,foo=bar",
@@ -51,7 +51,7 @@ func TestAcc_Attributes(t *testing.T) {
 		},
 		{
 			name:       "multiple attributes",
-			attributes: []string{"-attributes", "tags,cidr_block", "aws_vpc"},
+			attributes: []string{"-a", "tags,cidr_block", "aws_vpc"},
 			expectedLogs: []string{
 				"REGION      CREATED   TAGS              CIDR_BLOCK",
 				"us-west-2   N/A       bar=baz,foo=bar   10.0.0.0/16",
@@ -97,7 +97,7 @@ func TestAcc_UnsupportedResourceType(t *testing.T) {
 		t.Skip("Skipping acceptance test.")
 	}
 
-	logBuffer, err := runBinary(t, "-debug", "aws_opsworks_mysql_layer")
+	logBuffer, err := runBinary(t, "--debug", "aws_opsworks_mysql_layer")
 	require.Error(t, err)
 
 	actualLogs := logBuffer.String()
@@ -113,7 +113,7 @@ func TestAcc_Version(t *testing.T) {
 		t.Skip("Skipping acceptance test.")
 	}
 
-	logBuffer, err := runBinary(t, "-version")
+	logBuffer, err := runBinary(t, "--version")
 	require.NoError(t, err)
 
 	actualLogs := logBuffer.String()

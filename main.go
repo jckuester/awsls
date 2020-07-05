@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io/ioutil"
 	stdlog "log"
@@ -17,6 +16,7 @@ import (
 	"github.com/jckuester/awsls/internal"
 	"github.com/jckuester/awsls/resource"
 	"github.com/jckuester/terradozer/pkg/provider"
+	flag "github.com/spf13/pflag"
 )
 
 func main() {
@@ -37,9 +37,9 @@ func mainExitCode() int {
 	}
 
 	flags.BoolVar(&logDebug, "debug", false, "Enable debug logging")
-	flags.StringVar(&profile, "profile", "", "Use a specific named profile from your AWS credential file")
-	flags.StringVar(&region, "region", "", "The region to list resources in")
-	flags.Var(&attributes, "attributes", "Comma-separated list of attributes to show for each resource")
+	flags.StringVarP(&profile, "profile", "p", "", "Use a specific named profile from your AWS credential file")
+	flags.StringVarP(&region, "region", "r", "", "The region to list resources in")
+	flags.VarP(&attributes, "attributes", "a", "Comma-separated list of attributes to show for each resource")
 	flags.BoolVar(&version, "version", false, "Show application version")
 
 	_ = flags.Parse(os.Args[1:])
