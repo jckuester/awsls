@@ -4,3 +4,4 @@
 .terraform/
 bin/
 coverage.txt
+awsls
