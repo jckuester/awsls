@@ -3,6 +3,7 @@ package resource
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -200,6 +201,8 @@ func GetAttribute(name string, r *aws.Resource) (string, error) {
 			for k, v := range v {
 				list = append(list, fmt.Sprintf("%s=%s", k, v))
 			}
+
+			sort.Strings(list)
 
 			return strings.Join(list, ","), nil
 		}
