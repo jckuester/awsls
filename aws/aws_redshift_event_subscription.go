@@ -9,7 +9,7 @@ import (
 )
 
 func ListRedshiftEventSubscription(client *Client) ([]Resource, error) {
-	req := client.redshiftconn.DescribeEventSubscriptionsRequest(&redshift.DescribeEventSubscriptionsInput{})
+	req := client.Redshiftconn.DescribeEventSubscriptionsRequest(&redshift.DescribeEventSubscriptionsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListRedshiftEventSubscription(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_redshift_event_subscription",
 				ID:     *r.CustSubscriptionId,
-				Region: client.redshiftconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

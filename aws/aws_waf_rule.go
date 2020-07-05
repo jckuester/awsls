@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafRule(client *Client) ([]Resource, error) {
-	req := client.wafconn.ListRulesRequest(&waf.ListRulesInput{})
+	req := client.Wafconn.ListRulesRequest(&waf.ListRulesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafRule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_rule",
 				ID:     *r.RuleId,
-				Region: client.wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListIotThing(client *Client) ([]Resource, error) {
-	req := client.iotconn.ListThingsRequest(&iot.ListThingsInput{})
+	req := client.Iotconn.ListThingsRequest(&iot.ListThingsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListIotThing(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iot_thing",
 				ID:     *r.ThingName,
-				Region: client.iotconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

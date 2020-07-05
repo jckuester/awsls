@@ -9,7 +9,7 @@ import (
 )
 
 func ListGameliftBuild(client *Client) ([]Resource, error) {
-	req := client.gameliftconn.ListBuildsRequest(&gamelift.ListBuildsInput{})
+	req := client.Gameliftconn.ListBuildsRequest(&gamelift.ListBuildsInput{})
 
 	var result []Resource
 
@@ -25,7 +25,7 @@ func ListGameliftBuild(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_gamelift_build",
 				ID:     *r.BuildId,
-				Region: client.gameliftconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

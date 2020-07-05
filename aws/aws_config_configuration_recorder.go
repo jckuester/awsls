@@ -9,7 +9,7 @@ import (
 )
 
 func ListConfigConfigurationRecorder(client *Client) ([]Resource, error) {
-	req := client.configserviceconn.DescribeConfigurationRecordersRequest(&configservice.DescribeConfigurationRecordersInput{})
+	req := client.Configserviceconn.DescribeConfigurationRecordersRequest(&configservice.DescribeConfigurationRecordersInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListConfigConfigurationRecorder(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_config_configuration_recorder",
 				ID:     *r.Name,
-				Region: client.configserviceconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListQldbLedger(client *Client) ([]Resource, error) {
-	req := client.qldbconn.ListLedgersRequest(&qldb.ListLedgersInput{})
+	req := client.Qldbconn.ListLedgersRequest(&qldb.ListLedgersInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListQldbLedger(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_qldb_ledger",
 				ID:     *r.Name,
-				Region: client.qldbconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

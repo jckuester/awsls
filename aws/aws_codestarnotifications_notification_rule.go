@@ -9,7 +9,7 @@ import (
 )
 
 func ListCodestarnotificationsNotificationRule(client *Client) ([]Resource, error) {
-	req := client.codestarnotificationsconn.ListNotificationRulesRequest(&codestarnotifications.ListNotificationRulesInput{})
+	req := client.Codestarnotificationsconn.ListNotificationRulesRequest(&codestarnotifications.ListNotificationRulesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListCodestarnotificationsNotificationRule(client *Client) ([]Resource, erro
 			result = append(result, Resource{
 				Type:   "aws_codestarnotifications_notification_rule",
 				ID:     *r.Arn,
-				Region: client.codestarnotificationsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

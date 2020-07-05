@@ -9,7 +9,7 @@ import (
 )
 
 func ListAccessanalyzerAnalyzer(client *Client) ([]Resource, error) {
-	req := client.accessanalyzerconn.ListAnalyzersRequest(&accessanalyzer.ListAnalyzersInput{})
+	req := client.Accessanalyzerconn.ListAnalyzersRequest(&accessanalyzer.ListAnalyzersInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListAccessanalyzerAnalyzer(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_accessanalyzer_analyzer",
 				ID:     *r.Name,
-				Region: client.accessanalyzerconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

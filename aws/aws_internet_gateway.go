@@ -9,7 +9,7 @@ import (
 )
 
 func ListInternetGateway(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeInternetGatewaysRequest(&ec2.DescribeInternetGatewaysInput{})
+	req := client.Ec2conn.DescribeInternetGatewaysRequest(&ec2.DescribeInternetGatewaysInput{})
 
 	var result []Resource
 
@@ -18,7 +18,7 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.InternetGateways {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_internet_gateway",
 				ID:     *r.InternetGatewayId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

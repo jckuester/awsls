@@ -9,7 +9,7 @@ import (
 )
 
 func ListKinesisAnalyticsApplication(client *Client) ([]Resource, error) {
-	req := client.kinesisanalyticsconn.ListApplicationsRequest(&kinesisanalytics.ListApplicationsInput{})
+	req := client.Kinesisanalyticsconn.ListApplicationsRequest(&kinesisanalytics.ListApplicationsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListKinesisAnalyticsApplication(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_kinesis_analytics_application",
 				ID:     *r.ApplicationARN,
-				Region: client.kinesisanalyticsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

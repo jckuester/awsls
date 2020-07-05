@@ -9,7 +9,7 @@ import (
 )
 
 func ListDbParameterGroup(client *Client) ([]Resource, error) {
-	req := client.rdsconn.DescribeDBParameterGroupsRequest(&rds.DescribeDBParameterGroupsInput{})
+	req := client.Rdsconn.DescribeDBParameterGroupsRequest(&rds.DescribeDBParameterGroupsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListDbParameterGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_db_parameter_group",
 				ID:     *r.DBParameterGroupName,
-				Region: client.rdsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListSsmParameter(client *Client) ([]Resource, error) {
-	req := client.ssmconn.DescribeParametersRequest(&ssm.DescribeParametersInput{})
+	req := client.Ssmconn.DescribeParametersRequest(&ssm.DescribeParametersInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListSsmParameter(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ssm_parameter",
 				ID:     *r.Name,
-				Region: client.ssmconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

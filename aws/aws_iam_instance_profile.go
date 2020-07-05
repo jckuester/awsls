@@ -9,7 +9,7 @@ import (
 )
 
 func ListIamInstanceProfile(client *Client) ([]Resource, error) {
-	req := client.iamconn.ListInstanceProfilesRequest(&iam.ListInstanceProfilesInput{})
+	req := client.Iamconn.ListInstanceProfilesRequest(&iam.ListInstanceProfilesInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListIamInstanceProfile(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iam_instance_profile",
 				ID:     *r.InstanceProfileName,
-				Region: client.iamconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

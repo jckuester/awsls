@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafregionalRateBasedRule(client *Client) ([]Resource, error) {
-	req := client.wafregionalconn.ListRateBasedRulesRequest(&wafregional.ListRateBasedRulesInput{})
+	req := client.Wafregionalconn.ListRateBasedRulesRequest(&wafregional.ListRateBasedRulesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafregionalRateBasedRule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafregional_rate_based_rule",
 				ID:     *r.RuleId,
-				Region: client.wafregionalconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

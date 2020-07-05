@@ -9,7 +9,7 @@ import (
 )
 
 func ListGlueCrawler(client *Client) ([]Resource, error) {
-	req := client.glueconn.GetCrawlersRequest(&glue.GetCrawlersInput{})
+	req := client.Glueconn.GetCrawlersRequest(&glue.GetCrawlersInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListGlueCrawler(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_glue_crawler",
 				ID:     *r.Name,
-				Region: client.glueconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

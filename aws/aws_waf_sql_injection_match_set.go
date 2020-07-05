@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafSqlInjectionMatchSet(client *Client) ([]Resource, error) {
-	req := client.wafconn.ListSqlInjectionMatchSetsRequest(&waf.ListSqlInjectionMatchSetsInput{})
+	req := client.Wafconn.ListSqlInjectionMatchSetsRequest(&waf.ListSqlInjectionMatchSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafSqlInjectionMatchSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_sql_injection_match_set",
 				ID:     *r.SqlInjectionMatchSetId,
-				Region: client.wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

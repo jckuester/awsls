@@ -9,7 +9,7 @@ import (
 )
 
 func ListDmsCertificate(client *Client) ([]Resource, error) {
-	req := client.databasemigrationserviceconn.DescribeCertificatesRequest(&databasemigrationservice.DescribeCertificatesInput{})
+	req := client.Databasemigrationserviceconn.DescribeCertificatesRequest(&databasemigrationservice.DescribeCertificatesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListDmsCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dms_certificate",
 				ID:     *r.CertificateIdentifier,
-				Region: client.databasemigrationserviceconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

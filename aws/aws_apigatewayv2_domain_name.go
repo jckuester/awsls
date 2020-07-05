@@ -9,7 +9,7 @@ import (
 )
 
 func ListApigatewayv2DomainName(client *Client) ([]Resource, error) {
-	req := client.apigatewayv2conn.GetDomainNamesRequest(&apigatewayv2.GetDomainNamesInput{})
+	req := client.Apigatewayv2conn.GetDomainNamesRequest(&apigatewayv2.GetDomainNamesInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListApigatewayv2DomainName(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_apigatewayv2_domain_name",
 				ID:     *r.DomainName,
-				Region: client.apigatewayv2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListKmsAlias(client *Client) ([]Resource, error) {
-	req := client.kmsconn.ListAliasesRequest(&kms.ListAliasesInput{})
+	req := client.Kmsconn.ListAliasesRequest(&kms.ListAliasesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListKmsAlias(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_kms_alias",
 				ID:     *r.AliasName,
-				Region: client.kmsconn.Config.Region,
+				Region: client.Kmsconn.Config.Region,
 			})
 		}
 	}

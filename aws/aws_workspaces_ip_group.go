@@ -9,7 +9,7 @@ import (
 )
 
 func ListWorkspacesIpGroup(client *Client) ([]Resource, error) {
-	req := client.workspacesconn.DescribeIpGroupsRequest(&workspaces.DescribeIpGroupsInput{})
+	req := client.Workspacesconn.DescribeIpGroupsRequest(&workspaces.DescribeIpGroupsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWorkspacesIpGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_workspaces_ip_group",
 				ID:     *r.GroupId,
-				Region: client.workspacesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

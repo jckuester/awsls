@@ -9,7 +9,7 @@ import (
 )
 
 func ListEc2TrafficMirrorSession(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeTrafficMirrorSessionsRequest(&ec2.DescribeTrafficMirrorSessionsInput{})
+	req := client.Ec2conn.DescribeTrafficMirrorSessionsRequest(&ec2.DescribeTrafficMirrorSessionsInput{})
 
 	var result []Resource
 
@@ -18,7 +18,7 @@ func ListEc2TrafficMirrorSession(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TrafficMirrorSessions {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListEc2TrafficMirrorSession(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ec2_traffic_mirror_session",
 				ID:     *r.TrafficMirrorSessionId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

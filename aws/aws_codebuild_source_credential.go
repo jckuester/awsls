@@ -9,7 +9,7 @@ import (
 )
 
 func ListCodebuildSourceCredential(client *Client) ([]Resource, error) {
-	req := client.codebuildconn.ListSourceCredentialsRequest(&codebuild.ListSourceCredentialsInput{})
+	req := client.Codebuildconn.ListSourceCredentialsRequest(&codebuild.ListSourceCredentialsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListCodebuildSourceCredential(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_codebuild_source_credential",
 				ID:     *r.Arn,
-				Region: client.codebuildconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

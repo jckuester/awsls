@@ -9,7 +9,7 @@ import (
 )
 
 func ListSesActiveReceiptRuleSet(client *Client) ([]Resource, error) {
-	req := client.sesconn.ListReceiptRuleSetsRequest(&ses.ListReceiptRuleSetsInput{})
+	req := client.Sesconn.ListReceiptRuleSetsRequest(&ses.ListReceiptRuleSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListSesActiveReceiptRuleSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ses_active_receipt_rule_set",
 				ID:     *r.Name,
-				Region: client.sesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

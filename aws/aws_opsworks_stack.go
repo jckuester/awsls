@@ -9,7 +9,7 @@ import (
 )
 
 func ListOpsworksStack(client *Client) ([]Resource, error) {
-	req := client.opsworksconn.DescribeStacksRequest(&opsworks.DescribeStacksInput{})
+	req := client.Opsworksconn.DescribeStacksRequest(&opsworks.DescribeStacksInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListOpsworksStack(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_opsworks_stack",
 				ID:     *r.StackId,
-				Region: client.opsworksconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

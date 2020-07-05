@@ -9,7 +9,7 @@ import (
 )
 
 func ListWorklinkFleet(client *Client) ([]Resource, error) {
-	req := client.worklinkconn.ListFleetsRequest(&worklink.ListFleetsInput{})
+	req := client.Worklinkconn.ListFleetsRequest(&worklink.ListFleetsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListWorklinkFleet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_worklink_fleet",
 				ID:     *r.FleetArn,
-				Region: client.worklinkconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

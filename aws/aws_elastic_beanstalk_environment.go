@@ -9,7 +9,7 @@ import (
 )
 
 func ListElasticBeanstalkEnvironment(client *Client) ([]Resource, error) {
-	req := client.elasticbeanstalkconn.DescribeEnvironmentsRequest(&elasticbeanstalk.DescribeEnvironmentsInput{})
+	req := client.Elasticbeanstalkconn.DescribeEnvironmentsRequest(&elasticbeanstalk.DescribeEnvironmentsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListElasticBeanstalkEnvironment(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elastic_beanstalk_environment",
 				ID:     *r.EnvironmentId,
-				Region: client.elasticbeanstalkconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

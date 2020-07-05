@@ -11,7 +11,7 @@ import (
 )
 
 func ListInstance(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeInstancesRequest(&ec2.DescribeInstancesInput{})
+	req := client.Ec2conn.DescribeInstancesRequest(&ec2.DescribeInstancesInput{})
 
 	var result []Resource
 
@@ -20,7 +20,7 @@ func ListInstance(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, reservations := range page.Reservations {
-			if *reservations.OwnerId != client.accountid {
+			if *reservations.OwnerId != client.Accountid {
 				continue
 			}
 			for _, r := range reservations.Instances {
@@ -34,7 +34,7 @@ func ListInstance(client *Client) ([]Resource, error) {
 				result = append(result, Resource{
 					Type:      "aws_instance",
 					ID:        *r.InstanceId,
-					Region:    client.ec2conn.Config.Region,
+					Region:    client.Ec2conn.Config.Region,
 					Tags:      tags,
 					CreatedAt: &t,
 				})

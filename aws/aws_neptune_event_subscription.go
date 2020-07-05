@@ -9,7 +9,7 @@ import (
 )
 
 func ListNeptuneEventSubscription(client *Client) ([]Resource, error) {
-	req := client.neptuneconn.DescribeEventSubscriptionsRequest(&neptune.DescribeEventSubscriptionsInput{})
+	req := client.Neptuneconn.DescribeEventSubscriptionsRequest(&neptune.DescribeEventSubscriptionsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListNeptuneEventSubscription(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_neptune_event_subscription",
 				ID:     *r.CustSubscriptionId,
-				Region: client.neptuneconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListVpcEndpointService(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeVpcEndpointServicesRequest(&ec2.DescribeVpcEndpointServicesInput{})
+	req := client.Ec2conn.DescribeVpcEndpointServicesRequest(&ec2.DescribeVpcEndpointServicesInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListVpcEndpointService(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_vpc_endpoint_service",
 				ID:     *r.ServiceId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

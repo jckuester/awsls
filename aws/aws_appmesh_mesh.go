@@ -9,7 +9,7 @@ import (
 )
 
 func ListAppmeshMesh(client *Client) ([]Resource, error) {
-	req := client.appmeshconn.ListMeshesRequest(&appmesh.ListMeshesInput{})
+	req := client.Appmeshconn.ListMeshesRequest(&appmesh.ListMeshesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListAppmeshMesh(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_appmesh_mesh",
 				ID:     *r.MeshName,
-				Region: client.appmeshconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

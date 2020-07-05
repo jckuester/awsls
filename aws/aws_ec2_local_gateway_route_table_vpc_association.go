@@ -9,7 +9,7 @@ import (
 )
 
 func ListEc2LocalGatewayRouteTableVpcAssociation(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeLocalGatewayRouteTableVpcAssociationsRequest(&ec2.DescribeLocalGatewayRouteTableVpcAssociationsInput{})
+	req := client.Ec2conn.DescribeLocalGatewayRouteTableVpcAssociationsRequest(&ec2.DescribeLocalGatewayRouteTableVpcAssociationsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListEc2LocalGatewayRouteTableVpcAssociation(client *Client) ([]Resource, er
 			result = append(result, Resource{
 				Type:   "aws_ec2_local_gateway_route_table_vpc_association",
 				ID:     *r.LocalGatewayRouteTableVpcAssociationId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

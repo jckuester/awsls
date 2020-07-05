@@ -117,6 +117,7 @@ func mainExitCode() int {
 
 		return 1
 	}
+	log.Debugf("using region: %s\n", client.Region)
 
 	for _, rType := range matchedTypes {
 		resources, err := aws.ListResourcesByType(client, rType)

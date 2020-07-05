@@ -9,7 +9,7 @@ import (
 )
 
 func ListEip(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeAddressesRequest(&ec2.DescribeAddressesInput{})
+	req := client.Ec2conn.DescribeAddressesRequest(&ec2.DescribeAddressesInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListEip(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_eip",
 				ID:     *r.AllocationId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

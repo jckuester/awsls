@@ -9,7 +9,7 @@ import (
 )
 
 func ListEmrSecurityConfiguration(client *Client) ([]Resource, error) {
-	req := client.emrconn.ListSecurityConfigurationsRequest(&emr.ListSecurityConfigurationsInput{})
+	req := client.Emrconn.ListSecurityConfigurationsRequest(&emr.ListSecurityConfigurationsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListEmrSecurityConfiguration(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_emr_security_configuration",
 				ID:     *r.Name,
-				Region: client.emrconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

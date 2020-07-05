@@ -9,7 +9,7 @@ import (
 )
 
 func ListEbsVolume(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeVolumesRequest(&ec2.DescribeVolumesInput{})
+	req := client.Ec2conn.DescribeVolumesRequest(&ec2.DescribeVolumesInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListEbsVolume(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ebs_volume",
 				ID:        *r.VolumeId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

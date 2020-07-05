@@ -9,7 +9,7 @@ import (
 )
 
 func ListPlacementGroup(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribePlacementGroupsRequest(&ec2.DescribePlacementGroupsInput{})
+	req := client.Ec2conn.DescribePlacementGroupsRequest(&ec2.DescribePlacementGroupsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListPlacementGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_placement_group",
 				ID:     *r.GroupName,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

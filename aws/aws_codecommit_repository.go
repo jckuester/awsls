@@ -9,7 +9,7 @@ import (
 )
 
 func ListCodecommitRepository(client *Client) ([]Resource, error) {
-	req := client.codecommitconn.ListRepositoriesRequest(&codecommit.ListRepositoriesInput{})
+	req := client.Codecommitconn.ListRepositoriesRequest(&codecommit.ListRepositoriesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListCodecommitRepository(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_codecommit_repository",
 				ID:     *r.RepositoryName,
-				Region: client.codecommitconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListSpotInstanceRequest(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeSpotInstanceRequestsRequest(&ec2.DescribeSpotInstanceRequestsInput{})
+	req := client.Ec2conn.DescribeSpotInstanceRequestsRequest(&ec2.DescribeSpotInstanceRequestsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListSpotInstanceRequest(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_spot_instance_request",
 				ID:        *r.SpotInstanceRequestId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

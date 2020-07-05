@@ -9,7 +9,7 @@ import (
 )
 
 func ListKeyPair(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeKeyPairsRequest(&ec2.DescribeKeyPairsInput{})
+	req := client.Ec2conn.DescribeKeyPairsRequest(&ec2.DescribeKeyPairsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListKeyPair(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_key_pair",
 				ID:     *r.KeyName,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

@@ -46,7 +46,10 @@ func clientGoCode(services []string) string {
 	return strings.TrimSpace(buf.String())
 }
 
-var clientTmpl = template.Must(template.New("client").Parse(`import (
+var clientTmpl = template.Must(template.New("client").Funcs(
+	template.FuncMap{
+		"Title": strings.Title,
+	}).Parse(`import (
 "context"
 "fmt"
 "github.com/aws/aws-sdk-go-v2/aws/external"
@@ -54,8 +57,9 @@ var clientTmpl = template.Must(template.New("client").Parse(`import (
 {{range .}}"github.com/aws/aws-sdk-go-v2/service/{{.}}"
 {{end}})
 type Client struct {
-accountid string
-{{range .}}{{.}}conn *{{.}}.Client
+Accountid string
+Region string
+{{ range . }}{{ . | Title }}conn *{{.}}.Client
 {{end}}}
 
 func  NewClient() (*Client, error) {
@@ -65,7 +69,7 @@ if err != nil {
 }
 
 client := &Client{
-{{range .}}{{.}}conn: {{.}}.New(cfg),
+{{ range . }}{{ . | Title }}conn: {{.}}.New(cfg),
 {{end}}}
 
 stsconn := sts.New(cfg)
@@ -74,7 +78,9 @@ resp, err := req.Send(context.Background())
 if err != nil {
 	return nil, err
 }
-client.accountid = *resp.Account
+
+client.Accountid = *resp.Account
+client.Region = cfg.Region
 
 return client, nil
 }

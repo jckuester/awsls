@@ -9,7 +9,7 @@ import (
 )
 
 func ListAutoscalingGroup(client *Client) ([]Resource, error) {
-	req := client.autoscalingconn.DescribeAutoScalingGroupsRequest(&autoscaling.DescribeAutoScalingGroupsInput{})
+	req := client.Autoscalingconn.DescribeAutoScalingGroupsRequest(&autoscaling.DescribeAutoScalingGroupsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListAutoscalingGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_autoscaling_group",
 				ID:        *r.AutoScalingGroupName,
-				Region:    client.autoscalingconn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

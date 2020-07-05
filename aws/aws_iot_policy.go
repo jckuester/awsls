@@ -9,7 +9,7 @@ import (
 )
 
 func ListIotPolicy(client *Client) ([]Resource, error) {
-	req := client.iotconn.ListPoliciesRequest(&iot.ListPoliciesInput{})
+	req := client.Iotconn.ListPoliciesRequest(&iot.ListPoliciesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListIotPolicy(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iot_policy",
 				ID:     *r.PolicyName,
-				Region: client.iotconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

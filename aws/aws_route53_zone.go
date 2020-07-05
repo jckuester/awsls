@@ -9,7 +9,7 @@ import (
 )
 
 func ListRoute53Zone(client *Client) ([]Resource, error) {
-	req := client.route53conn.ListHostedZonesRequest(&route53.ListHostedZonesInput{})
+	req := client.Route53conn.ListHostedZonesRequest(&route53.ListHostedZonesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListRoute53Zone(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_route53_zone",
 				ID:     *r.Id,
-				Region: client.route53conn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

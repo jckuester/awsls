@@ -9,7 +9,7 @@ import (
 )
 
 func ListEfsFileSystem(client *Client) ([]Resource, error) {
-	req := client.efsconn.DescribeFileSystemsRequest(&efs.DescribeFileSystemsInput{})
+	req := client.Efsconn.DescribeFileSystemsRequest(&efs.DescribeFileSystemsInput{})
 
 	var result []Resource
 
@@ -18,7 +18,7 @@ func ListEfsFileSystem(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.FileSystems {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListEfsFileSystem(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_efs_file_system",
 				ID:        *r.FileSystemId,
-				Region:    client.efsconn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

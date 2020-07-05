@@ -9,7 +9,7 @@ import (
 )
 
 func ListSesConfigurationSet(client *Client) ([]Resource, error) {
-	req := client.sesconn.ListConfigurationSetsRequest(&ses.ListConfigurationSetsInput{})
+	req := client.Sesconn.ListConfigurationSetsRequest(&ses.ListConfigurationSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListSesConfigurationSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ses_configuration_set",
 				ID:     *r.Name,
-				Region: client.sesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

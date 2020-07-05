@@ -9,7 +9,7 @@ import (
 )
 
 func ListEc2TransitGateway(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeTransitGatewaysRequest(&ec2.DescribeTransitGatewaysInput{})
+	req := client.Ec2conn.DescribeTransitGatewaysRequest(&ec2.DescribeTransitGatewaysInput{})
 
 	var result []Resource
 
@@ -18,7 +18,7 @@ func ListEc2TransitGateway(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TransitGateways {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListEc2TransitGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_transit_gateway",
 				ID:        *r.TransitGatewayId,
-				Region:    client.ec2conn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

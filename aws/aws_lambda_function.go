@@ -9,7 +9,7 @@ import (
 )
 
 func ListLambdaFunction(client *Client) ([]Resource, error) {
-	req := client.lambdaconn.ListFunctionsRequest(&lambda.ListFunctionsInput{})
+	req := client.Lambdaconn.ListFunctionsRequest(&lambda.ListFunctionsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListLambdaFunction(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lambda_function",
 				ID:     *r.FunctionName,
-				Region: client.lambdaconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListAppsyncGraphqlApi(client *Client) ([]Resource, error) {
-	req := client.appsyncconn.ListGraphqlApisRequest(&appsync.ListGraphqlApisInput{})
+	req := client.Appsyncconn.ListGraphqlApisRequest(&appsync.ListGraphqlApisInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListAppsyncGraphqlApi(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_appsync_graphql_api",
 				ID:     *r.ApiId,
-				Region: client.appsyncconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

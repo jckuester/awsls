@@ -9,7 +9,7 @@ import (
 )
 
 func ListSecretsmanagerSecret(client *Client) ([]Resource, error) {
-	req := client.secretsmanagerconn.ListSecretsRequest(&secretsmanager.ListSecretsInput{})
+	req := client.Secretsmanagerconn.ListSecretsRequest(&secretsmanager.ListSecretsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListSecretsmanagerSecret(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_secretsmanager_secret",
 				ID:     *r.ARN,
-				Region: client.secretsmanagerconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

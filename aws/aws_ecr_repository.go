@@ -9,7 +9,7 @@ import (
 )
 
 func ListEcrRepository(client *Client) ([]Resource, error) {
-	req := client.ecrconn.DescribeRepositoriesRequest(&ecr.DescribeRepositoriesInput{})
+	req := client.Ecrconn.DescribeRepositoriesRequest(&ecr.DescribeRepositoriesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListEcrRepository(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ecr_repository",
 				ID:     *r.RepositoryName,
-				Region: client.ecrconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

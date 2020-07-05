@@ -9,7 +9,7 @@ import (
 )
 
 func ListCloudwatchEventRule(client *Client) ([]Resource, error) {
-	req := client.cloudwatcheventsconn.ListRulesRequest(&cloudwatchevents.ListRulesInput{})
+	req := client.Cloudwatcheventsconn.ListRulesRequest(&cloudwatchevents.ListRulesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListCloudwatchEventRule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_cloudwatch_event_rule",
 				ID:     *r.Name,
-				Region: client.cloudwatcheventsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

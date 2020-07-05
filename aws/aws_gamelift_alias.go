@@ -9,7 +9,7 @@ import (
 )
 
 func ListGameliftAlias(client *Client) ([]Resource, error) {
-	req := client.gameliftconn.ListAliasesRequest(&gamelift.ListAliasesInput{})
+	req := client.Gameliftconn.ListAliasesRequest(&gamelift.ListAliasesInput{})
 
 	var result []Resource
 
@@ -25,7 +25,7 @@ func ListGameliftAlias(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_gamelift_alias",
 				ID:     *r.AliasId,
-				Region: client.gameliftconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

@@ -9,7 +9,7 @@ import (
 )
 
 func ListVpcPeeringConnection(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeVpcPeeringConnectionsRequest(&ec2.DescribeVpcPeeringConnectionsInput{})
+	req := client.Ec2conn.DescribeVpcPeeringConnectionsRequest(&ec2.DescribeVpcPeeringConnectionsInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListVpcPeeringConnection(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_vpc_peering_connection",
 				ID:     *r.VpcPeeringConnectionId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

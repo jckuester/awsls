@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafv2WebAclLoggingConfiguration(client *Client) ([]Resource, error) {
-	req := client.wafv2conn.ListLoggingConfigurationsRequest(&wafv2.ListLoggingConfigurationsInput{})
+	req := client.Wafv2conn.ListLoggingConfigurationsRequest(&wafv2.ListLoggingConfigurationsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafv2WebAclLoggingConfiguration(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_wafv2_web_acl_logging_configuration",
 				ID:     *r.ResourceArn,
-				Region: client.wafv2conn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

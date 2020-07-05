@@ -9,7 +9,7 @@ import (
 )
 
 func ListDynamodbGlobalTable(client *Client) ([]Resource, error) {
-	req := client.dynamodbconn.ListGlobalTablesRequest(&dynamodb.ListGlobalTablesInput{})
+	req := client.Dynamodbconn.ListGlobalTablesRequest(&dynamodb.ListGlobalTablesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListDynamodbGlobalTable(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dynamodb_global_table",
 				ID:     *r.GlobalTableName,
-				Region: client.dynamodbconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

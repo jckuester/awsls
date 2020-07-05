@@ -9,7 +9,7 @@ import (
 )
 
 func ListDxConnection(client *Client) ([]Resource, error) {
-	req := client.directconnectconn.DescribeConnectionsRequest(&directconnect.DescribeConnectionsInput{})
+	req := client.Directconnectconn.DescribeConnectionsRequest(&directconnect.DescribeConnectionsInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListDxConnection(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dx_connection",
 				ID:     *r.ConnectionId,
-				Region: client.directconnectconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListMediaConvertQueue(client *Client) ([]Resource, error) {
-	req := client.mediaconvertconn.ListQueuesRequest(&mediaconvert.ListQueuesInput{})
+	req := client.Mediaconvertconn.ListQueuesRequest(&mediaconvert.ListQueuesInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListMediaConvertQueue(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_media_convert_queue",
 				ID:     *r.Name,
-				Region: client.mediaconvertconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

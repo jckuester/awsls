@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafRegexMatchSet(client *Client) ([]Resource, error) {
-	req := client.wafconn.ListRegexMatchSetsRequest(&waf.ListRegexMatchSetsInput{})
+	req := client.Wafconn.ListRegexMatchSetsRequest(&waf.ListRegexMatchSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafRegexMatchSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_regex_match_set",
 				ID:     *r.RegexMatchSetId,
-				Region: client.wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

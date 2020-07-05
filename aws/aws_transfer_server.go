@@ -9,7 +9,7 @@ import (
 )
 
 func ListTransferServer(client *Client) ([]Resource, error) {
-	req := client.transferconn.ListServersRequest(&transfer.ListServersInput{})
+	req := client.Transferconn.ListServersRequest(&transfer.ListServersInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListTransferServer(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_transfer_server",
 				ID:     *r.ServerId,
-				Region: client.transferconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

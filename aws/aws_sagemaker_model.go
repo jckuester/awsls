@@ -9,7 +9,7 @@ import (
 )
 
 func ListSagemakerModel(client *Client) ([]Resource, error) {
-	req := client.sagemakerconn.ListModelsRequest(&sagemaker.ListModelsInput{})
+	req := client.Sagemakerconn.ListModelsRequest(&sagemaker.ListModelsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListSagemakerModel(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_sagemaker_model",
 				ID:     *r.ModelName,
-				Region: client.sagemakerconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

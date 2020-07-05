@@ -9,7 +9,7 @@ import (
 )
 
 func ListIotCertificate(client *Client) ([]Resource, error) {
-	req := client.iotconn.ListCertificatesRequest(&iot.ListCertificatesInput{})
+	req := client.Iotconn.ListCertificatesRequest(&iot.ListCertificatesInput{})
 
 	var result []Resource
 
@@ -25,7 +25,7 @@ func ListIotCertificate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iot_certificate",
 				ID:     *r.CertificateId,
-				Region: client.iotconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

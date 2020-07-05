@@ -9,7 +9,7 @@ import (
 )
 
 func ListIamAccessKey(client *Client) ([]Resource, error) {
-	req := client.iamconn.ListAccessKeysRequest(&iam.ListAccessKeysInput{})
+	req := client.Iamconn.ListAccessKeysRequest(&iam.ListAccessKeysInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListIamAccessKey(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iam_access_key",
 				ID:     *r.AccessKeyId,
-				Region: client.iamconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

@@ -9,7 +9,7 @@ import (
 )
 
 func ListLightsailInstance(client *Client) ([]Resource, error) {
-	req := client.lightsailconn.GetInstancesRequest(&lightsail.GetInstancesInput{})
+	req := client.Lightsailconn.GetInstancesRequest(&lightsail.GetInstancesInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListLightsailInstance(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_lightsail_instance",
 				ID:     *r.Name,
-				Region: client.lightsailconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 func ListMskCluster(client *Client) ([]Resource, error) {
-	req := client.kafkaconn.ListClustersRequest(&kafka.ListClustersInput{})
+	req := client.Kafkaconn.ListClustersRequest(&kafka.ListClustersInput{})
 
 	var result []Resource
 
@@ -27,7 +27,7 @@ func ListMskCluster(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_msk_cluster",
 				ID:        *r.ClusterArn,
-				Region:    client.kafkaconn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -9,7 +9,7 @@ import (
 )
 
 func ListDaxSubnetGroup(client *Client) ([]Resource, error) {
-	req := client.daxconn.DescribeSubnetGroupsRequest(&dax.DescribeSubnetGroupsInput{})
+	req := client.Daxconn.DescribeSubnetGroupsRequest(&dax.DescribeSubnetGroupsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListDaxSubnetGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dax_subnet_group",
 				ID:     *r.SubnetGroupName,
-				Region: client.daxconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

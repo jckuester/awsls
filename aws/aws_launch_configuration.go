@@ -9,7 +9,7 @@ import (
 )
 
 func ListLaunchConfiguration(client *Client) ([]Resource, error) {
-	req := client.autoscalingconn.DescribeLaunchConfigurationsRequest(&autoscaling.DescribeLaunchConfigurationsInput{})
+	req := client.Autoscalingconn.DescribeLaunchConfigurationsRequest(&autoscaling.DescribeLaunchConfigurationsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListLaunchConfiguration(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_launch_configuration",
 				ID:     *r.LaunchConfigurationName,
-				Region: client.autoscalingconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

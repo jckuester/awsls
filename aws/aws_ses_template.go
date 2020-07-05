@@ -9,7 +9,7 @@ import (
 )
 
 func ListSesTemplate(client *Client) ([]Resource, error) {
-	req := client.sesconn.ListTemplatesRequest(&ses.ListTemplatesInput{})
+	req := client.Sesconn.ListTemplatesRequest(&ses.ListTemplatesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListSesTemplate(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_ses_template",
 				ID:     *r.Name,
-				Region: client.sesconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

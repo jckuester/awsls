@@ -9,7 +9,7 @@ import (
 )
 
 func ListVpnGateway(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeVpnGatewaysRequest(&ec2.DescribeVpnGatewaysInput{})
+	req := client.Ec2conn.DescribeVpnGatewaysRequest(&ec2.DescribeVpnGatewaysInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListVpnGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_vpn_gateway",
 				ID:     *r.VpnGatewayId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

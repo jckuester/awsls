@@ -9,7 +9,7 @@ import (
 )
 
 func ListVpc(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeVpcsRequest(&ec2.DescribeVpcsInput{})
+	req := client.Ec2conn.DescribeVpcsRequest(&ec2.DescribeVpcsInput{})
 
 	var result []Resource
 
@@ -18,7 +18,7 @@ func ListVpc(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Vpcs {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListVpc(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_vpc",
 				ID:     *r.VpcId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

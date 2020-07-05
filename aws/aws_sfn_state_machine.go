@@ -9,7 +9,7 @@ import (
 )
 
 func ListSfnStateMachine(client *Client) ([]Resource, error) {
-	req := client.sfnconn.ListStateMachinesRequest(&sfn.ListStateMachinesInput{})
+	req := client.Sfnconn.ListStateMachinesRequest(&sfn.ListStateMachinesInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListSfnStateMachine(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_sfn_state_machine",
 				ID:     *r.StateMachineArn,
-				Region: client.sfnconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

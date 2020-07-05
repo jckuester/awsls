@@ -9,7 +9,7 @@ import (
 )
 
 func ListFsxLustreFileSystem(client *Client) ([]Resource, error) {
-	req := client.fsxconn.DescribeFileSystemsRequest(&fsx.DescribeFileSystemsInput{})
+	req := client.Fsxconn.DescribeFileSystemsRequest(&fsx.DescribeFileSystemsInput{})
 
 	var result []Resource
 
@@ -18,7 +18,7 @@ func ListFsxLustreFileSystem(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.FileSystems {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,7 @@ func ListFsxLustreFileSystem(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_fsx_lustre_file_system",
 				ID:        *r.FileSystemId,
-				Region:    client.fsxconn.Config.Region,
+				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -9,7 +9,7 @@ import (
 )
 
 func ListRdsGlobalCluster(client *Client) ([]Resource, error) {
-	req := client.rdsconn.DescribeGlobalClustersRequest(&rds.DescribeGlobalClustersInput{})
+	req := client.Rdsconn.DescribeGlobalClustersRequest(&rds.DescribeGlobalClustersInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListRdsGlobalCluster(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_rds_global_cluster",
 				ID:     *r.GlobalClusterIdentifier,
-				Region: client.rdsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

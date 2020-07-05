@@ -9,7 +9,7 @@ import (
 )
 
 func ListElb(client *Client) ([]Resource, error) {
-	req := client.elasticloadbalancingconn.DescribeLoadBalancersRequest(&elasticloadbalancing.DescribeLoadBalancersInput{})
+	req := client.Elasticloadbalancingconn.DescribeLoadBalancersRequest(&elasticloadbalancing.DescribeLoadBalancersInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListElb(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_elb",
 				ID:     *r.LoadBalancerName,
-				Region: client.elasticloadbalancingconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

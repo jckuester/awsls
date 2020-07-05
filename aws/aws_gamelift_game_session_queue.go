@@ -9,7 +9,7 @@ import (
 )
 
 func ListGameliftGameSessionQueue(client *Client) ([]Resource, error) {
-	req := client.gameliftconn.DescribeGameSessionQueuesRequest(&gamelift.DescribeGameSessionQueuesInput{})
+	req := client.Gameliftconn.DescribeGameSessionQueuesRequest(&gamelift.DescribeGameSessionQueuesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListGameliftGameSessionQueue(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_gamelift_game_session_queue",
 				ID:     *r.Name,
-				Region: client.gameliftconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

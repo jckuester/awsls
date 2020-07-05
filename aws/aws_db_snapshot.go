@@ -9,7 +9,7 @@ import (
 )
 
 func ListDbSnapshot(client *Client) ([]Resource, error) {
-	req := client.rdsconn.DescribeDBSnapshotsRequest(&rds.DescribeDBSnapshotsInput{})
+	req := client.Rdsconn.DescribeDBSnapshotsRequest(&rds.DescribeDBSnapshotsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListDbSnapshot(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_db_snapshot",
 				ID:     *r.DBSnapshotIdentifier,
-				Region: client.rdsconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

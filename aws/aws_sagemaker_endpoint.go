@@ -9,7 +9,7 @@ import (
 )
 
 func ListSagemakerEndpoint(client *Client) ([]Resource, error) {
-	req := client.sagemakerconn.ListEndpointsRequest(&sagemaker.ListEndpointsInput{})
+	req := client.Sagemakerconn.ListEndpointsRequest(&sagemaker.ListEndpointsInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListSagemakerEndpoint(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_sagemaker_endpoint",
 				ID:     *r.EndpointName,
-				Region: client.sagemakerconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

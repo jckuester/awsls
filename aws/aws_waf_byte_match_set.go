@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafByteMatchSet(client *Client) ([]Resource, error) {
-	req := client.wafconn.ListByteMatchSetsRequest(&waf.ListByteMatchSetsInput{})
+	req := client.Wafconn.ListByteMatchSetsRequest(&waf.ListByteMatchSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafByteMatchSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_byte_match_set",
 				ID:     *r.ByteMatchSetId,
-				Region: client.wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

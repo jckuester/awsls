@@ -9,7 +9,7 @@ import (
 )
 
 func ListNetworkInterface(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeNetworkInterfacesRequest(&ec2.DescribeNetworkInterfacesInput{})
+	req := client.Ec2conn.DescribeNetworkInterfacesRequest(&ec2.DescribeNetworkInterfacesInput{})
 
 	var result []Resource
 
@@ -18,14 +18,14 @@ func ListNetworkInterface(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.NetworkInterfaces {
-			if *r.OwnerId != client.accountid {
+			if *r.OwnerId != client.Accountid {
 				continue
 			}
 
 			result = append(result, Resource{
 				Type:   "aws_network_interface",
 				ID:     *r.NetworkInterfaceId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

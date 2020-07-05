@@ -9,7 +9,7 @@ import (
 )
 
 func ListIotTopicRule(client *Client) ([]Resource, error) {
-	req := client.iotconn.ListTopicRulesRequest(&iot.ListTopicRulesInput{})
+	req := client.Iotconn.ListTopicRulesRequest(&iot.ListTopicRulesInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListIotTopicRule(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_iot_topic_rule",
 				ID:     *r.RuleName,
-				Region: client.iotconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

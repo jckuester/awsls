@@ -9,7 +9,7 @@ import (
 )
 
 func ListWafSizeConstraintSet(client *Client) ([]Resource, error) {
-	req := client.wafconn.ListSizeConstraintSetsRequest(&waf.ListSizeConstraintSetsInput{})
+	req := client.Wafconn.ListSizeConstraintSetsRequest(&waf.ListSizeConstraintSetsInput{})
 
 	var result []Resource
 
@@ -24,7 +24,7 @@ func ListWafSizeConstraintSet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_waf_size_constraint_set",
 				ID:     *r.SizeConstraintSetId,
-				Region: client.wafconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

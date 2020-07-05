@@ -9,7 +9,7 @@ import (
 )
 
 func ListBackupPlan(client *Client) ([]Resource, error) {
-	req := client.backupconn.ListBackupPlansRequest(&backup.ListBackupPlansInput{})
+	req := client.Backupconn.ListBackupPlansRequest(&backup.ListBackupPlansInput{})
 
 	var result []Resource
 
@@ -23,7 +23,7 @@ func ListBackupPlan(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_backup_plan",
 				ID:     *r.BackupPlanId,
-				Region: client.backupconn.Config.Region,
+				Region: client.Region,
 
 				CreatedAt: &t,
 			})

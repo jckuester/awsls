@@ -9,7 +9,7 @@ import (
 )
 
 func ListDlmLifecyclePolicy(client *Client) ([]Resource, error) {
-	req := client.dlmconn.GetLifecyclePoliciesRequest(&dlm.GetLifecyclePoliciesInput{})
+	req := client.Dlmconn.GetLifecyclePoliciesRequest(&dlm.GetLifecyclePoliciesInput{})
 
 	var result []Resource
 
@@ -29,7 +29,7 @@ func ListDlmLifecyclePolicy(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_dlm_lifecycle_policy",
 				ID:     *r.PolicyId,
-				Region: client.dlmconn.Config.Region,
+				Region: client.Region,
 				Tags:   tags,
 			})
 		}

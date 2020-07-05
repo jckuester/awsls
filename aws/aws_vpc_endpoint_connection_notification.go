@@ -9,7 +9,7 @@ import (
 )
 
 func ListVpcEndpointConnectionNotification(client *Client) ([]Resource, error) {
-	req := client.ec2conn.DescribeVpcEndpointConnectionNotificationsRequest(&ec2.DescribeVpcEndpointConnectionNotificationsInput{})
+	req := client.Ec2conn.DescribeVpcEndpointConnectionNotificationsRequest(&ec2.DescribeVpcEndpointConnectionNotificationsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListVpcEndpointConnectionNotification(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_vpc_endpoint_connection_notification",
 				ID:     *r.ConnectionNotificationId,
-				Region: client.ec2conn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}

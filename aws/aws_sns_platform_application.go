@@ -9,7 +9,7 @@ import (
 )
 
 func ListSnsPlatformApplication(client *Client) ([]Resource, error) {
-	req := client.snsconn.ListPlatformApplicationsRequest(&sns.ListPlatformApplicationsInput{})
+	req := client.Snsconn.ListPlatformApplicationsRequest(&sns.ListPlatformApplicationsInput{})
 
 	var result []Resource
 
@@ -22,7 +22,7 @@ func ListSnsPlatformApplication(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:   "aws_sns_platform_application",
 				ID:     *r.PlatformApplicationArn,
-				Region: client.snsconn.Config.Region,
+				Region: client.Region,
 			})
 		}
 	}
