@@ -18,7 +18,7 @@ func ListEc2TrafficMirrorTarget(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TrafficMirrorTargets {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}

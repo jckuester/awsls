@@ -69,7 +69,7 @@ func main() {
 		log.Warnf("\t: %s", d)
 	}
 
-	err = aws.GenerateClient("../aws", terraformServices)
+	err = aws.GenerateClient("../aws", servicePkgNames)
 	if err != nil {
 		log.WithError(err).Fatal("Failed to write AWS client")
 	}

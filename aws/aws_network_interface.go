@@ -18,7 +18,7 @@ func ListNetworkInterface(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.NetworkInterfaces {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 

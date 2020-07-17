@@ -18,7 +18,7 @@ func ListNetworkAcl(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.NetworkAcls {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}

@@ -18,7 +18,7 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.InternetGateways {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}

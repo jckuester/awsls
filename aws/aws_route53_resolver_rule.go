@@ -18,7 +18,7 @@ func ListRoute53ResolverRule(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ResolverRules {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 

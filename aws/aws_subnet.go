@@ -18,7 +18,7 @@ func ListSubnet(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.Subnets {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}

@@ -302,7 +302,7 @@ func GetCreationTimeGoCode(outputField *api.ShapeRef) (string, []string) {
 func GetOwnerGoCode(outputField *api.ShapeRef) string {
 	for k, _ := range outputField.Shape.MemberRef.Shape.MemberRefs {
 		if k == "OwnerId" {
-			return `if *r.OwnerId != client.Accountid {
+			return `if *r.OwnerId != client.AccountID {
 						continue
 					}`
 		}

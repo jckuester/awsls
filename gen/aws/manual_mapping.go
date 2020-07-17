@@ -2,6 +2,11 @@
 
 package aws
 
+// AWS services that are excluded from generating code for.
+var excludeServices = map[string]struct{}{
+	"importexport": {},
+}
+
 // some resource types are excluded as they need be handled slightly differently
 var ExcludedResourceTypes = map[string]bool{
 	// is not a resource

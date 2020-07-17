@@ -20,7 +20,7 @@ func ListInstance(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, reservations := range page.Reservations {
-			if *reservations.OwnerId != client.Accountid {
+			if *reservations.OwnerId != client.AccountID {
 				continue
 			}
 			for _, r := range reservations.Instances {
