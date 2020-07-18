@@ -7,23 +7,29 @@ import (
 	"github.com/jckuester/awsls/aws"
 )
 
-// clientPoolThreadSafe is a concurrent slice implementation to store multiple AWS clients.
-type clientPoolThreadSafe struct {
+// AWSClientPoolThreadSafe is a concurrent map implementation to store multiple AWS clients.
+type AWSClientPoolThreadSafe struct {
 	sync.Mutex
-	clients []aws.Client
+	clients map[AWSClientKey]aws.Client
 }
 
-// NewAWSClientPool creates a set of AWS clients for each permutation of the given profiles and regions.
-// If profiles, regions, or both are empty, credentials or regions are picked up via the usual default provider chain,
+type AWSClientKey struct {
+	Profile, Region string
+}
+
+// NewAWSClientPool creates an AWS client for each permutation of the given profiles and regions.
+// If profiles, regions, or both are empty, credentials and regions are picked up via the usual default provider chain,
 // respectively. For example, if regions are empty, the default region for each profile is used from `~/.aws/config`
 // or from the according region environment variable.
-func NewAWSClientPool(profiles []string, regions []string) ([]aws.Client, error) {
+func NewAWSClientPool(profiles []string, regions []string) (map[AWSClientKey]aws.Client, error) {
 	errors := make(chan error)
 	wgDone := make(chan bool)
 
 	var wg sync.WaitGroup
 
-	clientPool := &clientPoolThreadSafe{}
+	clientPool := &AWSClientPoolThreadSafe{
+		clients: make(map[AWSClientKey]aws.Client),
+	}
 
 	if len(profiles) > 0 && len(regions) > 0 {
 		wg.Add(len(profiles) * len(regions))
@@ -43,7 +49,7 @@ func NewAWSClientPool(profiles []string, regions []string) ([]aws.Client, error)
 					}
 
 					clientPool.Lock()
-					clientPool.clients = append(clientPool.clients, *client)
+					clientPool.clients[AWSClientKey{p, client.Region}] = *client
 					clientPool.Unlock()
 				}(profile, region)
 			}
@@ -62,7 +68,7 @@ func NewAWSClientPool(profiles []string, regions []string) ([]aws.Client, error)
 				}
 
 				clientPool.Lock()
-				clientPool.clients = append(clientPool.clients, *client)
+				clientPool.clients[AWSClientKey{p, client.Region}] = *client
 				clientPool.Unlock()
 			}(profile)
 		}
@@ -80,7 +86,7 @@ func NewAWSClientPool(profiles []string, regions []string) ([]aws.Client, error)
 				}
 
 				clientPool.Lock()
-				clientPool.clients = append(clientPool.clients, *client)
+				clientPool.clients[AWSClientKey{"", client.Region}] = *client
 				clientPool.Unlock()
 			}(region)
 		}
@@ -90,7 +96,7 @@ func NewAWSClientPool(profiles []string, regions []string) ([]aws.Client, error)
 			return nil, err
 		}
 
-		return []aws.Client{*client}, nil
+		return map[AWSClientKey]aws.Client{AWSClientKey{"", client.Region}: *client}, nil
 	}
 
 	go func() {
