@@ -20,9 +20,10 @@ func ListCodecommitRepository(client *Client) ([]Resource, error) {
 		for _, r := range page.Repositories {
 
 			result = append(result, Resource{
-				Type:   "aws_codecommit_repository",
-				ID:     *r.RepositoryName,
-				Region: client.Region,
+				Type:    "aws_codecommit_repository",
+				ID:      *r.RepositoryName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

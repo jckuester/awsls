@@ -20,9 +20,10 @@ func ListLambdaFunction(client *Client) ([]Resource, error) {
 		for _, r := range page.Functions {
 
 			result = append(result, Resource{
-				Type:   "aws_lambda_function",
-				ID:     *r.FunctionName,
-				Region: client.Region,
+				Type:    "aws_lambda_function",
+				ID:      *r.FunctionName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

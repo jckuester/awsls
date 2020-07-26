@@ -20,9 +20,10 @@ func ListEcrRepository(client *Client) ([]Resource, error) {
 		for _, r := range page.Repositories {
 
 			result = append(result, Resource{
-				Type:   "aws_ecr_repository",
-				ID:     *r.RepositoryName,
-				Region: client.Region,
+				Type:    "aws_ecr_repository",
+				ID:      *r.RepositoryName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

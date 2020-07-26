@@ -25,10 +25,11 @@ func ListApiGatewayVpcLink(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_api_gateway_vpc_link",
-				ID:     *r.Id,
-				Region: client.Region,
-				Tags:   tags,
+				Type:    "aws_api_gateway_vpc_link",
+				ID:      *r.Id,
+				Profile: client.Profile,
+				Region:  client.Region,
+				Tags:    tags,
 			})
 		}
 	}

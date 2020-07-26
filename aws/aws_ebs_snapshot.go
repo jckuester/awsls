@@ -29,6 +29,7 @@ func ListEbsSnapshot(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ebs_snapshot",
 				ID:        *r.SnapshotId,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

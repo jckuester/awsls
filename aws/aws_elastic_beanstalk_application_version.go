@@ -22,9 +22,10 @@ func ListElasticBeanstalkApplicationVersion(client *Client) ([]Resource, error) 
 		for _, r := range resp.ApplicationVersions {
 
 			result = append(result, Resource{
-				Type:   "aws_elastic_beanstalk_application_version",
-				ID:     *r.ApplicationName,
-				Region: client.Region,
+				Type:    "aws_elastic_beanstalk_application_version",
+				ID:      *r.ApplicationName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

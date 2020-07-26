@@ -20,9 +20,10 @@ func ListDmsReplicationSubnetGroup(client *Client) ([]Resource, error) {
 		for _, r := range page.ReplicationSubnetGroups {
 
 			result = append(result, Resource{
-				Type:   "aws_dms_replication_subnet_group",
-				ID:     *r.ReplicationSubnetGroupIdentifier,
-				Region: client.Region,
+				Type:    "aws_dms_replication_subnet_group",
+				ID:      *r.ReplicationSubnetGroupIdentifier,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

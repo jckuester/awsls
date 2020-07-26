@@ -27,6 +27,7 @@ func ListEc2Fleet(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_fleet",
 				ID:        *r.FleetId,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

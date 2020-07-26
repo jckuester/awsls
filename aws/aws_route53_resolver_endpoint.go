@@ -25,9 +25,10 @@ func ListRoute53ResolverEndpoint(client *Client) ([]Resource, error) {
 				return nil, err
 			}
 			result = append(result, Resource{
-				Type:   "aws_route53_resolver_endpoint",
-				ID:     *r.Id,
-				Region: client.Region,
+				Type:    "aws_route53_resolver_endpoint",
+				ID:      *r.Id,
+				Profile: client.Profile,
+				Region:  client.Region,
 
 				CreatedAt: &t,
 			})

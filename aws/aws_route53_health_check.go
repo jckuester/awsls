@@ -20,9 +20,10 @@ func ListRoute53HealthCheck(client *Client) ([]Resource, error) {
 		for _, r := range page.HealthChecks {
 
 			result = append(result, Resource{
-				Type:   "aws_route53_health_check",
-				ID:     *r.Id,
-				Region: client.Region,
+				Type:    "aws_route53_health_check",
+				ID:      *r.Id,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

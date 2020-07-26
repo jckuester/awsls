@@ -27,10 +27,11 @@ func ListEfsAccessPoint(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_efs_access_point",
-				ID:     *r.AccessPointId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:    "aws_efs_access_point",
+				ID:      *r.AccessPointId,
+				Profile: client.Profile,
+				Region:  client.Region,
+				Tags:    tags,
 			})
 		}
 	}

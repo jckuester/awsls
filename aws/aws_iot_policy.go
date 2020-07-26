@@ -22,9 +22,10 @@ func ListIotPolicy(client *Client) ([]Resource, error) {
 		for _, r := range resp.Policies {
 
 			result = append(result, Resource{
-				Type:   "aws_iot_policy",
-				ID:     *r.PolicyName,
-				Region: client.Region,
+				Type:    "aws_iot_policy",
+				ID:      *r.PolicyName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

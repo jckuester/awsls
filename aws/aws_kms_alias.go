@@ -20,9 +20,10 @@ func ListKmsAlias(client *Client) ([]Resource, error) {
 		for _, r := range page.Aliases {
 
 			result = append(result, Resource{
-				Type:   "aws_kms_alias",
-				ID:     *r.AliasName,
-				Region: client.Kmsconn.Config.Region,
+				Type:    "aws_kms_alias",
+				ID:      *r.AliasName,
+				Region:  client.Region,
+				Profile: client.Profile,
 			})
 		}
 	}

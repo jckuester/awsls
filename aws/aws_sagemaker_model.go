@@ -21,9 +21,10 @@ func ListSagemakerModel(client *Client) ([]Resource, error) {
 
 			t := *r.CreationTime
 			result = append(result, Resource{
-				Type:   "aws_sagemaker_model",
-				ID:     *r.ModelName,
-				Region: client.Region,
+				Type:    "aws_sagemaker_model",
+				ID:      *r.ModelName,
+				Profile: client.Profile,
+				Region:  client.Region,
 
 				CreatedAt: &t,
 			})

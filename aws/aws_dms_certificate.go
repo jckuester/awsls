@@ -20,9 +20,10 @@ func ListDmsCertificate(client *Client) ([]Resource, error) {
 		for _, r := range page.Certificates {
 
 			result = append(result, Resource{
-				Type:   "aws_dms_certificate",
-				ID:     *r.CertificateIdentifier,
-				Region: client.Region,
+				Type:    "aws_dms_certificate",
+				ID:      *r.CertificateIdentifier,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

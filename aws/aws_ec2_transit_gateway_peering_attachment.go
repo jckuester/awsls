@@ -27,6 +27,7 @@ func ListEc2TransitGatewayPeeringAttachment(client *Client) ([]Resource, error) 
 			result = append(result, Resource{
 				Type:      "aws_ec2_transit_gateway_peering_attachment",
 				ID:        *r.TransitGatewayAttachmentId,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

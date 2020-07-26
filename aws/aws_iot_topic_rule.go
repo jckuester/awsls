@@ -22,9 +22,10 @@ func ListIotTopicRule(client *Client) ([]Resource, error) {
 		for _, r := range resp.Rules {
 
 			result = append(result, Resource{
-				Type:   "aws_iot_topic_rule",
-				ID:     *r.RuleName,
-				Region: client.Region,
+				Type:    "aws_iot_topic_rule",
+				ID:      *r.RuleName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

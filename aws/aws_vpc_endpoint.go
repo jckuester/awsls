@@ -29,6 +29,7 @@ func ListVpcEndpoint(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_vpc_endpoint",
 				ID:        *r.VpcEndpointId,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

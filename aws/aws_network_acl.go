@@ -27,10 +27,11 @@ func ListNetworkAcl(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_network_acl",
-				ID:     *r.NetworkAclId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:    "aws_network_acl",
+				ID:      *r.NetworkAclId,
+				Profile: client.Profile,
+				Region:  client.Region,
+				Tags:    tags,
 			})
 		}
 	}

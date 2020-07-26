@@ -23,9 +23,10 @@ func ListNetworkInterface(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_network_interface",
-				ID:     *r.NetworkInterfaceId,
-				Region: client.Region,
+				Type:    "aws_network_interface",
+				ID:      *r.NetworkInterfaceId,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

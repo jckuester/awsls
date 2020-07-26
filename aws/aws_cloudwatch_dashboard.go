@@ -20,9 +20,10 @@ func ListCloudwatchDashboard(client *Client) ([]Resource, error) {
 		for _, r := range page.DashboardEntries {
 
 			result = append(result, Resource{
-				Type:   "aws_cloudwatch_dashboard",
-				ID:     *r.DashboardName,
-				Region: client.Region,
+				Type:    "aws_cloudwatch_dashboard",
+				ID:      *r.DashboardName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

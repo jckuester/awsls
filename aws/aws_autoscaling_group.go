@@ -27,6 +27,7 @@ func ListAutoscalingGroup(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_autoscaling_group",
 				ID:        *r.AutoScalingGroupName,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

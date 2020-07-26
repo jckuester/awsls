@@ -27,10 +27,11 @@ func ListApigatewayv2DomainName(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_apigatewayv2_domain_name",
-				ID:     *r.DomainName,
-				Region: client.Region,
-				Tags:   tags,
+				Type:    "aws_apigatewayv2_domain_name",
+				ID:      *r.DomainName,
+				Profile: client.Profile,
+				Region:  client.Region,
+				Tags:    tags,
 			})
 		}
 	}

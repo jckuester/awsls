@@ -22,9 +22,10 @@ func ListWafWebAcl(client *Client) ([]Resource, error) {
 		for _, r := range resp.WebACLs {
 
 			result = append(result, Resource{
-				Type:   "aws_waf_web_acl",
-				ID:     *r.WebACLId,
-				Region: client.Region,
+				Type:    "aws_waf_web_acl",
+				ID:      *r.WebACLId,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

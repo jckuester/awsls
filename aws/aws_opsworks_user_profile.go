@@ -22,9 +22,10 @@ func ListOpsworksUserProfile(client *Client) ([]Resource, error) {
 		for _, r := range resp.UserProfiles {
 
 			result = append(result, Resource{
-				Type:   "aws_opsworks_user_profile",
-				ID:     *r.IamUserArn,
-				Region: client.Region,
+				Type:    "aws_opsworks_user_profile",
+				ID:      *r.IamUserArn,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

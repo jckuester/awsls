@@ -29,6 +29,7 @@ func ListFsxLustreFileSystem(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_fsx_lustre_file_system",
 				ID:        *r.FileSystemId,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

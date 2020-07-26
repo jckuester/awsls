@@ -21,9 +21,10 @@ func ListElb(client *Client) ([]Resource, error) {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{
-				Type:   "aws_elb",
-				ID:     *r.LoadBalancerName,
-				Region: client.Region,
+				Type:    "aws_elb",
+				ID:      *r.LoadBalancerName,
+				Profile: client.Profile,
+				Region:  client.Region,
 
 				CreatedAt: &t,
 			})

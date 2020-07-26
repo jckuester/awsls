@@ -27,6 +27,7 @@ func ListSpotInstanceRequest(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_spot_instance_request",
 				ID:        *r.SpotInstanceRequestId,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

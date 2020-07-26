@@ -23,9 +23,10 @@ func ListGlobalacceleratorAccelerator(client *Client) ([]Resource, error) {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{
-				Type:   "aws_globalaccelerator_accelerator",
-				ID:     *r.AcceleratorArn,
-				Region: client.Region,
+				Type:    "aws_globalaccelerator_accelerator",
+				ID:      *r.AcceleratorArn,
+				Profile: client.Profile,
+				Region:  client.Region,
 
 				CreatedAt: &t,
 			})

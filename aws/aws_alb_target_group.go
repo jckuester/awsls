@@ -20,9 +20,10 @@ func ListAlbTargetGroup(client *Client) ([]Resource, error) {
 		for _, r := range page.TargetGroups {
 
 			result = append(result, Resource{
-				Type:   "aws_alb_target_group",
-				ID:     *r.TargetGroupArn,
-				Region: client.Region,
+				Type:    "aws_alb_target_group",
+				ID:      *r.TargetGroupArn,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

@@ -21,9 +21,10 @@ func ListDbSnapshot(client *Client) ([]Resource, error) {
 
 			t := *r.InstanceCreateTime
 			result = append(result, Resource{
-				Type:   "aws_db_snapshot",
-				ID:     *r.DBSnapshotIdentifier,
-				Region: client.Region,
+				Type:    "aws_db_snapshot",
+				ID:      *r.DBSnapshotIdentifier,
+				Profile: client.Profile,
+				Region:  client.Region,
 
 				CreatedAt: &t,
 			})

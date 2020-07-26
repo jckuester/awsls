@@ -34,7 +34,8 @@ func ListInstance(client *Client) ([]Resource, error) {
 				result = append(result, Resource{
 					Type:      "aws_instance",
 					ID:        *r.InstanceId,
-					Region:    client.Ec2conn.Config.Region,
+					Region:    client.Region,
+					Profile:   client.Profile,
 					Tags:      tags,
 					CreatedAt: &t,
 				})

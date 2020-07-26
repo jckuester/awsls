@@ -22,9 +22,10 @@ func ListOpsworksStack(client *Client) ([]Resource, error) {
 		for _, r := range resp.Stacks {
 
 			result = append(result, Resource{
-				Type:   "aws_opsworks_stack",
-				ID:     *r.StackId,
-				Region: client.Region,
+				Type:    "aws_opsworks_stack",
+				ID:      *r.StackId,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

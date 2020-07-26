@@ -27,10 +27,11 @@ func ListSubnet(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_subnet",
-				ID:     *r.SubnetId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:    "aws_subnet",
+				ID:      *r.SubnetId,
+				Profile: client.Profile,
+				Region:  client.Region,
+				Tags:    tags,
 			})
 		}
 	}

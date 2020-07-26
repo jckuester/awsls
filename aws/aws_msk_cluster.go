@@ -27,6 +27,7 @@ func ListMskCluster(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_msk_cluster",
 				ID:        *r.ClusterArn,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

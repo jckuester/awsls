@@ -22,9 +22,10 @@ func ListSsmResourceDataSync(client *Client) ([]Resource, error) {
 		for _, r := range resp.ResourceDataSyncItems {
 
 			result = append(result, Resource{
-				Type:   "aws_ssm_resource_data_sync",
-				ID:     *r.SyncName,
-				Region: client.Region,
+				Type:    "aws_ssm_resource_data_sync",
+				ID:      *r.SyncName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

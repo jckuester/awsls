@@ -20,9 +20,10 @@ func ListQldbLedger(client *Client) ([]Resource, error) {
 		for _, r := range page.Ledgers {
 
 			result = append(result, Resource{
-				Type:   "aws_qldb_ledger",
-				ID:     *r.Name,
-				Region: client.Region,
+				Type:    "aws_qldb_ledger",
+				ID:      *r.Name,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

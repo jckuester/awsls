@@ -20,9 +20,10 @@ func ListDbParameterGroup(client *Client) ([]Resource, error) {
 		for _, r := range page.DBParameterGroups {
 
 			result = append(result, Resource{
-				Type:   "aws_db_parameter_group",
-				ID:     *r.DBParameterGroupName,
-				Region: client.Region,
+				Type:    "aws_db_parameter_group",
+				ID:      *r.DBParameterGroupName,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

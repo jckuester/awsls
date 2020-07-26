@@ -21,9 +21,10 @@ func ListBackupPlan(client *Client) ([]Resource, error) {
 
 			t := *r.CreationDate
 			result = append(result, Resource{
-				Type:   "aws_backup_plan",
-				ID:     *r.BackupPlanId,
-				Region: client.Region,
+				Type:    "aws_backup_plan",
+				ID:      *r.BackupPlanId,
+				Profile: client.Profile,
+				Region:  client.Region,
 
 				CreatedAt: &t,
 			})

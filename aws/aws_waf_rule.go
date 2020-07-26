@@ -22,9 +22,10 @@ func ListWafRule(client *Client) ([]Resource, error) {
 		for _, r := range resp.Rules {
 
 			result = append(result, Resource{
-				Type:   "aws_waf_rule",
-				ID:     *r.RuleId,
-				Region: client.Region,
+				Type:    "aws_waf_rule",
+				ID:      *r.RuleId,
+				Profile: client.Profile,
+				Region:  client.Region,
 			})
 		}
 	}

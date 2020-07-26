@@ -27,6 +27,7 @@ func ListCloudformationStack(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_cloudformation_stack",
 				ID:        *r.StackId,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

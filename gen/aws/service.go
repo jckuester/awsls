@@ -19,6 +19,8 @@ func ServicePkgNames(apis api.APIs) []string {
 		result = append(result, a.PackageName())
 	}
 
+	sort.Strings(result)
+
 	return result
 }
 

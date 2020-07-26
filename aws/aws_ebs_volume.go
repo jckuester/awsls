@@ -27,6 +27,7 @@ func ListEbsVolume(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ebs_volume",
 				ID:        *r.VolumeId,
+				Profile:   client.Profile,
 				Region:    client.Region,
 				Tags:      tags,
 				CreatedAt: &t,

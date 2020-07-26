@@ -21,9 +21,10 @@ func ListMediaStoreContainer(client *Client) ([]Resource, error) {
 
 			t := *r.CreationTime
 			result = append(result, Resource{
-				Type:   "aws_media_store_container",
-				ID:     *r.Name,
-				Region: client.Region,
+				Type:    "aws_media_store_container",
+				ID:      *r.Name,
+				Profile: client.Profile,
+				Region:  client.Region,
 
 				CreatedAt: &t,
 			})
