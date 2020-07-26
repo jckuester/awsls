@@ -13,7 +13,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const testTfStateBucket = "awsls-testacc-tfstate-492043"
+const (
+	// tfstateBucket is the S3 bucket that stores all Terraform states of acceptance tests
+	tfstateBucket = "awsls-testacc-tfstate-492043"
+	// profile1 is used as default profile throughout the tests if not overwritten by envs
+	profile1 = "myaccount1"
+	// region1 is used as default region throughout the tests if not overwritten by envs
+	region1 = "us-west-2"
+
+	profile2 = "myaccount2"
+	region2  = "us-east-1"
+)
 
 // EnvVars contains environment variables for that must be set for tests.
 type EnvVars struct {
@@ -27,12 +37,16 @@ func InitEnv(t *testing.T) EnvVars {
 
 	profile := os.Getenv("AWS_PROFILE")
 	if profile == "" {
-		t.Fatal("env variable AWS_PROFILE needs to be set for tests")
+		profile = profile1
+
+		t.Logf("env variable AWS_PROFILE not set, using the following profile for tests: %s", profile1)
 	}
 
 	region := os.Getenv("AWS_DEFAULT_REGION")
 	if region == "" {
-		t.Fatal("env variable AWS_DEFAULT_REGION needs to be set for tests")
+		region = region1
+
+		t.Logf("env variable AWS_DEFAULT_REGION not set, using the following region for tests: %s", region1)
 	}
 
 	return EnvVars{
@@ -41,7 +55,7 @@ func InitEnv(t *testing.T) EnvVars {
 	}
 }
 
-func GetTerraformOptions(terraformDir string, env EnvVars, optionalVars ...map[string]interface{}) *terraform.Options {
+func GetTerraformOptions(terraformDir string, env EnvVars, overrideVars ...map[string]interface{}) *terraform.Options {
 	name := "awsls-testacc-" + strings.ToLower(random.UniqueId())
 
 	vars := map[string]interface{}{
@@ -50,10 +64,8 @@ func GetTerraformOptions(terraformDir string, env EnvVars, optionalVars ...map[s
 		"name":    name,
 	}
 
-	if len(optionalVars) > 0 {
-		for k, v := range optionalVars[0] {
-			vars[k] = v
-		}
+	if len(overrideVars) > 0 {
+		vars = overrideVars[0]
 	}
 
 	return &terraform.Options{
@@ -62,7 +74,7 @@ func GetTerraformOptions(terraformDir string, env EnvVars, optionalVars ...map[s
 		Vars:         vars,
 		// BackendConfig defines where to store the Terraform state files of tests
 		BackendConfig: map[string]interface{}{
-			"bucket":  testTfStateBucket,
+			"bucket":  tfstateBucket,
 			"key":     fmt.Sprintf("%s.tfstate", name),
 			"region":  env.AWSRegion,
 			"profile": env.AWSProfile,
@@ -74,4 +86,38 @@ func GetTerraformOptions(terraformDir string, env EnvVars, optionalVars ...map[s
 func AssertVpcExists(t *testing.T, actualVpcID string, env EnvVars) {
 	_, err := aws.GetVpcByIdE(t, actualVpcID, env.AWSRegion)
 	assert.NoError(t, err, "resource has been unexpectedly deleted")
+}
+
+func SetMultiEnvs(variables map[string]string) error {
+	for envName, envValue := range variables {
+		err := os.Setenv(envName, envValue)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func UnsetAWSEnvs() error {
+	return UnsetMultiEnvs([]string{
+		"AWS_DEFAULT_REGION",
+		"AWS_REGION",
+		"AWS_PROFILE",
+		"AWS_SDK_LOAD_CONFIG",
+		"AWS_ACCESS_KEY_ID",
+		"AWS_SECRET_ACCESS_KEY",
+		"AWS_SESSION_TOKEN",
+	})
+}
+
+func UnsetMultiEnvs(variables []string) error {
+	for _, envName := range variables {
+		err := os.Unsetenv(envName)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

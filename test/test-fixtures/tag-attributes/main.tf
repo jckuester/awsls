@@ -11,7 +11,15 @@ terraform {
   }
 }
 
-resource "aws_vpc" "test" {
+resource "aws_vpc" "single_tag" {
+  cidr_block = "10.0.0.0/16"
+
+  tags = {
+    foo = "bar"
+  }
+}
+
+resource "aws_vpc" "multiple_tags" {
   cidr_block = "10.0.0.0/16"
 
   tags = {

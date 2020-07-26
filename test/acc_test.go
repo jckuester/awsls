@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"runtime"
 	"testing"
 
@@ -18,6 +19,109 @@ const (
 	packagePath = "github.com/jckuester/awsls"
 )
 
+func TestAcc_ProfilesAndRegions(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping acceptance test.")
+	}
+
+	env := InitEnv(t)
+
+	terraformDir := "./test-fixtures/multiple-profiles-and-regions"
+
+	terraformOptions := GetTerraformOptions(terraformDir, env, map[string]interface{}{
+		"profile1": profile1,
+		"region1":  region1,
+		"profile2": profile2,
+		"region2":  region2,
+	})
+
+	defer terraform.Destroy(t, terraformOptions)
+
+	terraform.InitAndApply(t, terraformOptions)
+
+	tests := []struct {
+		name         string
+		args         []string
+		envs         map[string]string
+		expectedLogs []string
+	}{
+		{
+			name: "multiple profiles and regions via flag",
+			args: []string{
+				"-p", fmt.Sprintf("%s,%s", profile1, profile2),
+				"-r", fmt.Sprintf("%s,%s", region1, region2),
+				"-a", "tags", "aws_vpc"},
+			expectedLogs: []string{
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region2),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile2, region1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile2, region2),
+			},
+		},
+		{
+			name: "profile via env, multiple regions via flag",
+			args: []string{
+				"-r", fmt.Sprintf("%s,%s", region1, region2),
+				"-a", "tags", "aws_vpc"},
+			expectedLogs: []string{
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region2),
+			},
+			envs: map[string]string{
+				"AWS_PROFILE": profile1,
+			},
+		},
+		{
+			name: "profile and region via env",
+			args: []string{"-a", "tags", "aws_vpc"},
+			envs: map[string]string{
+				"AWS_PROFILE":        profile1,
+				"AWS_DEFAULT_REGION": region2,
+			},
+			expectedLogs: []string{
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region2),
+			},
+		},
+		{
+			name: "profile via flag, using default region from AWS config file",
+			args: []string{"-a", "tags", "aws_vpc"},
+			envs: map[string]string{
+				"AWS_PROFILE": profile1,
+			},
+			expectedLogs: []string{
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
+			},
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			err := UnsetAWSEnvs()
+			require.NoError(t, err)
+
+			err = SetMultiEnvs(tc.envs)
+			require.NoError(t, err)
+
+			logBuffer, err := runBinary(t, tc.args...)
+			require.NoError(t, err)
+
+			actualLogs := logBuffer.String()
+
+			for _, expectedLogEntry := range tc.expectedLogs {
+				assert.Regexp(t, regexp.MustCompile(expectedLogEntry), actualLogs)
+			}
+
+			fmt.Println(actualLogs)
+
+			err = UnsetAWSEnvs()
+			require.NoError(t, err)
+		})
+	}
+}
+
 func TestAcc_Attributes(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping acceptance test.")
@@ -25,7 +129,7 @@ func TestAcc_Attributes(t *testing.T) {
 
 	env := InitEnv(t)
 
-	terraformDir := "./test-fixtures/aws-vpc"
+	terraformDir := "./test-fixtures/tag-attributes"
 
 	terraformOptions := GetTerraformOptions(terraformDir, env)
 
@@ -33,43 +137,61 @@ func TestAcc_Attributes(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	actualVpcID := terraform.Output(t, terraformOptions, "vpc_id")
-	AssertVpcExists(t, actualVpcID, env)
+	actualVpcID1 := terraform.Output(t, terraformOptions, "vpc_id1")
+	AssertVpcExists(t, actualVpcID1, env)
+
+	actualVpcID2 := terraform.Output(t, terraformOptions, "vpc_id2")
+	AssertVpcExists(t, actualVpcID2, env)
 
 	tests := []struct {
 		name         string
-		attributes   []string
+		args         []string
 		expectedLogs []string
 	}{
 		{
-			name:       "single attributes",
-			attributes: []string{"--attributes", "tags", "aws_vpc"},
+			name: "string attribute",
+			args: []string{
+				"-p", env.AWSProfile, "-r", env.AWSRegion,
+				"-a", "cidr_block", "aws_vpc"},
 			expectedLogs: []string{
-				"REGION      CREATED   TAGS",
-				"us-west-2   N/A       bar=baz,foo=bar",
+				"CREATED\\s+CIDR_BLOCK",
+				fmt.Sprintf("N/A\\s+10.0.0.0/16"),
+				fmt.Sprintf("N/A\\s+10.0.0.0/16"),
 			},
 		},
 		{
-			name:       "multiple attributes",
-			attributes: []string{"-a", "tags,cidr_block", "aws_vpc"},
+			name: "map attribute",
+			args: []string{"--attributes", "tags", "aws_vpc"},
 			expectedLogs: []string{
-				"REGION      CREATED   TAGS              CIDR_BLOCK",
-				"us-west-2   N/A       bar=baz,foo=bar   10.0.0.0/16",
+				"CREATED\\s+TAGS",
+				fmt.Sprintf("N/A\\s+foo=bar"),
+				fmt.Sprintf("N/A\\s+bar=baz,foo=bar"),
+			},
+		},
+		{
+			name: "multiple attributes",
+			args: []string{"-a", "tags,cidr_block", "aws_vpc"},
+			expectedLogs: []string{
+				"CREATED\\s+TAGS\\s+CIDR_BLOCK",
+				fmt.Sprintf("N/A\\sfoo=bar\\s+10.0.0.0/16"),
+				fmt.Sprintf("N/A\\s+bar=baz,foo=bar\\s+10.0.0.0/16"),
 			},
 		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 
-			logBuffer, err := runBinary(t, tc.attributes...)
+			logBuffer, err := runBinary(t, tc.args...)
 			require.NoError(t, err)
 
-			AssertVpcExists(t, actualVpcID, env)
+			// just to be extra safe: check that nothing is deleted
+			AssertVpcExists(t, actualVpcID1, env)
+			AssertVpcExists(t, actualVpcID2, env)
 
 			actualLogs := logBuffer.String()
 
 			for _, expectedLogEntry := range tc.expectedLogs {
-				assert.Contains(t, actualLogs, expectedLogEntry)
+				assert.Regexp(t, regexp.MustCompile(expectedLogEntry), actualLogs)
 			}
 
 			fmt.Println(actualLogs)

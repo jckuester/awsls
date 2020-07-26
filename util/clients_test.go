@@ -1,7 +1,6 @@
 package util_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/jckuester/awsls/util"
@@ -142,26 +141,4 @@ func TestNewAWSClientPool(t *testing.T) {
 			}
 		})
 	}
-}
-
-func SetMultiEnvs(variables map[string]string) error {
-	for envName, envValue := range variables {
-		err := os.Setenv(envName, envValue)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func UnsetMultiEnvs(variables []string) error {
-	for _, envName := range variables {
-		err := os.Unsetenv(envName)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
