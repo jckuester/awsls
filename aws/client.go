@@ -3,8 +3,8 @@
 package aws
 
 import (
+	"context"
 	"fmt"
-
 	"github.com/apex/log"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/accessanalyzer"
@@ -704,4 +704,17 @@ func NewClient(configs ...external.Config) (*Client, error) {
 	}).Debugf("created new instance of AWS client")
 
 	return client, nil
+}
+
+// SetAccountID populates the AccountID field of the client.
+func (client *Client) SetAccountID() error {
+	req := client.Stsconn.GetCallerIdentityRequest(&sts.GetCallerIdentityInput{})
+	resp, err := req.Send(context.Background())
+	if err != nil {
+		return fmt.Errorf("failed to get caller identity: %s", err)
+	}
+
+	client.AccountID = *resp.Account
+
+	return nil
 }

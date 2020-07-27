@@ -20,10 +20,11 @@ func ListDatasyncTask(client *Client) ([]Resource, error) {
 		for _, r := range page.Tasks {
 
 			result = append(result, Resource{
-				Type:    "aws_datasync_task",
-				ID:      *r.TaskArn,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_datasync_task",
+				ID:        *r.TaskArn,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

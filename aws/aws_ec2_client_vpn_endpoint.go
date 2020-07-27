@@ -33,6 +33,7 @@ func ListEc2ClientVpnEndpoint(client *Client) ([]Resource, error) {
 				ID:        *r.ClientVpnEndpointId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

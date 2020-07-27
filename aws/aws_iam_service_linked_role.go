@@ -29,6 +29,7 @@ func ListIamServiceLinkedRole(client *Client) ([]Resource, error) {
 				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

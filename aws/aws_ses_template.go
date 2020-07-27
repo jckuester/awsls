@@ -22,10 +22,11 @@ func ListSesTemplate(client *Client) ([]Resource, error) {
 		for _, r := range resp.TemplatesMetadata {
 
 			result = append(result, Resource{
-				Type:    "aws_ses_template",
-				ID:      *r.Name,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_ses_template",
+				ID:        *r.Name,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

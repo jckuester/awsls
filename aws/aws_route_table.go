@@ -27,11 +27,12 @@ func ListRouteTable(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:    "aws_route_table",
-				ID:      *r.RouteTableId,
-				Profile: client.Profile,
-				Region:  client.Region,
-				Tags:    tags,
+				Type:      "aws_route_table",
+				ID:        *r.RouteTableId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

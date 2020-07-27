@@ -20,10 +20,11 @@ func ListDbEventSubscription(client *Client) ([]Resource, error) {
 		for _, r := range page.EventSubscriptionsList {
 
 			result = append(result, Resource{
-				Type:    "aws_db_event_subscription",
-				ID:      *r.CustSubscriptionId,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_db_event_subscription",
+				ID:        *r.CustSubscriptionId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

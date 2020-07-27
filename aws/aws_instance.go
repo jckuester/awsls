@@ -36,6 +36,7 @@ func ListInstance(client *Client) ([]Resource, error) {
 					ID:        *r.InstanceId,
 					Region:    client.Region,
 					Profile:   client.Profile,
+					AccountID: client.AccountID,
 					Tags:      tags,
 					CreatedAt: &t,
 				})

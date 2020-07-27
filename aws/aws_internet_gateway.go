@@ -27,11 +27,12 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:    "aws_internet_gateway",
-				ID:      *r.InternetGatewayId,
-				Profile: client.Profile,
-				Region:  client.Region,
-				Tags:    tags,
+				Type:      "aws_internet_gateway",
+				ID:        *r.InternetGatewayId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

@@ -23,10 +23,11 @@ func ListDbSecurityGroup(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:    "aws_db_security_group",
-				ID:      *r.DBSecurityGroupName,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_db_security_group",
+				ID:        *r.DBSecurityGroupName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

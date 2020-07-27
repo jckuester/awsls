@@ -20,10 +20,11 @@ func ListDevicefarmProject(client *Client) ([]Resource, error) {
 		for _, r := range page.Projects {
 
 			result = append(result, Resource{
-				Type:    "aws_devicefarm_project",
-				ID:      *r.Arn,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_devicefarm_project",
+				ID:        *r.Arn,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

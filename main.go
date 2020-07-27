@@ -122,6 +122,13 @@ func mainExitCode() int {
 		var hasAttrs map[string]bool
 
 		for key, client := range clients {
+			err := client.SetAccountID()
+			if err != nil {
+				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
+
+				return 1
+			}
+
 			res, err := aws.ListResourcesByType(&client, rType)
 			if err != nil {
 				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))

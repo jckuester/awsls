@@ -68,6 +68,7 @@ func  List{{.OpName}}(client *Client) ([]Resource, error) {
 				ID: *r.{{ .ResourceID }},
 				Profile: client.Profile,
 				Region: client.Region,
+				AccountID: client.AccountID,
 				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
 				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
 			})
@@ -95,6 +96,7 @@ func  List{{.OpName}}(client *Client) ([]Resource, error) {
 				ID: *r.{{ .ResourceID }},
 				Profile: client.Profile,
 				Region: client.Region,
+				AccountID: client.AccountID,
 				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
 				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
 			})

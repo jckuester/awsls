@@ -31,6 +31,7 @@ func ListFsxWindowsFileSystem(client *Client) ([]Resource, error) {
 				ID:        *r.FileSystemId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

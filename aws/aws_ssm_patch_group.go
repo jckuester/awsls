@@ -22,10 +22,11 @@ func ListSsmPatchGroup(client *Client) ([]Resource, error) {
 		for _, r := range resp.Mappings {
 
 			result = append(result, Resource{
-				Type:    "aws_ssm_patch_group",
-				ID:      *r.PatchGroup,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_ssm_patch_group",
+				ID:        *r.PatchGroup,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

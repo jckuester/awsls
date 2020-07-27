@@ -22,10 +22,11 @@ func ListWorkspacesIpGroup(client *Client) ([]Resource, error) {
 		for _, r := range resp.Result {
 
 			result = append(result, Resource{
-				Type:    "aws_workspaces_ip_group",
-				ID:      *r.GroupId,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_workspaces_ip_group",
+				ID:        *r.GroupId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

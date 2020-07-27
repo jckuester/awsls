@@ -29,6 +29,7 @@ func ListMskCluster(client *Client) ([]Resource, error) {
 				ID:        *r.ClusterArn,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -31,6 +31,7 @@ func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
 				ID:        *r.CapacityReservationId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

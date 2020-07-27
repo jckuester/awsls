@@ -25,11 +25,12 @@ func ListEgressOnlyInternetGateway(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:    "aws_egress_only_internet_gateway",
-				ID:      *r.EgressOnlyInternetGatewayId,
-				Profile: client.Profile,
-				Region:  client.Region,
-				Tags:    tags,
+				Type:      "aws_egress_only_internet_gateway",
+				ID:        *r.EgressOnlyInternetGatewayId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

@@ -29,6 +29,7 @@ func ListEbsVolume(client *Client) ([]Resource, error) {
 				ID:        *r.VolumeId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -22,10 +22,11 @@ func ListWafregionalXssMatchSet(client *Client) ([]Resource, error) {
 		for _, r := range resp.XssMatchSets {
 
 			result = append(result, Resource{
-				Type:    "aws_wafregional_xss_match_set",
-				ID:      *r.XssMatchSetId,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_wafregional_xss_match_set",
+				ID:        *r.XssMatchSetId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

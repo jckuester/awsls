@@ -20,10 +20,11 @@ func ListLbTargetGroup(client *Client) ([]Resource, error) {
 		for _, r := range page.TargetGroups {
 
 			result = append(result, Resource{
-				Type:    "aws_lb_target_group",
-				ID:      *r.TargetGroupArn,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_lb_target_group",
+				ID:        *r.TargetGroupArn,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

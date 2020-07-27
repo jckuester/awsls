@@ -21,10 +21,11 @@ func ListLaunchConfiguration(client *Client) ([]Resource, error) {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{
-				Type:    "aws_launch_configuration",
-				ID:      *r.LaunchConfigurationName,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_launch_configuration",
+				ID:        *r.LaunchConfigurationName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

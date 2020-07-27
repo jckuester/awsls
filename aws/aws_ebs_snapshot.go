@@ -31,6 +31,7 @@ func ListEbsSnapshot(client *Client) ([]Resource, error) {
 				ID:        *r.SnapshotId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

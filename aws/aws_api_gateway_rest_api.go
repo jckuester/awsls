@@ -25,11 +25,12 @@ func ListApiGatewayRestApi(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:    "aws_api_gateway_rest_api",
-				ID:      *r.Id,
-				Profile: client.Profile,
-				Region:  client.Region,
-				Tags:    tags,
+				Type:      "aws_api_gateway_rest_api",
+				ID:        *r.Id,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

@@ -25,11 +25,12 @@ func ListApiGatewayDomainName(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:    "aws_api_gateway_domain_name",
-				ID:      *r.DomainName,
-				Profile: client.Profile,
-				Region:  client.Region,
-				Tags:    tags,
+				Type:      "aws_api_gateway_domain_name",
+				ID:        *r.DomainName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

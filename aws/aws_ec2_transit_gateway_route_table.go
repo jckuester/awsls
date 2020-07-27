@@ -29,6 +29,7 @@ func ListEc2TransitGatewayRouteTable(client *Client) ([]Resource, error) {
 				ID:        *r.TransitGatewayRouteTableId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

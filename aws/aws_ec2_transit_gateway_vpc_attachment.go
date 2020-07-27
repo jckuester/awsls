@@ -29,6 +29,7 @@ func ListEc2TransitGatewayVpcAttachment(client *Client) ([]Resource, error) {
 				ID:        *r.TransitGatewayAttachmentId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

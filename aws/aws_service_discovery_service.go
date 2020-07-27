@@ -21,10 +21,11 @@ func ListServiceDiscoveryService(client *Client) ([]Resource, error) {
 
 			t := *r.CreateDate
 			result = append(result, Resource{
-				Type:    "aws_service_discovery_service",
-				ID:      *r.Id,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_service_discovery_service",
+				ID:        *r.Id,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

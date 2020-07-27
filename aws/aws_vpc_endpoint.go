@@ -31,6 +31,7 @@ func ListVpcEndpoint(client *Client) ([]Resource, error) {
 				ID:        *r.VpcEndpointId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

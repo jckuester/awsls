@@ -22,10 +22,11 @@ func ListWafRegexPatternSet(client *Client) ([]Resource, error) {
 		for _, r := range resp.RegexPatternSets {
 
 			result = append(result, Resource{
-				Type:    "aws_waf_regex_pattern_set",
-				ID:      *r.RegexPatternSetId,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_waf_regex_pattern_set",
+				ID:        *r.RegexPatternSetId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

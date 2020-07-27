@@ -22,10 +22,11 @@ func ListSsmMaintenanceWindow(client *Client) ([]Resource, error) {
 		for _, r := range resp.WindowIdentities {
 
 			result = append(result, Resource{
-				Type:    "aws_ssm_maintenance_window",
-				ID:      *r.WindowId,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_ssm_maintenance_window",
+				ID:        *r.WindowId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

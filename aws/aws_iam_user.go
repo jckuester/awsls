@@ -29,6 +29,7 @@ func ListIamUser(client *Client) ([]Resource, error) {
 				ID:        *r.UserName,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

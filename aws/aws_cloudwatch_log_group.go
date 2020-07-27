@@ -22,10 +22,11 @@ func ListCloudwatchLogGroup(client *Client) ([]Resource, error) {
 
 			t := time.Unix(0, *r.CreationTime*1000000).UTC()
 			result = append(result, Resource{
-				Type:    "aws_cloudwatch_log_group",
-				ID:      *r.LogGroupName,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_cloudwatch_log_group",
+				ID:        *r.LogGroupName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

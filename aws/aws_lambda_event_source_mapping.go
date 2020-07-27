@@ -20,10 +20,11 @@ func ListLambdaEventSourceMapping(client *Client) ([]Resource, error) {
 		for _, r := range page.EventSourceMappings {
 
 			result = append(result, Resource{
-				Type:    "aws_lambda_event_source_mapping",
-				ID:      *r.UUID,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_lambda_event_source_mapping",
+				ID:        *r.UUID,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

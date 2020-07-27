@@ -22,10 +22,11 @@ func ListDaxSubnetGroup(client *Client) ([]Resource, error) {
 		for _, r := range resp.SubnetGroups {
 
 			result = append(result, Resource{
-				Type:    "aws_dax_subnet_group",
-				ID:      *r.SubnetGroupName,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_dax_subnet_group",
+				ID:        *r.SubnetGroupName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

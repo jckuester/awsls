@@ -21,10 +21,11 @@ func ListBackupVault(client *Client) ([]Resource, error) {
 
 			t := *r.CreationDate
 			result = append(result, Resource{
-				Type:    "aws_backup_vault",
-				ID:      *r.BackupVaultName,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_backup_vault",
+				ID:        *r.BackupVaultName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

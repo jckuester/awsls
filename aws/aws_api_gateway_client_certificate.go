@@ -25,11 +25,12 @@ func ListApiGatewayClientCertificate(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:    "aws_api_gateway_client_certificate",
-				ID:      *r.ClientCertificateId,
-				Profile: client.Profile,
-				Region:  client.Region,
-				Tags:    tags,
+				Type:      "aws_api_gateway_client_certificate",
+				ID:        *r.ClientCertificateId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

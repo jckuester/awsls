@@ -22,10 +22,11 @@ func ListKinesisAnalyticsApplication(client *Client) ([]Resource, error) {
 		for _, r := range resp.ApplicationSummaries {
 
 			result = append(result, Resource{
-				Type:    "aws_kinesis_analytics_application",
-				ID:      *r.ApplicationARN,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_kinesis_analytics_application",
+				ID:        *r.ApplicationARN,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

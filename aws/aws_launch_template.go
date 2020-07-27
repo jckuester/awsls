@@ -29,6 +29,7 @@ func ListLaunchTemplate(client *Client) ([]Resource, error) {
 				ID:        *r.LaunchTemplateId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

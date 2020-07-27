@@ -20,10 +20,11 @@ func ListRoute53Zone(client *Client) ([]Resource, error) {
 		for _, r := range page.HostedZones {
 
 			result = append(result, Resource{
-				Type:    "aws_route53_zone",
-				ID:      *r.Id,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_route53_zone",
+				ID:        *r.Id,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

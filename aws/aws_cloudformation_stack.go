@@ -29,6 +29,7 @@ func ListCloudformationStack(client *Client) ([]Resource, error) {
 				ID:        *r.StackId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

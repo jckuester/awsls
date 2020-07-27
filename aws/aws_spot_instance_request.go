@@ -29,6 +29,7 @@ func ListSpotInstanceRequest(client *Client) ([]Resource, error) {
 				ID:        *r.SpotInstanceRequestId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -20,10 +20,11 @@ func ListDmsReplicationTask(client *Client) ([]Resource, error) {
 		for _, r := range page.ReplicationTasks {
 
 			result = append(result, Resource{
-				Type:    "aws_dms_replication_task",
-				ID:      *r.ReplicationTaskIdentifier,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_dms_replication_task",
+				ID:        *r.ReplicationTaskIdentifier,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

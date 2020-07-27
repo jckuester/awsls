@@ -22,10 +22,11 @@ func ListSesReceiptFilter(client *Client) ([]Resource, error) {
 		for _, r := range resp.Filters {
 
 			result = append(result, Resource{
-				Type:    "aws_ses_receipt_filter",
-				ID:      *r.Name,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_ses_receipt_filter",
+				ID:        *r.Name,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

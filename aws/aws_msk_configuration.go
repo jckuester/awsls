@@ -21,10 +21,11 @@ func ListMskConfiguration(client *Client) ([]Resource, error) {
 
 			t := *r.CreationTime
 			result = append(result, Resource{
-				Type:    "aws_msk_configuration",
-				ID:      *r.Arn,
-				Profile: client.Profile,
-				Region:  client.Region,
+				Type:      "aws_msk_configuration",
+				ID:        *r.Arn,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

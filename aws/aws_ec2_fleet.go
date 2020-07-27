@@ -29,6 +29,7 @@ func ListEc2Fleet(client *Client) ([]Resource, error) {
 				ID:        *r.FleetId,
 				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})
