@@ -12,6 +12,7 @@ import (
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
+	aws_ssmhelpers "github.com/disneystreaming/go-ssmhelpers/aws"
 	"github.com/fatih/color"
 	"github.com/jckuester/awsls/aws"
 	"github.com/jckuester/awsls/internal"
@@ -25,6 +26,7 @@ func main() {
 
 func mainExitCode() int {
 	var logDebug bool
+	var allProfilesFlag bool
 	var profiles internal.CommaSeparatedListFlag
 	var regions internal.CommaSeparatedListFlag
 	var attributes internal.CommaSeparatedListFlag
@@ -38,6 +40,7 @@ func mainExitCode() int {
 
 	flags.BoolVar(&logDebug, "debug", false, "Enable debug logging")
 	flags.VarP(&profiles, "profiles", "p", "Comma-separated list of named AWS profiles for accounts to list resources in")
+	flags.BoolVar(&allProfilesFlag, "all-profiles", false, "List resources for all profiles in ~/.aws/config")
 	flags.VarP(&regions, "regions", "r", "Comma-separated list of regions to list resources in")
 	flags.VarP(&attributes, "attributes", "a", "Comma-separated list of attributes to show for each resource")
 	flags.BoolVar(&version, "version", false, "Show application version")
@@ -69,6 +72,13 @@ func mainExitCode() int {
 		return 1
 	}
 
+	if profiles != nil && allProfilesFlag == true {
+		fmt.Fprint(os.Stderr, color.RedString("Error:️ --profiles and --all-profiles flag cannot be used together\n"))
+		printHelp(flags)
+
+		return 1
+	}
+
 	resourceTypePattern := args[0]
 	matchedTypes, err := resource.MatchSupportedTypes(resourceTypePattern)
 	if err != nil {
@@ -79,15 +89,38 @@ func mainExitCode() int {
 
 	if len(matchedTypes) == 0 {
 		fmt.Fprint(os.Stderr, color.RedString("Error: no resource type found: %s\n", resourceTypePattern))
-
 		return 1
 	}
 
-	if profiles == nil {
+	if profiles == nil && allProfilesFlag == false {
 		env, ok := os.LookupEnv("AWS_PROFILE")
 		if ok {
 			profiles = []string{env}
 		}
+	}
+
+	if allProfilesFlag {
+		var awsConfigPath []string
+		awsConfigFileEnv, ok := os.LookupEnv("AWS_CONFIG_FILE")
+		if ok {
+			awsConfigPath = []string{awsConfigFileEnv}
+		}
+
+		profilesFromConfig, err := aws_ssmhelpers.GetAWSProfiles(awsConfigPath...)
+		if err != nil {
+			fmt.Fprint(os.Stderr, color.RedString("Error: failed to load all profiles: %s\n", err))
+			return 1
+		}
+
+		if profilesFromConfig == nil {
+			fmt.Fprint(os.Stderr, color.RedString("Error: no profiles found in ~/.aws/config\n"))
+			return 1
+		}
+
+		if profilesFromConfig != nil {
+			profiles = profilesFromConfig
+		}
+
 	}
 
 	clients, err := util.NewAWSClientPool(profiles, regions)

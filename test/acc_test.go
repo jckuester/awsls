@@ -96,6 +96,21 @@ func TestAcc_ProfilesAndRegions(t *testing.T) {
 				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
 			},
 		},
+		{
+			name: "all-profiles flag, default region for each profile",
+			args: []string{"--all-profiles", "aws_vpc"},
+			envs: map[string]string{
+				"AWS_CONFIG_FILE": "../test/test-fixtures/aws-config",
+			},
+			expectedLogs: []string{},
+		},
+		{
+			name: "with profiles and all-profiles flag",
+			args: []string{"-p", "foo", "--all-profiles", "aws_vpc"},
+			expectedLogs: []string{
+				"--profiles and --all-profiles flag cannot be used together",
+			},
+		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -149,32 +164,42 @@ func TestAcc_Attributes(t *testing.T) {
 		expectedLogs []string
 	}{
 		{
+			name: "without attributes",
+			args: []string{
+				"-p", env.AWSProfile, "-r", env.AWSRegion, "aws_vpc"},
+			expectedLogs: []string{
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED",
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A", actualVpcID1, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A", actualVpcID2, env.AWSRegion),
+			},
+		},
+		{
 			name: "string attribute",
 			args: []string{
 				"-p", env.AWSProfile, "-r", env.AWSRegion,
 				"-a", "cidr_block", "aws_vpc"},
 			expectedLogs: []string{
-				"CREATED\\s+CIDR_BLOCK",
-				fmt.Sprintf("N/A\\s+10.0.0.0/16"),
-				fmt.Sprintf("N/A\\s+10.0.0.0/16"),
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+CIDR_BLOCK",
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+10.0.0.0/16", actualVpcID1, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+10.0.0.0/16", actualVpcID1, env.AWSRegion),
 			},
 		},
 		{
 			name: "map attribute",
 			args: []string{"--attributes", "tags", "aws_vpc"},
 			expectedLogs: []string{
-				"CREATED\\s+TAGS",
-				fmt.Sprintf("N/A\\s+foo=bar"),
-				fmt.Sprintf("N/A\\s+bar=baz,foo=bar"),
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+foo=bar", actualVpcID1, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+bar=baz,foo=bar", actualVpcID1, env.AWSRegion),
 			},
 		},
 		{
 			name: "multiple attributes",
 			args: []string{"-a", "tags,cidr_block", "aws_vpc"},
 			expectedLogs: []string{
-				"CREATED\\s+TAGS\\s+CIDR_BLOCK",
-				fmt.Sprintf("N/A\\sfoo=bar\\s+10.0.0.0/16"),
-				fmt.Sprintf("N/A\\s+bar=baz,foo=bar\\s+10.0.0.0/16"),
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS\\s+CIDR_BLOCK",
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\sfoo=bar\\s+10.0.0.0/16", actualVpcID1, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+bar=baz,foo=bar\\s+10.0.0.0/16", actualVpcID1, env.AWSRegion),
 			},
 		},
 	}

@@ -3,6 +3,8 @@ package util_test
 import (
 	"testing"
 
+	"github.com/jckuester/awsls/test"
+
 	"github.com/jckuester/awsls/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -109,18 +111,10 @@ func TestNewAWSClientPool(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := UnsetMultiEnvs([]string{
-				"AWS_DEFAULT_REGION",
-				"AWS_REGION",
-				"AWS_PROFILE",
-				"AWS_SDK_LOAD_CONFIG",
-				"AWS_ACCESS_KEY_ID",
-				"AWS_SECRET_ACCESS_KEY",
-				"AWS_SESSION_TOKEN",
-			})
+			err := test.UnsetAWSEnvs()
 			require.NoError(t, err)
 
-			err = SetMultiEnvs(tt.envs)
+			err = test.SetMultiEnvs(tt.envs)
 			require.NoError(t, err)
 
 			got, err := util.NewAWSClientPool(tt.args.profiles, tt.args.regions)
