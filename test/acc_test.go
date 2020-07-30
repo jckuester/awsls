@@ -8,6 +8,8 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/apex/log"
+
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/onsi/gomega/gexec"
 
@@ -40,10 +42,11 @@ func TestAcc_ProfilesAndRegions(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	tests := []struct {
-		name         string
-		args         []string
-		envs         map[string]string
-		expectedLogs []string
+		name            string
+		args            []string
+		envs            map[string]string
+		expectedLogs    []string
+		expectedErrCode int
 	}{
 		{
 			name: "multiple profiles and regions via flag",
@@ -98,11 +101,12 @@ func TestAcc_ProfilesAndRegions(t *testing.T) {
 		},
 		{
 			name: "all-profiles flag, default region for each profile",
-			args: []string{"--all-profiles", "aws_vpc"},
-			envs: map[string]string{
-				"AWS_CONFIG_FILE": "../test/test-fixtures/aws-config",
+			args: []string{"--all-profiles", "-a", "tags", "aws_vpc"},
+			expectedLogs: []string{
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile2, region2),
 			},
-			expectedLogs: []string{},
 		},
 		{
 			name: "with profiles and all-profiles flag",
@@ -110,6 +114,7 @@ func TestAcc_ProfilesAndRegions(t *testing.T) {
 			expectedLogs: []string{
 				"--profiles and --all-profiles flag cannot be used together",
 			},
+			expectedErrCode: 1,
 		},
 	}
 	for _, tc := range tests {
@@ -121,7 +126,12 @@ func TestAcc_ProfilesAndRegions(t *testing.T) {
 			require.NoError(t, err)
 
 			logBuffer, err := runBinary(t, tc.args...)
-			require.NoError(t, err)
+
+			if tc.expectedErrCode > 0 {
+				require.EqualError(t, err, "exit status 1")
+			} else {
+				require.NoError(t, err)
+			}
 
 			actualLogs := logBuffer.String()
 
@@ -169,8 +179,10 @@ func TestAcc_Attributes(t *testing.T) {
 				"-p", env.AWSProfile, "-r", env.AWSRegion, "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED",
-				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A", actualVpcID1, env.AWSRegion),
-				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A", actualVpcID2, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A",
+					actualVpcID1, env.AWSProfile, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A",
+					actualVpcID2, env.AWSProfile, env.AWSRegion),
 			},
 		},
 		{
@@ -180,26 +192,36 @@ func TestAcc_Attributes(t *testing.T) {
 				"-a", "cidr_block", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+CIDR_BLOCK",
-				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+10.0.0.0/16", actualVpcID1, env.AWSRegion),
-				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+10.0.0.0/16", actualVpcID1, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+10.0.0.0/16",
+					actualVpcID1, env.AWSProfile, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+10.0.0.0/16",
+					actualVpcID1, env.AWSProfile, env.AWSRegion),
 			},
 		},
 		{
 			name: "map attribute",
-			args: []string{"--attributes", "tags", "aws_vpc"},
+			args: []string{
+				"-p", env.AWSProfile, "-r", env.AWSRegion,
+				"--attributes", "tags", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
-				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+foo=bar", actualVpcID1, env.AWSRegion),
-				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+bar=baz,foo=bar", actualVpcID1, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+foo=bar",
+					actualVpcID1, env.AWSProfile, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+bar=baz,foo=bar",
+					actualVpcID2, env.AWSProfile, env.AWSRegion),
 			},
 		},
 		{
 			name: "multiple attributes",
-			args: []string{"-a", "tags,cidr_block", "aws_vpc"},
+			args: []string{
+				"-p", env.AWSProfile, "-r", env.AWSRegion,
+				"-a", "tags,cidr_block", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS\\s+CIDR_BLOCK",
-				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\sfoo=bar\\s+10.0.0.0/16", actualVpcID1, env.AWSRegion),
-				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+N/A\\s+bar=baz,foo=bar\\s+10.0.0.0/16", actualVpcID1, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+foo=bar\\s+10.0.0.0/16",
+					actualVpcID1, env.AWSProfile, env.AWSRegion),
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+bar=baz,foo=bar\\s+10.0.0.0/16",
+					actualVpcID2, env.AWSProfile, env.AWSRegion),
 			},
 		},
 	}
@@ -288,5 +310,8 @@ func runBinary(t *testing.T, args ...string) (*bytes.Buffer, error) {
 
 	err = p.Run()
 
+	if err != nil {
+		log.Debugf("running binary error: %s", err)
+	}
 	return logBuffer, err
 }

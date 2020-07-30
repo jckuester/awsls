@@ -35,18 +35,20 @@ type EnvVars struct {
 func InitEnv(t *testing.T) EnvVars {
 	t.Helper()
 
-	profile := os.Getenv("AWS_PROFILE")
+	profile := os.Getenv("TEST_AWS_PROFILE")
 	if profile == "" {
 		profile = profile1
 
-		t.Logf("env variable AWS_PROFILE not set, using the following profile for tests: %s", profile1)
+		t.Logf("env TEST_AWS_PROFILE not set, therefore using the following default profile for tests: %s",
+			profile1)
 	}
 
-	region := os.Getenv("AWS_DEFAULT_REGION")
+	region := os.Getenv("TEST_AWS_REGION")
 	if region == "" {
 		region = region1
 
-		t.Logf("env variable AWS_DEFAULT_REGION not set, using the following region for tests: %s", region1)
+		t.Logf("env variable TEST_AWS_REGION not set, therefore using the following default region for tests: %s",
+			region1)
 	}
 
 	return EnvVars{

@@ -117,10 +117,7 @@ func mainExitCode() int {
 			return 1
 		}
 
-		if profilesFromConfig != nil {
-			profiles = profilesFromConfig
-		}
-
+		profiles = profilesFromConfig
 	}
 
 	clients, err := util.NewAWSClientPool(profiles, regions)

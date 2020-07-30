@@ -14,11 +14,11 @@ aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY2}
 EOL
 
 cat > ~/.aws/config << EOL
-[myaccount1]
+[profile myaccount1]
 region = us-west-2
 output = json
 
-[myaccount2]
+[profile myaccount2]
 region = us-east-1
 output = json
 EOL
