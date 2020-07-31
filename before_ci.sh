@@ -5,8 +5,8 @@ mkdir -p ~/.aws
 # create AWS profile from AWS credential environment variables
 cat > ~/.aws/credentials << EOL
 [myaccount1]
-aws_access_key_id = ${AWS_ACCESS_KEY_ID}
-aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
+aws_access_key_id = ${AWS_ACCESS_KEY_ID1}
+aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY1}
 
 [myaccount2]
 aws_access_key_id = ${AWS_ACCESS_KEY_ID2}
