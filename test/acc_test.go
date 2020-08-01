@@ -26,15 +26,15 @@ func TestAcc_ProfilesAndRegions(t *testing.T) {
 		t.Skip("Skipping acceptance test.")
 	}
 
-	env := InitEnv(t)
+	testVars := Init(t)
 
 	terraformDir := "./test-fixtures/multiple-profiles-and-regions"
 
-	terraformOptions := GetTerraformOptions(terraformDir, env, map[string]interface{}{
-		"profile1": profile1,
-		"region1":  region1,
-		"profile2": profile2,
-		"region2":  region2,
+	terraformOptions := GetTerraformOptions(terraformDir, testVars, map[string]interface{}{
+		"profile1": testVars.AWSProfile1,
+		"profile2": testVars.AWSProfile2,
+		"region1":  testVars.AWSRegion1,
+		"region2":  testVars.AWSRegion2,
 	})
 
 	defer terraform.Destroy(t, terraformOptions)
@@ -51,52 +51,60 @@ func TestAcc_ProfilesAndRegions(t *testing.T) {
 		{
 			name: "multiple profiles and regions via flag",
 			args: []string{
-				"-p", fmt.Sprintf("%s,%s", profile1, profile2),
-				"-r", fmt.Sprintf("%s,%s", region1, region2),
+				"-p", fmt.Sprintf("%s,%s", testVars.AWSProfile1, testVars.AWSProfile2),
+				"-r", fmt.Sprintf("%s,%s", testVars.AWSRegion1, testVars.AWSRegion2),
 				"-a", "tags", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region2),
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile2, region1),
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile2, region2),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile1, testVars.AWSRegion1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile1, testVars.AWSRegion2),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile2, testVars.AWSRegion1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile2, testVars.AWSRegion2),
 			},
 		},
 		{
 			name: "profile via env, multiple regions via flag",
 			args: []string{
-				"-r", fmt.Sprintf("%s,%s", region1, region2),
+				"-r", fmt.Sprintf("%s,%s", testVars.AWSRegion1, testVars.AWSRegion2),
 				"-a", "tags", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region2),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile1, testVars.AWSRegion1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile1, testVars.AWSRegion2),
 			},
 			envs: map[string]string{
-				"AWS_PROFILE": profile1,
+				"AWS_PROFILE": testVars.AWSProfile1,
 			},
 		},
 		{
 			name: "profile and region via env",
 			args: []string{"-a", "tags", "aws_vpc"},
 			envs: map[string]string{
-				"AWS_PROFILE":        profile1,
-				"AWS_DEFAULT_REGION": region2,
+				"AWS_PROFILE":        testVars.AWSProfile1,
+				"AWS_DEFAULT_REGION": testVars.AWSRegion2,
 			},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region2),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile1, testVars.AWSRegion2),
 			},
 		},
 		{
 			name: "profile via flag, using default region from AWS config file",
 			args: []string{"-a", "tags", "aws_vpc"},
 			envs: map[string]string{
-				"AWS_PROFILE": profile1,
+				"AWS_PROFILE": testVars.AWSProfile1,
 			},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile1, testVars.AWSRegion1),
 			},
 		},
 		{
@@ -104,8 +112,10 @@ func TestAcc_ProfilesAndRegions(t *testing.T) {
 			args: []string{"--all-profiles", "-a", "tags", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile1, region1),
-				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s", profile2, region2),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile1, testVars.AWSRegion1),
+				fmt.Sprintf("%[1]s\\s+%[2]s\\s+N/A\\s+awsls=test-acc,foo=%[1]s-%[2]s",
+					testVars.AWSProfile2, testVars.AWSRegion2),
 			},
 		},
 		{
@@ -152,21 +162,21 @@ func TestAcc_Attributes(t *testing.T) {
 		t.Skip("Skipping acceptance test.")
 	}
 
-	env := InitEnv(t)
+	testVars := Init(t)
 
 	terraformDir := "./test-fixtures/tag-attributes"
 
-	terraformOptions := GetTerraformOptions(terraformDir, env)
+	terraformOptions := GetTerraformOptions(terraformDir, testVars)
 
 	defer terraform.Destroy(t, terraformOptions)
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	actualVpcID1 := terraform.Output(t, terraformOptions, "vpc_id1")
-	AssertVpcExists(t, actualVpcID1, env)
+	actualVpcIDSingleTag := terraform.Output(t, terraformOptions, "vpc_id_single_tag")
+	AssertVpcExists(t, actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1)
 
-	actualVpcID2 := terraform.Output(t, terraformOptions, "vpc_id2")
-	AssertVpcExists(t, actualVpcID2, env)
+	actualVpcIDMultipleTags := terraform.Output(t, terraformOptions, "vpc_id_multiple_tags")
+	AssertVpcExists(t, actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1)
 
 	tests := []struct {
 		name         string
@@ -176,52 +186,52 @@ func TestAcc_Attributes(t *testing.T) {
 		{
 			name: "without attributes",
 			args: []string{
-				"-p", env.AWSProfile, "-r", env.AWSRegion, "aws_vpc"},
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED",
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A",
-					actualVpcID1, env.AWSProfile, env.AWSRegion),
+					actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1),
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A",
-					actualVpcID2, env.AWSProfile, env.AWSRegion),
+					actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1),
 			},
 		},
 		{
 			name: "string attribute",
 			args: []string{
-				"-p", env.AWSProfile, "-r", env.AWSRegion,
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1,
 				"-a", "cidr_block", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+CIDR_BLOCK",
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+10.0.0.0/16",
-					actualVpcID1, env.AWSProfile, env.AWSRegion),
+					actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1),
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+10.0.0.0/16",
-					actualVpcID1, env.AWSProfile, env.AWSRegion),
+					actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1),
 			},
 		},
 		{
 			name: "map attribute",
 			args: []string{
-				"-p", env.AWSProfile, "-r", env.AWSRegion,
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1,
 				"--attributes", "tags", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS",
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+foo=bar",
-					actualVpcID1, env.AWSProfile, env.AWSRegion),
+					actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1),
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+bar=baz,foo=bar",
-					actualVpcID2, env.AWSProfile, env.AWSRegion),
+					actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1),
 			},
 		},
 		{
 			name: "multiple attributes",
 			args: []string{
-				"-p", env.AWSProfile, "-r", env.AWSRegion,
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1,
 				"-a", "tags,cidr_block", "aws_vpc"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED\\s+TAGS\\s+CIDR_BLOCK",
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+foo=bar\\s+10.0.0.0/16",
-					actualVpcID1, env.AWSProfile, env.AWSRegion),
+					actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1),
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A\\s+bar=baz,foo=bar\\s+10.0.0.0/16",
-					actualVpcID2, env.AWSProfile, env.AWSRegion),
+					actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1),
 			},
 		},
 	}
@@ -232,8 +242,8 @@ func TestAcc_Attributes(t *testing.T) {
 			require.NoError(t, err)
 
 			// just to be extra safe: check that nothing is deleted
-			AssertVpcExists(t, actualVpcID1, env)
-			AssertVpcExists(t, actualVpcID2, env)
+			AssertVpcExists(t, actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1)
+			AssertVpcExists(t, actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1)
 
 			actualLogs := logBuffer.String()
 

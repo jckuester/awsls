@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -14,55 +16,57 @@ import (
 )
 
 const (
-	// tfstateBucket is the S3 bucket that stores all Terraform states of acceptance tests
+	// tfstateBucket is the S3 bucket that stores all Terraform states of acceptance tests.
+	// Note: the bucket must be located in `profile1` and `region1`.
 	tfstateBucket = "awsls-testacc-tfstate-492043"
-	// profile1 is used as default profile throughout the tests if not overwritten by envs
+	// profile1 is used as profile for the 1st test account if not overwritten by TEST_AWS_PROFILE1.
 	profile1 = "myaccount1"
-	// region1 is used as default region throughout the tests if not overwritten by envs
+	// region1 is used as the 1st test region if not overwritten by TEST_AWS_REGION1.
 	region1 = "us-west-2"
-
+	// profile2 is used as profile for the 2nd test account if not overwritten by TEST_AWS_PROFILE2.
 	profile2 = "myaccount2"
-	region2  = "us-east-1"
+	// region1 is used as the 2nd test region if not overwritten by TEST_AWS_REGION2.
+	region2 = "us-east-1"
 )
 
-// EnvVars contains environment variables for that must be set for tests.
-type EnvVars struct {
-	AWSRegion  string
-	AWSProfile string
+// Vars are environment variables used in tests.
+type Vars struct {
+	AWSProfile1 string
+	AWSProfile2 string
+	AWSRegion1  string
+	AWSRegion2  string
 }
 
-// InitEnv sets environment variables for acceptance tests.
-func InitEnv(t *testing.T) EnvVars {
+// Init sets variables for acceptance tests.
+// Variables can be overwritten by environment variables.
+func Init(t *testing.T) Vars {
 	t.Helper()
 
-	profile := os.Getenv("TEST_AWS_PROFILE")
-	if profile == "" {
-		profile = profile1
-
-		t.Logf("env TEST_AWS_PROFILE not set, therefore using the following default profile for tests: %s",
-			profile1)
-	}
-
-	region := os.Getenv("TEST_AWS_REGION")
-	if region == "" {
-		region = region1
-
-		t.Logf("env variable TEST_AWS_REGION not set, therefore using the following default region for tests: %s",
-			region1)
-	}
-
-	return EnvVars{
-		AWSProfile: profile,
-		AWSRegion:  region,
+	return Vars{
+		AWSProfile1: getEnvOrDefault(t, "TEST_AWS_PROFILE1", profile1),
+		AWSProfile2: getEnvOrDefault(t, "TEST_AWS_PROFILE2", profile2),
+		AWSRegion1:  getEnvOrDefault(t, "TEST_AWS_REGION1", region1),
+		AWSRegion2:  getEnvOrDefault(t, "TEST_AWS_REGION2", region2),
 	}
 }
 
-func GetTerraformOptions(terraformDir string, env EnvVars, overrideVars ...map[string]interface{}) *terraform.Options {
+func getEnvOrDefault(t *testing.T, envName, defaultValue string) string {
+	varValue := os.Getenv(envName)
+	if varValue == "" {
+		varValue = defaultValue
+
+		t.Logf("env %s not set, therefore using the following default value: %s",
+			envName, defaultValue)
+	}
+	return varValue
+}
+
+func GetTerraformOptions(terraformDir string, env Vars, overrideVars ...map[string]interface{}) *terraform.Options {
 	name := "awsls-testacc-" + strings.ToLower(random.UniqueId())
 
 	vars := map[string]interface{}{
-		"region":  env.AWSRegion,
-		"profile": env.AWSProfile,
+		"region":  env.AWSRegion1,
+		"profile": env.AWSProfile2,
 		"name":    name,
 	}
 
@@ -78,16 +82,22 @@ func GetTerraformOptions(terraformDir string, env EnvVars, overrideVars ...map[s
 		BackendConfig: map[string]interface{}{
 			"bucket":  tfstateBucket,
 			"key":     fmt.Sprintf("%s.tfstate", name),
-			"region":  env.AWSRegion,
-			"profile": env.AWSProfile,
+			"region":  env.AWSRegion1,
+			"profile": env.AWSProfile2,
 			"encrypt": true,
 		},
 	}
 }
 
-func AssertVpcExists(t *testing.T, actualVpcID string, env EnvVars) {
-	_, err := aws.GetVpcByIdE(t, actualVpcID, env.AWSRegion)
+func AssertVpcExists(t *testing.T, actualVpcID, profile, region string) {
+	err := os.Setenv("AWS_PROFILE", profile)
+	require.NoError(t, err)
+
+	_, err = aws.GetVpcByIdE(t, actualVpcID, region)
 	assert.NoError(t, err, "resource has been unexpectedly deleted")
+
+	err = os.Unsetenv("AWS_PROFILE")
+	require.NoError(t, err)
 }
 
 func SetMultiEnvs(variables map[string]string) error {
