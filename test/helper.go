@@ -17,7 +17,7 @@ import (
 
 const (
 	// tfstateBucket is the S3 bucket that stores all Terraform states of acceptance tests.
-	// Note: the bucket must be located in `profile1` and `region1`.
+	// Note: the bucket must be located in "profile1" and "region1".
 	tfstateBucket = "awsls-testacc-tfstate-492043"
 	// profile1 is used as profile for the 1st test account if not overwritten by TEST_AWS_PROFILE1.
 	profile1 = "myaccount1"
@@ -65,8 +65,8 @@ func GetTerraformOptions(terraformDir string, env Vars, overrideVars ...map[stri
 	name := "awsls-testacc-" + strings.ToLower(random.UniqueId())
 
 	vars := map[string]interface{}{
+		"profile": env.AWSProfile1,
 		"region":  env.AWSRegion1,
-		"profile": env.AWSProfile2,
 		"name":    name,
 	}
 
@@ -82,8 +82,8 @@ func GetTerraformOptions(terraformDir string, env Vars, overrideVars ...map[stri
 		BackendConfig: map[string]interface{}{
 			"bucket":  tfstateBucket,
 			"key":     fmt.Sprintf("%s.tfstate", name),
+			"profile": env.AWSProfile1,
 			"region":  env.AWSRegion1,
-			"profile": env.AWSProfile2,
 			"encrypt": true,
 		},
 	}

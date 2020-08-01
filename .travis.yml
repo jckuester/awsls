@@ -8,8 +8,6 @@ go:
 env:
   global:
     - GO111MODULE=on
-    - TEST_AWS_PROFILE=myaccount1
-    - TEST_AWS_REGION=us-west-2
 
 before_install:
   - ./before_ci.sh

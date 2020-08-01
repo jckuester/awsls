@@ -8,8 +8,6 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/apex/log"
-
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/onsi/gomega/gexec"
 
@@ -320,8 +318,5 @@ func runBinary(t *testing.T, args ...string) (*bytes.Buffer, error) {
 
 	err = p.Run()
 
-	if err != nil {
-		log.Debugf("running binary error: %s", err)
-	}
 	return logBuffer, err
 }

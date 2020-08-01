@@ -19,8 +19,8 @@ type AWSClientKey struct {
 
 // NewAWSClientPool creates an AWS client for each permutation of the given profiles and regions.
 // If profiles, regions, or both are empty, credentials and regions are picked up via the usual default provider chain,
-// respectively. For example, if regions are empty, the default region for each profile is used from `~/.aws/config`
-// or from the according region environment variable.
+// respectively. For example, if regions are empty, the region is first looked for via the according region environment variable
+// or second the default region for each profile is used from `~/.aws/config`.
 func NewAWSClientPool(profiles []string, regions []string) (map[AWSClientKey]aws.Client, error) {
 	errors := make(chan error)
 	wgDone := make(chan bool)

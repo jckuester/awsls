@@ -23,7 +23,7 @@ Happy listing!
 * **New:** List resources across multiple accounts and regions by using the `--profiles` and `--regions` flag
   (e.g., `-p account1,account2 -r us-east-1,us-west-2`)
 * Show any resource attribute documented in the [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-  (e.g., `-a private_ip,tags` lists the IP and tags for resources of type [`aws_instance`](https://www.terraform.io/docs/providers/aws/r/instance.html))
+  (e.g., `-a private_ip,tags` lists the IP and tags for resources of type [`aws_instance`](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#attributes-reference))
 
 ## Examples
 
@@ -32,7 +32,7 @@ Happy listing!
 Use Terraform resource types to tell `awsls` which resources to list. For example, `awsls aws_instance` shows
 all EC2 instances. In addition to the default attributes `TYPE`, `ID`, `REGION`, and `CREATED` timestamp, additional attributes
 can be displayed via the `--attributes <comma-separated list>` flag. Every attribute in the Terraform documentation 
-([here](https://www.terraform.io/docs/providers/aws/r/instance.html) are the attributes for `aws_instance`) is a valid one:
+([here](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#attributes-reference) are the attributes for `aws_instance`) is a valid one:
 
 ![](img/instance.gif)
 
@@ -61,22 +61,23 @@ To see options available run `awsls --help`.
 It's recommended to install a specific version of awsls available on the
 [releases page](https://github.com/jckuester/awsls/releases).
 
-Here is the recommended way to install awsls v0.3.0:
+Here is the recommended way to install awsls v0.4.0:
 
 ```bash
 # install it into ./bin/
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.3.0
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.4.0
 ```
 
-# Credentials, profiles and regions
+## Credentials, profiles and regions
 
 If the  `--profiles` and/or `--regions` flag is unset, `awsls` will follow the usual 
 [AWS CLI precedence](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-precedence)
-of first trying to find credentials, profiles and/or regions via [environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html).
+of first trying to find credentials, profiles and/or regions via [environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html),
+and so on.
 
 For example, if using `--profiles foo,bar`, but not setting the regions flag, 
 `awsls` will first try to use the region from an environment variable (e.g., `AWS_DEFAULT_REGION`)
-and second the default region for each profile from `~/.aws/config`.
+and second will try to use the default region for each profile from `~/.aws/config`.
 
 The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS_CONFIG_FILE=/my/config` is set, from
 `/my/config` otherwise.
@@ -85,7 +86,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 Currently, all 217 resource types across 77 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
-resources are pre-filtered by account ID.
+resources are pre-filtered belonging to the account owner.
 
 | Service / Type | Tags | Creation Time | Owner
 | :------------- | :--: | :-----------: | :---:
