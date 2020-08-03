@@ -20,9 +20,11 @@ func ListBatchComputeEnvironment(client *Client) ([]Resource, error) {
 		for _, r := range page.ComputeEnvironments {
 
 			result = append(result, Resource{
-				Type:   "aws_batch_compute_environment",
-				ID:     *r.ComputeEnvironmentName,
-				Region: client.Region,
+				Type:      "aws_batch_compute_environment",
+				ID:        *r.ComputeEnvironmentName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

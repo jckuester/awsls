@@ -22,9 +22,11 @@ func ListWafv2WebAclLoggingConfiguration(client *Client) ([]Resource, error) {
 		for _, r := range resp.LoggingConfigurations {
 
 			result = append(result, Resource{
-				Type:   "aws_wafv2_web_acl_logging_configuration",
-				ID:     *r.ResourceArn,
-				Region: client.Region,
+				Type:      "aws_wafv2_web_acl_logging_configuration",
+				ID:        *r.ResourceArn,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

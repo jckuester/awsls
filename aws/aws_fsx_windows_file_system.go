@@ -18,7 +18,7 @@ func ListFsxWindowsFileSystem(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.FileSystems {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,9 @@ func ListFsxWindowsFileSystem(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_fsx_windows_file_system",
 				ID:        *r.FileSystemId,
+				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -21,9 +21,11 @@ func ListIamInstanceProfile(client *Client) ([]Resource, error) {
 
 			t := *r.CreateDate
 			result = append(result, Resource{
-				Type:   "aws_iam_instance_profile",
-				ID:     *r.InstanceProfileName,
-				Region: client.Region,
+				Type:      "aws_iam_instance_profile",
+				ID:        *r.InstanceProfileName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

@@ -18,7 +18,7 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.InternetGateways {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}
@@ -27,10 +27,12 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_internet_gateway",
-				ID:     *r.InternetGatewayId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:      "aws_internet_gateway",
+				ID:        *r.InternetGatewayId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

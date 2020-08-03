@@ -22,9 +22,11 @@ func ListWafregionalByteMatchSet(client *Client) ([]Resource, error) {
 		for _, r := range resp.ByteMatchSets {
 
 			result = append(result, Resource{
-				Type:   "aws_wafregional_byte_match_set",
-				ID:     *r.ByteMatchSetId,
-				Region: client.Region,
+				Type:      "aws_wafregional_byte_match_set",
+				ID:        *r.ByteMatchSetId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

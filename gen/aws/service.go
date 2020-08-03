@@ -12,8 +12,14 @@ import (
 func ServicePkgNames(apis api.APIs) []string {
 	var result []string
 	for _, a := range apis {
+		if _, ok := excludeServices[a.PackageName()]; ok {
+			continue
+		}
+
 		result = append(result, a.PackageName())
 	}
+
+	sort.Strings(result)
 
 	return result
 }

@@ -27,10 +27,12 @@ func ListDlmLifecyclePolicy(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_dlm_lifecycle_policy",
-				ID:     *r.PolicyId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:      "aws_dlm_lifecycle_policy",
+				ID:        *r.PolicyId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

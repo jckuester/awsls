@@ -22,9 +22,11 @@ func ListElasticBeanstalkEnvironment(client *Client) ([]Resource, error) {
 		for _, r := range resp.Environments {
 
 			result = append(result, Resource{
-				Type:   "aws_elastic_beanstalk_environment",
-				ID:     *r.EnvironmentId,
-				Region: client.Region,
+				Type:      "aws_elastic_beanstalk_environment",
+				ID:        *r.EnvironmentId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

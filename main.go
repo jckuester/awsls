@@ -7,15 +7,16 @@ import (
 	"os"
 	"strings"
 	"text/tabwriter"
-	"time"
+
+	"github.com/jckuester/awsls/util"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
+	aws_ssmhelpers "github.com/disneystreaming/go-ssmhelpers/aws"
 	"github.com/fatih/color"
 	"github.com/jckuester/awsls/aws"
 	"github.com/jckuester/awsls/internal"
 	"github.com/jckuester/awsls/resource"
-	"github.com/jckuester/terradozer/pkg/provider"
 	flag "github.com/spf13/pflag"
 )
 
@@ -25,9 +26,10 @@ func main() {
 
 func mainExitCode() int {
 	var logDebug bool
-	var profile string
-	var region string
-	var attributes internal.Attributes
+	var allProfilesFlag bool
+	var profiles internal.CommaSeparatedListFlag
+	var regions internal.CommaSeparatedListFlag
+	var attributes internal.CommaSeparatedListFlag
 	var version bool
 
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
@@ -37,8 +39,9 @@ func mainExitCode() int {
 	}
 
 	flags.BoolVar(&logDebug, "debug", false, "Enable debug logging")
-	flags.StringVarP(&profile, "profile", "p", "", "Use a specific named profile from your AWS credential file")
-	flags.StringVarP(&region, "region", "r", "", "The region to list resources in")
+	flags.VarP(&profiles, "profiles", "p", "Comma-separated list of named AWS profiles for accounts to list resources in")
+	flags.BoolVar(&allProfilesFlag, "all-profiles", false, "List resources for all profiles in ~/.aws/config")
+	flags.VarP(&regions, "regions", "r", "Comma-separated list of regions to list resources in")
 	flags.VarP(&attributes, "attributes", "a", "Comma-separated list of attributes to show for each resource")
 	flags.BoolVar(&version, "version", false, "Show application version")
 
@@ -69,6 +72,13 @@ func mainExitCode() int {
 		return 1
 	}
 
+	if profiles != nil && allProfilesFlag == true {
+		fmt.Fprint(os.Stderr, color.RedString("Error:️ --profiles and --all-profiles flag cannot be used together\n"))
+		printHelp(flags)
+
+		return 1
+	}
+
 	resourceTypePattern := args[0]
 	matchedTypes, err := resource.MatchSupportedTypes(resourceTypePattern)
 	if err != nil {
@@ -79,38 +89,57 @@ func mainExitCode() int {
 
 	if len(matchedTypes) == 0 {
 		fmt.Fprint(os.Stderr, color.RedString("Error: no resource type found: %s\n", resourceTypePattern))
-
 		return 1
 	}
 
-	if profile != "" {
-		err := os.Setenv("AWS_PROFILE", profile)
-		if err != nil {
-			log.WithError(err).Error("failed to set AWS profile")
-			return 1
+	if profiles == nil && allProfilesFlag == false {
+		env, ok := os.LookupEnv("AWS_PROFILE")
+		if ok {
+			profiles = []string{env}
 		}
 	}
 
-	client, err := aws.NewClient(region)
+	if allProfilesFlag {
+		var awsConfigPath []string
+		awsConfigFileEnv, ok := os.LookupEnv("AWS_CONFIG_FILE")
+		if ok {
+			awsConfigPath = []string{awsConfigFileEnv}
+		}
+
+		profilesFromConfig, err := aws_ssmhelpers.GetAWSProfiles(awsConfigPath...)
+		if err != nil {
+			fmt.Fprint(os.Stderr, color.RedString("Error: failed to load all profiles: %s\n", err))
+			return 1
+		}
+
+		if profilesFromConfig == nil {
+			fmt.Fprint(os.Stderr, color.RedString("Error: no profiles found in ~/.aws/config\n"))
+			return 1
+		}
+
+		profiles = profilesFromConfig
+	}
+
+	clients, err := util.NewAWSClientPool(profiles, regions)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
 
-		return 1
-	}
-	log.Debugf("using region: %s\n", client.Region)
-
-	err = os.Setenv("AWS_DEFAULT_REGION", client.Region)
-	if err != nil {
-		log.WithError(err).Error("failed to set AWS region")
 		return 1
 	}
 
 	// suppress provider debug and info logs
 	log.SetLevel(log.ErrorLevel)
 
-	awsTerraformProvider, err := provider.Init("aws", "~/.awsls", 10*time.Second)
+	clientKeys := make([]util.AWSClientKey, 0, len(clients))
+	for k := range clients {
+		clientKeys = append(clientKeys, k)
+	}
+
+	// initialize a Terraform AWS provider for each AWS client with a matching config
+	providers, err := util.NewProviderPool(clientKeys)
 	if err != nil {
-		fmt.Fprint(os.Stderr, color.RedString("Error:️ failed to initialize Terraform AWS provider: %s\n", err))
+		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
+
 		return 1
 	}
 
@@ -119,31 +148,44 @@ func mainExitCode() int {
 	}
 
 	for _, rType := range matchedTypes {
-		resources, err := aws.ListResourcesByType(client, rType)
-		if err != nil {
-			fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
+		var resources []aws.Resource
+		var hasAttrs map[string]bool
 
-			continue
+		for key, client := range clients {
+			err := client.SetAccountID()
+			if err != nil {
+				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
+
+				return 1
+			}
+
+			res, err := aws.ListResourcesByType(&client, rType)
+			if err != nil {
+				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
+
+				continue
+			}
+
+			provider := providers[key]
+
+			hasAttrs, err = resource.HasAttributes(attributes, rType, &provider)
+			if err != nil {
+				fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: "+
+					"%s\n", err))
+
+				continue
+			}
+
+			if len(hasAttrs) > 0 {
+				// for performance reasons:
+				// only fetch state if some attributes need to be displayed for this resource type
+				res = resource.GetStates(res, &provider)
+			}
+
+			resources = append(resources, res...)
 		}
 
 		if len(resources) == 0 {
-			continue
-		}
-
-		hasAttrs, err := resource.HasAttributes(attributes, rType, awsTerraformProvider)
-		if err != nil {
-			fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: "+
-				"%s\n", err))
-
-			continue
-		}
-
-		if len(hasAttrs) > 0 {
-			// for performance reasons, only load the state if at least one attribute needs to be displayed
-			// for this resource type
-			resourcesWithStates := resource.GetStates(resources, awsTerraformProvider)
-			printResources(resourcesWithStates, hasAttrs, attributes)
-
 			continue
 		}
 
@@ -160,7 +202,12 @@ func printResources(resources []aws.Resource, hasAttrs map[string]bool, attribut
 	printHeader(w, attributes)
 
 	for _, r := range resources {
-		fmt.Fprintf(w, "%s\t%s\t%s", r.Type, r.ID, r.Region)
+		profile := `N\A`
+		if r.Profile != "" {
+			profile = r.Profile
+		}
+
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s", r.Type, r.ID, profile, r.Region)
 
 		if r.CreatedAt != nil {
 			fmt.Fprintf(w, "\t%s", r.CreatedAt.Format("2006-01-02 15:04:05"))
@@ -195,7 +242,7 @@ func printResources(resources []aws.Resource, hasAttrs map[string]bool, attribut
 }
 
 func printHeader(w *tabwriter.Writer, attributes []string) {
-	fmt.Fprintf(w, "TYPE\tID\tREGION\tCREATED")
+	fmt.Fprintf(w, "TYPE\tID\tPROFILE\tREGION\tCREATED")
 
 	for _, attribute := range attributes {
 		fmt.Fprintf(w, "\t%s", strings.ToUpper(attribute))

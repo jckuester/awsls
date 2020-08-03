@@ -20,9 +20,11 @@ func ListElastictranscoderPipeline(client *Client) ([]Resource, error) {
 		for _, r := range page.Pipelines {
 
 			result = append(result, Resource{
-				Type:   "aws_elastictranscoder_pipeline",
-				ID:     *r.Id,
-				Region: client.Region,
+				Type:      "aws_elastictranscoder_pipeline",
+				ID:        *r.Id,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

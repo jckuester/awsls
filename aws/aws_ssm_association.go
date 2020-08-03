@@ -20,9 +20,11 @@ func ListSsmAssociation(client *Client) ([]Resource, error) {
 		for _, r := range page.Associations {
 
 			result = append(result, Resource{
-				Type:   "aws_ssm_association",
-				ID:     *r.AssociationId,
-				Region: client.Region,
+				Type:      "aws_ssm_association",
+				ID:        *r.AssociationId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

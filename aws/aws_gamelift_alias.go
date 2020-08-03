@@ -23,9 +23,11 @@ func ListGameliftAlias(client *Client) ([]Resource, error) {
 
 			t := *r.CreationTime
 			result = append(result, Resource{
-				Type:   "aws_gamelift_alias",
-				ID:     *r.AliasId,
-				Region: client.Region,
+				Type:      "aws_gamelift_alias",
+				ID:        *r.AliasId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

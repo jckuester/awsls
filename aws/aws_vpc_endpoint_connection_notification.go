@@ -20,9 +20,11 @@ func ListVpcEndpointConnectionNotification(client *Client) ([]Resource, error) {
 		for _, r := range page.ConnectionNotificationSet {
 
 			result = append(result, Resource{
-				Type:   "aws_vpc_endpoint_connection_notification",
-				ID:     *r.ConnectionNotificationId,
-				Region: client.Region,
+				Type:      "aws_vpc_endpoint_connection_notification",
+				ID:        *r.ConnectionNotificationId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

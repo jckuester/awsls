@@ -25,10 +25,12 @@ func ListVpcPeeringConnection(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_vpc_peering_connection",
-				ID:     *r.VpcPeeringConnectionId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:      "aws_vpc_peering_connection",
+				ID:        *r.VpcPeeringConnectionId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

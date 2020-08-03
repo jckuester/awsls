@@ -25,10 +25,12 @@ func ListSsmActivation(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_ssm_activation",
-				ID:     *r.ActivationId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:      "aws_ssm_activation",
+				ID:        *r.ActivationId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

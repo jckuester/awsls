@@ -21,9 +21,11 @@ func ListServicecatalogPortfolio(client *Client) ([]Resource, error) {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{
-				Type:   "aws_servicecatalog_portfolio",
-				ID:     *r.Id,
-				Region: client.Region,
+				Type:      "aws_servicecatalog_portfolio",
+				ID:        *r.Id,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

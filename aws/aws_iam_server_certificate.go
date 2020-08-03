@@ -20,9 +20,11 @@ func ListIamServerCertificate(client *Client) ([]Resource, error) {
 		for _, r := range page.ServerCertificateMetadataList {
 
 			result = append(result, Resource{
-				Type:   "aws_iam_server_certificate",
-				ID:     *r.ServerCertificateId,
-				Region: client.Region,
+				Type:      "aws_iam_server_certificate",
+				ID:        *r.ServerCertificateId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

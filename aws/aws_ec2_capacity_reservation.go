@@ -18,7 +18,7 @@ func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.CapacityReservations {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,9 @@ func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_capacity_reservation",
 				ID:        *r.CapacityReservationId,
+				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

@@ -22,9 +22,11 @@ func ListWafregionalRule(client *Client) ([]Resource, error) {
 		for _, r := range resp.Rules {
 
 			result = append(result, Resource{
-				Type:   "aws_wafregional_rule",
-				ID:     *r.RuleId,
-				Region: client.Region,
+				Type:      "aws_wafregional_rule",
+				ID:        *r.RuleId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

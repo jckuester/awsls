@@ -8,8 +8,6 @@ go:
 env:
   global:
     - GO111MODULE=on
-    - AWS_PROFILE=awsls
-    - AWS_DEFAULT_REGION=us-west-2
 
 before_install:
   - ./before_ci.sh

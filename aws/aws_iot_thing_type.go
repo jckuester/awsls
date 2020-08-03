@@ -22,9 +22,11 @@ func ListIotThingType(client *Client) ([]Resource, error) {
 		for _, r := range resp.ThingTypes {
 
 			result = append(result, Resource{
-				Type:   "aws_iot_thing_type",
-				ID:     *r.ThingTypeName,
-				Region: client.Region,
+				Type:      "aws_iot_thing_type",
+				ID:        *r.ThingTypeName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

@@ -18,7 +18,7 @@ func ListSecurityGroup(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.SecurityGroups {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}
@@ -27,10 +27,12 @@ func ListSecurityGroup(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_security_group",
-				ID:     *r.GroupId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:      "aws_security_group",
+				ID:        *r.GroupId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

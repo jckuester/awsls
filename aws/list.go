@@ -13,6 +13,8 @@ type Resource struct {
 	Type      string
 	ID        string
 	Region    string
+	Profile   string
+	AccountID string
 	Tags      map[string]string
 	CreatedAt *time.Time
 	terradozer.UpdatableResource

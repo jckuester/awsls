@@ -21,9 +21,11 @@ func ListGlueCrawler(client *Client) ([]Resource, error) {
 
 			t := *r.CreationTime
 			result = append(result, Resource{
-				Type:   "aws_glue_crawler",
-				ID:     *r.Name,
-				Region: client.Region,
+				Type:      "aws_glue_crawler",
+				ID:        *r.Name,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

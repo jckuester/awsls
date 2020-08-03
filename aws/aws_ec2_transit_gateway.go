@@ -18,7 +18,7 @@ func ListEc2TransitGateway(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.TransitGateways {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}
@@ -29,7 +29,9 @@ func ListEc2TransitGateway(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ec2_transit_gateway",
 				ID:        *r.TransitGatewayId,
+				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

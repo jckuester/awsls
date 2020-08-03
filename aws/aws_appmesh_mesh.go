@@ -20,9 +20,11 @@ func ListAppmeshMesh(client *Client) ([]Resource, error) {
 		for _, r := range page.Meshes {
 
 			result = append(result, Resource{
-				Type:   "aws_appmesh_mesh",
-				ID:     *r.MeshName,
-				Region: client.Region,
+				Type:      "aws_appmesh_mesh",
+				ID:        *r.MeshName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

@@ -18,7 +18,7 @@ func ListRouteTable(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.RouteTables {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}
@@ -27,10 +27,12 @@ func ListRouteTable(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_route_table",
-				ID:     *r.RouteTableId,
-				Region: client.Region,
-				Tags:   tags,
+				Type:      "aws_route_table",
+				ID:        *r.RouteTableId,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

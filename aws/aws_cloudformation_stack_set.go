@@ -20,9 +20,11 @@ func ListCloudformationStackSet(client *Client) ([]Resource, error) {
 		for _, r := range page.Summaries {
 
 			result = append(result, Resource{
-				Type:   "aws_cloudformation_stack_set",
-				ID:     *r.StackSetName,
-				Region: client.Region,
+				Type:      "aws_cloudformation_stack_set",
+				ID:        *r.StackSetName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

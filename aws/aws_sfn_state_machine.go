@@ -21,9 +21,11 @@ func ListSfnStateMachine(client *Client) ([]Resource, error) {
 
 			t := *r.CreationDate
 			result = append(result, Resource{
-				Type:   "aws_sfn_state_machine",
-				ID:     *r.StateMachineArn,
-				Region: client.Region,
+				Type:      "aws_sfn_state_machine",
+				ID:        *r.StateMachineArn,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 
 				CreatedAt: &t,
 			})

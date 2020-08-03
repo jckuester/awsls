@@ -27,10 +27,12 @@ func ListRedshiftSnapshotCopyGrant(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_redshift_snapshot_copy_grant",
-				ID:     *r.SnapshotCopyGrantName,
-				Region: client.Region,
-				Tags:   tags,
+				Type:      "aws_redshift_snapshot_copy_grant",
+				ID:        *r.SnapshotCopyGrantName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

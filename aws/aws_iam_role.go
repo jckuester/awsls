@@ -27,7 +27,9 @@ func ListIamRole(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_iam_role",
 				ID:        *r.RoleName,
+				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

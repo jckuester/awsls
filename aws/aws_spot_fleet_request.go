@@ -27,7 +27,9 @@ func ListSpotFleetRequest(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_spot_fleet_request",
 				ID:        *r.SpotFleetRequestId,
+				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

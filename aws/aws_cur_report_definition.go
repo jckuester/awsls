@@ -20,9 +20,11 @@ func ListCurReportDefinition(client *Client) ([]Resource, error) {
 		for _, r := range page.ReportDefinitions {
 
 			result = append(result, Resource{
-				Type:   "aws_cur_report_definition",
-				ID:     *r.ReportName,
-				Region: client.Region,
+				Type:      "aws_cur_report_definition",
+				ID:        *r.ReportName,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

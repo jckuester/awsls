@@ -25,10 +25,12 @@ func ListSecretsmanagerSecret(client *Client) ([]Resource, error) {
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_secretsmanager_secret",
-				ID:     *r.ARN,
-				Region: client.Region,
-				Tags:   tags,
+				Type:      "aws_secretsmanager_secret",
+				ID:        *r.ARN,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

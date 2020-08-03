@@ -1,35 +1,54 @@
 # awsls
 
+A list command for AWS resources.
+
 [![Release](https://img.shields.io/github/release/jckuester/awsls.svg?style=for-the-badge)](https://github.com/jckuester/awsls/releases/latest)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
-A list command for AWS resources. It supports listing of [over 200 types of resources](#supported-resources)
-across 76 different AWS services.
- 
-The goal is to support every AWS resource that is also covered by Terraform (currently over 500) without adding
-much code but rather generating it. If you are interested, the code of the list function generator is [here](./gen).
+awsls supports listing of [over 200 types of resources](#supported-resources)
+across 76 different AWS services. The goal is to code-generate a list function for
+every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
+[the generator is here](./gen).
 
-If you run into issues with any resources, please open an issue or ping me on [Twitter](https://twitter.com/jckuester).
+If you encounter any issue with `awsls` or have a feature request, 
+please open an issue or write me on [Twitter](https://twitter.com/jckuester).
 
 Happy listing!
 
-## Example
+## Features
 
-(**Note:** In the examples below, credentials and region for the AWS account you want to list resources in have been set
-via the usual [environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html), e.g.,
-`AWS_PROFILE=<myaccount>` and `AWS_DEFAULT_REGION=<myregion>`, but can also be provided via `-profile` and `-region` flag.)
+* List multiple types of resources at once by using glob patterns
+  (e.g., `"aws_iam_*"` lists all IAM resources and `"*"` all resources in your account)
+* **New:** List resources across multiple accounts and regions by using the `--profiles` and `--regions` flag
+  (e.g., `-p account1,account2 -r us-east-1,us-west-2`)
+* Show any resource attribute documented in the [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+  (e.g., `-a private_ip,tags` lists the IP and tags for resources of type [`aws_instance`](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#attributes-reference))
 
-Terraform resource names are used to tell awsls which resources to list. For example, `awsls aws_instance` shows
+## Examples
+
+### List various resource attributes
+
+Use Terraform resource types to tell `awsls` which resources to list. For example, `awsls aws_instance` shows
 all EC2 instances. In addition to the default attributes `TYPE`, `ID`, `REGION`, and `CREATED` timestamp, additional attributes
-can be displayed via the `-attributes <comma-separated list>` flag. Every attribute in the Terraform documentation 
-([here](https://www.terraform.io/docs/providers/aws/r/instance.html) are the attributes for `aws_instance`) is a valid one:
+can be displayed via the `--attributes <comma-separated list>` flag. Every attribute in the Terraform documentation 
+([here](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#attributes-reference) are the attributes for `aws_instance`) is a valid one:
 
 ![](img/instance.gif)
 
-To list multiple resource types at once, use glob patterns. For example, `awsls "aws_iam_*` lists all IAM resources:
+### List multiple resource types at once (via glob patterns)
+
+For example, `awsls "aws_iam_*` lists all IAM resources:
 
 ![](img/iam.gif)
+
+### List across multiple accounts and regions
+
+To use specific profiles and/or regions, use the `-p (--profiles)` or `-r (--regions)` flags. For example,
+`-p myaccount1,myaccount2 -r us-east-1,us-west-2` lists resources in every permutation of the given profiles and regions, 
+i.e., resources in region `us-west-2` and `us-east-1` for account `myaccount1` as well as `myaccount2`:
+
+![](img/multi-profiles-and-regions.gif)
 
 ## Usage
 
@@ -42,18 +61,32 @@ To see options available run `awsls --help`.
 It's recommended to install a specific version of awsls available on the
 [releases page](https://github.com/jckuester/awsls/releases).
 
-Here is the recommended way to install awsls v0.3.0:
+Here is the recommended way to install awsls v0.4.0:
 
 ```bash
 # install it into ./bin/
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.3.0
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.4.0
 ```
+
+## Credentials, profiles and regions
+
+If the  `--profiles` and/or `--regions` flag is unset, `awsls` will follow the usual 
+[AWS CLI precedence](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-precedence)
+of first trying to find credentials, profiles and/or regions via [environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html),
+and so on.
+
+For example, if using `--profiles foo,bar`, but not setting the regions flag, 
+`awsls` will first try to use the region from an environment variable (e.g., `AWS_DEFAULT_REGION`)
+and second will try to use the default region for each profile from `~/.aws/config`.
+
+The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS_CONFIG_FILE=/my/config` is set, from
+`/my/config` otherwise.
 
 ## Supported resources
 
 Currently, all 217 resource types across 77 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
-resources are pre-filtered by account ID.
+resources are pre-filtered belonging to the account owner.
 
 | Service / Type | Tags | Creation Time | Owner
 | :------------- | :--: | :-----------: | :---:

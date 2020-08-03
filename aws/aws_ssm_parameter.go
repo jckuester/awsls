@@ -20,9 +20,11 @@ func ListSsmParameter(client *Client) ([]Resource, error) {
 		for _, r := range page.Parameters {
 
 			result = append(result, Resource{
-				Type:   "aws_ssm_parameter",
-				ID:     *r.Name,
-				Region: client.Region,
+				Type:      "aws_ssm_parameter",
+				ID:        *r.Name,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

@@ -21,7 +21,7 @@ func ListAmi(client *Client) ([]Resource, error) {
 
 	if len(resp.Images) > 0 {
 		for _, r := range resp.Images {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 			tags := map[string]string{}
@@ -35,7 +35,9 @@ func ListAmi(client *Client) ([]Resource, error) {
 			result = append(result, Resource{
 				Type:      "aws_ami",
 				ID:        *r.ImageId,
+				Profile:   client.Profile,
 				Region:    client.Region,
+				AccountID: client.AccountID,
 				Tags:      tags,
 				CreatedAt: &t,
 			})

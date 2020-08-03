@@ -18,14 +18,16 @@ func ListRoute53ResolverRule(client *Client) ([]Resource, error) {
 		page := p.CurrentPage()
 
 		for _, r := range page.ResolverRules {
-			if *r.OwnerId != client.Accountid {
+			if *r.OwnerId != client.AccountID {
 				continue
 			}
 
 			result = append(result, Resource{
-				Type:   "aws_route53_resolver_rule",
-				ID:     *r.Id,
-				Region: client.Region,
+				Type:      "aws_route53_resolver_rule",
+				ID:        *r.Id,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

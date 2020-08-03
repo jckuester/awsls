@@ -20,9 +20,11 @@ func ListCodestarnotificationsNotificationRule(client *Client) ([]Resource, erro
 		for _, r := range page.NotificationRules {
 
 			result = append(result, Resource{
-				Type:   "aws_codestarnotifications_notification_rule",
-				ID:     *r.Arn,
-				Region: client.Region,
+				Type:      "aws_codestarnotifications_notification_rule",
+				ID:        *r.Arn,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}

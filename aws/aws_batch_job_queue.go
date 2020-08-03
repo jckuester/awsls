@@ -20,9 +20,11 @@ func ListBatchJobQueue(client *Client) ([]Resource, error) {
 		for _, r := range page.JobQueues {
 
 			result = append(result, Resource{
-				Type:   "aws_batch_job_queue",
-				ID:     *r.JobQueueArn,
-				Region: client.Region,
+				Type:      "aws_batch_job_queue",
+				ID:        *r.JobQueueArn,
+				Profile:   client.Profile,
+				Region:    client.Region,
+				AccountID: client.AccountID,
 			})
 		}
 	}
