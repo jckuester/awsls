@@ -179,7 +179,7 @@ func mainExitCode() int {
 			if len(hasAttrs) > 0 {
 				// for performance reasons:
 				// only fetch state if some attributes need to be displayed for this resource type
-				res = resource.GetStates(res, &provider)
+				res = resource.GetStates(res, providers)
 			}
 
 			resources = append(resources, res...)

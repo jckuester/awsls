@@ -1,6 +1,6 @@
 The MIT License
 
-Copyright (c) 202020 Jan-Christoph Kuester
+Copyright (c) 2020 Jan-Christoph Kuester
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

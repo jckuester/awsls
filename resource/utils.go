@@ -8,6 +8,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/jckuester/awsls/util"
+
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 
@@ -78,7 +80,7 @@ func SupportsTags(s string) bool {
 }
 
 // GetStates fetches the Terraform state for each resource via the Terraform AWS Provider.
-func GetStates(resources []aws.Resource, provider *provider.TerraformProvider) []aws.Resource {
+func GetStates(resources []aws.Resource, providers map[util.AWSClientKey]provider.TerraformProvider) []aws.Resource {
 	var wg sync.WaitGroup
 
 	sem := internal.NewSemaphore(5)
@@ -92,7 +94,19 @@ func GetStates(resources []aws.Resource, provider *provider.TerraformProvider) [
 			defer sem.Release()
 
 			r := &resources[i]
-			r.UpdatableResource = terradozerRes.New(r.Type, r.ID, nil, provider)
+
+			key := util.AWSClientKey{
+				Profile: r.Profile,
+				Region:  r.Region,
+			}
+
+			p, ok := providers[key]
+
+			if !ok {
+				panic(fmt.Sprintf("could not find Terraform AWS Provider for key: %v", key))
+			}
+
+			r.UpdatableResource = terradozerRes.New(r.Type, r.ID, nil, &p)
 
 			err := r.UpdateState()
 			if err != nil {
