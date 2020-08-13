@@ -16,6 +16,9 @@ please open an issue or write me on [Twitter](https://twitter.com/jckuester).
 
 Happy listing!
 
+**Note:** If you're also looking for an easy but powerful way to delete AWS resources, pipe the output of `awsls` into its new sibling
+[`awsrm`](`https://github.com/jckuester/awsrm`) via Unix-pipes and use well-known standard tooling such as `grep` for filtering.
+
 ## Features
 
 * List multiple types of resources at once by using glob patterns
