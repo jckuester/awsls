@@ -202,7 +202,7 @@ func printResources(resources []aws.Resource, hasAttrs map[string]bool, attribut
 	printHeader(w, attributes)
 
 	for _, r := range resources {
-		profile := `N\A`
+		profile := `N/A`
 		if r.Profile != "" {
 			profile = r.Profile
 		}
