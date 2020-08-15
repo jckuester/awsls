@@ -54,7 +54,9 @@ func MatchSupportedTypes(globPattern string) ([]string, error) {
 	}
 
 	for _, rType := range Types {
-		if compiledRegex.Match(rType) {
+		if compiledRegex.Match(rType) ||
+			// allow user to provide also resource types without prefix (e.g., aws_iam_role and iam_role)
+			compiledRegex.Match(strings.TrimPrefix(rType, "aws_")) {
 			if !IsSupportedType(rType) {
 				log.Debugf("resource type not (yet) supported: %s", rType)
 
