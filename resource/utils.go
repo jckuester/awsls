@@ -81,9 +81,20 @@ func SupportsTags(s string) bool {
 	return false
 }
 
+// resourcesThreadSafe is a list implementation to store resources concurrently.
+type resourcesThreadSafe struct {
+	sync.Mutex
+	resources []aws.Resource
+}
+
 // GetStates fetches the Terraform state for each resource via the Terraform AWS Provider.
+// Returns only resources which still exist (i.e. state isn't of type cty.Nil after update).
 func GetStates(resources []aws.Resource, providers map[util.AWSClientKey]provider.TerraformProvider) []aws.Resource {
 	var wg sync.WaitGroup
+
+	result := &resourcesThreadSafe{
+		resources: []aws.Resource{},
+	}
 
 	sem := internal.NewSemaphore(5)
 	for i := range resources {
@@ -114,6 +125,16 @@ func GetStates(resources []aws.Resource, providers map[util.AWSClientKey]provide
 			if err != nil {
 				fmt.Fprint(os.Stderr, color.RedString("Error: %s\n", err))
 			}
+
+			// filter out resources that don't exist anymore
+			// (e.g., ECS clusters in state INACTIVE)
+			if r.State() != nil && r.State().IsNull() {
+				return
+			}
+
+			result.Lock()
+			result.resources = append(result.resources, *r)
+			result.Unlock()
 		}(i)
 	}
 
