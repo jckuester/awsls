@@ -290,7 +290,7 @@ func TestAcc_ResourceTypeGlobPattern(t *testing.T) {
 		{
 			name: "multiple resource types",
 			args: []string{
-				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "\"{vpc,subnet}\""},
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "{vpc,subnet}"},
 			expectedLogs: []string{
 				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED",
 				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A",
