@@ -91,6 +91,9 @@ Currently, all 217 resource types across 77 services in the table below can be l
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
+Note: the prefix `aws_` for resource types is now optional. This means, for example,
+`awsls aws_instance` and `awsls instance` are both valid commands.
+
 | Service / Type | Tags | Creation Time | Owner
 | :------------- | :--: | :-----------: | :---:
 | **accessanalyzer** |

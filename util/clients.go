@@ -7,8 +7,8 @@ import (
 	"github.com/jckuester/awsls/aws"
 )
 
-// AWSClientPoolThreadSafe is a concurrent map implementation to store multiple AWS clients.
-type AWSClientPoolThreadSafe struct {
+// awsClientPoolThreadSafe is a concurrent map implementation to store multiple AWS clients.
+type awsClientPoolThreadSafe struct {
 	sync.Mutex
 	clients map[AWSClientKey]aws.Client
 }
@@ -27,7 +27,7 @@ func NewAWSClientPool(profiles []string, regions []string) (map[AWSClientKey]aws
 
 	var wg sync.WaitGroup
 
-	clientPool := &AWSClientPoolThreadSafe{
+	clientPool := &awsClientPoolThreadSafe{
 		clients: make(map[AWSClientKey]aws.Client),
 	}
 

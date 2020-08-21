@@ -254,6 +254,69 @@ func TestAcc_Attributes(t *testing.T) {
 	}
 }
 
+func TestAcc_ResourceTypeGlobPattern(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping acceptance test.")
+	}
+
+	testVars := Init(t)
+
+	terraformDir := "./test-fixtures/multiple-resource-types"
+
+	terraformOptions := GetTerraformOptions(terraformDir, testVars)
+
+	defer terraform.Destroy(t, terraformOptions)
+
+	terraform.InitAndApply(t, terraformOptions)
+
+	actualVpcID := terraform.Output(t, terraformOptions, "vpc_id")
+	actualSubnetID := terraform.Output(t, terraformOptions, "subnet_id")
+
+	tests := []struct {
+		name         string
+		args         []string
+		expectedLogs []string
+	}{
+		{
+			name: "without aws_prefix",
+			args: []string{
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "vpc"},
+			expectedLogs: []string{
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED",
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A",
+					actualVpcID, testVars.AWSProfile1, testVars.AWSRegion1),
+			},
+		},
+		{
+			name: "multiple resource types",
+			args: []string{
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "{vpc,subnet}"},
+			expectedLogs: []string{
+				"TYPE\\s+ID\\s+PROFILE\\s+REGION\\s+CREATED",
+				fmt.Sprintf("aws_vpc\\s+%s\\s+%s\\s+%s\\s+N/A",
+					actualVpcID, testVars.AWSProfile1, testVars.AWSRegion1),
+				fmt.Sprintf("aws_subnet\\s+%s\\s+%s\\s+%s\\s+N/A",
+					actualSubnetID, testVars.AWSProfile1, testVars.AWSRegion1),
+			},
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+
+			logBuffer, err := runBinary(t, tc.args...)
+			require.NoError(t, err)
+
+			actualLogs := logBuffer.String()
+
+			for _, expectedLogEntry := range tc.expectedLogs {
+				assert.Regexp(t, regexp.MustCompile(expectedLogEntry), actualLogs)
+			}
+
+			fmt.Println(actualLogs)
+		})
+	}
+}
+
 func TestAcc_NonExistingResourceType(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping acceptance test.")
