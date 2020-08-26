@@ -136,12 +136,18 @@ func mainExitCode() int {
 	}
 
 	// initialize a Terraform AWS provider for each AWS client with a matching config
-	providers, err := util.NewProviderPool(clientKeys)
+	providers, err := util.NewProviderPool(clientKeys, "2.68.0", "~/.awsls")
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
 
 		return 1
 	}
+
+	defer func() {
+		for _, p := range providers {
+			_ = p.Close()
+		}
+	}()
 
 	if logDebug {
 		log.SetLevel(log.DebugLevel)
