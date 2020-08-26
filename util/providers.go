@@ -17,8 +17,10 @@ type providerPoolThreadSafe struct {
 	providers map[AWSClientKey]provider.TerraformProvider
 }
 
-func NewProviderPool(clientKeys []AWSClientKey) (map[AWSClientKey]provider.TerraformProvider, error) {
-	metaPlugin, err := provider.Install("aws", "2.68.0", "~/.awsls", true)
+func NewProviderPool(clientKeys []AWSClientKey, version, installDir string) (
+	map[AWSClientKey]provider.TerraformProvider, error) {
+
+	metaPlugin, err := provider.Install("aws", version, installDir)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("failed to install provider (%s): %s", "aws", err))
 	}

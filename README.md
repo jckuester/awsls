@@ -64,11 +64,11 @@ To see options available run `awsls --help`.
 It's recommended to install a specific version of awsls available on the
 [releases page](https://github.com/jckuester/awsls/releases).
 
-Here is the recommended way to install awsls v0.5.0:
+Here is the recommended way to install awsls v0.5.1:
 
 ```bash
 # install it into ./bin/
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.5.0
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.5.1
 ```
 
 ## Credentials, profiles and regions
