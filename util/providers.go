@@ -17,7 +17,9 @@ type providerPoolThreadSafe struct {
 	providers map[AWSClientKey]provider.TerraformProvider
 }
 
-func NewProviderPool(clientKeys []AWSClientKey, version, installDir string) (
+// NewProviderPool launches a set of Terraform AWS Providers with the configuration of the given clientKeys
+// (combination of AWS profile and region).
+func NewProviderPool(clientKeys []AWSClientKey, version, installDir string, timeout time.Duration) (
 	map[AWSClientKey]provider.TerraformProvider, error) {
 
 	metaPlugin, err := provider.Install("aws", version, installDir)
@@ -41,7 +43,7 @@ func NewProviderPool(clientKeys []AWSClientKey, version, installDir string) (
 			go func(p string, r string) {
 				defer wg.Done()
 
-				pr, err := provider.Launch(metaPlugin.Path, 10*time.Second)
+				pr, err := provider.Launch(metaPlugin.Path, timeout)
 				if err != nil {
 					errors <- fmt.Errorf("failed to launch provider (%s): %s", metaPlugin.Path, err)
 					return

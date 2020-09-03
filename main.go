@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"text/tabwriter"
+	"time"
 
 	"github.com/jckuester/awsls/util"
 
@@ -136,7 +137,7 @@ func mainExitCode() int {
 	}
 
 	// initialize a Terraform AWS provider for each AWS client with a matching config
-	providers, err := util.NewProviderPool(clientKeys, "2.68.0", "~/.awsls")
+	providers, err := util.NewProviderPool(clientKeys, "2.68.0", "~/.awsls", 10*time.Second)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
 
