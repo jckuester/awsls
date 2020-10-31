@@ -11,7 +11,7 @@ across 76 different AWS services. The goal is to code-generate a list function f
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
-If you encounter any issue with `awsls` or have a feature request, 
+If you encounter any issue with `awsls` or have a feature request,
 please open an issue or write me on [Twitter](https://twitter.com/jckuester).
 
 Happy listing!
@@ -34,7 +34,7 @@ Happy listing!
 
 Use Terraform resource types to tell `awsls` which resources to list. For example, `awsls aws_instance` shows
 all EC2 instances. In addition to the default attributes `TYPE`, `ID`, `REGION`, and `CREATED` timestamp, additional attributes
-can be displayed via the `--attributes <comma-separated list>` flag. Every attribute in the Terraform documentation 
+can be displayed via the `--attributes <comma-separated list>` flag. Every attribute in the Terraform documentation
 ([here](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#attributes-reference) are the attributes for `aws_instance`) is a valid one:
 
 ![](img/instance.gif)
@@ -48,7 +48,7 @@ For example, `awsls "aws_iam_*` lists all IAM resources:
 ### List across multiple accounts and regions
 
 To use specific profiles and/or regions, use the `-p (--profiles)` or `-r (--regions)` flags. For example,
-`-p myaccount1,myaccount2 -r us-east-1,us-west-2` lists resources in every permutation of the given profiles and regions, 
+`-p myaccount1,myaccount2 -r us-east-1,us-west-2` lists resources in every permutation of the given profiles and regions,
 i.e., resources in region `us-west-2` and `us-east-1` for account `myaccount1` as well as `myaccount2`:
 
 ![](img/multi-profiles-and-regions.gif)
@@ -71,14 +71,24 @@ Here is the recommended way to install awsls v0.5.1:
 curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.5.1
 ```
 
+## Docker
+### Build Docker Container
+```bash
+docker build . -t awsls
+```
+### Run Docker Container
+```bash
+ docker run -v "${HOME}/.aws:/root/.aws:ro" awsls  -regions us-west-2 aws_instance
+```
+
 ## Credentials, profiles and regions
 
-If the  `--profiles` and/or `--regions` flag is unset, `awsls` will follow the usual 
+If the  `--profiles` and/or `--regions` flag is unset, `awsls` will follow the usual
 [AWS CLI precedence](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-precedence)
 of first trying to find credentials, profiles and/or regions via [environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html),
 and so on.
 
-For example, if using `--profiles foo,bar`, but not setting the regions flag, 
+For example, if using `--profiles foo,bar`, but not setting the regions flag,
 `awsls` will first try to use the region from an environment variable (e.g., `AWS_DEFAULT_REGION`)
 and second will try to use the default region for each profile from `~/.aws/config`.
 
