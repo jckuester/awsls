@@ -78,7 +78,7 @@ docker build . -t awsls
 ```
 ### Run Docker Container
 ```bash
- docker run -v "${HOME}/.aws:/root/.aws:ro" awsls  -regions us-west-2 aws_instance
+docker run -v "${HOME}/.aws:/root/.aws:ro" awsls --regions us-west-2 aws_instance
 ```
 
 ## Credentials, profiles and regions
