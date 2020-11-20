@@ -21,7 +21,7 @@ func ListImagebuilderComponent(client *Client) ([]Resource, error) {
 
 			result = append(result, Resource{
 				Type:      "aws_imagebuilder_component",
-				ID:        *r.ComponentBuildVersionArn,
+				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,

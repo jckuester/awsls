@@ -26,7 +26,7 @@ func ListImagebuilderInfrastructureConfiguration(client *Client) ([]Resource, er
 
 			result = append(result, Resource{
 				Type:      "aws_imagebuilder_infrastructure_configuration",
-				ID:        *r.InfrastructureConfigurationArn,
+				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,

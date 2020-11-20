@@ -26,7 +26,7 @@ func ListImagebuilderDistributionConfiguration(client *Client) ([]Resource, erro
 
 			result = append(result, Resource{
 				Type:      "aws_imagebuilder_distribution_configuration",
-				ID:        *r.DistributionConfigurationArn,
+				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,

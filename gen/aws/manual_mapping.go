@@ -73,13 +73,16 @@ var ManualMatchedOutputFields = map[string]string{
 }
 
 var ManualMatchedResourceID = map[string]string{
-	"aws_autoscaling_group":    "AutoScalingGroupName",
-	"aws_launch_configuration": "LaunchConfigurationName",
-	"aws_s3_bucket":            "Name",
-	"aws_elb":                  "LoadBalancerName",
-	"aws_db_instance":          "DBInstanceIdentifier",
-	"aws_route53_zone":         "Id",
-	"aws_subnet":               "SubnetId",
+	"aws_autoscaling_group":      "AutoScalingGroupName",
+	"aws_launch_configuration":   "LaunchConfigurationName",
+	"aws_s3_bucket":              "Name",
+	"aws_elb":                    "LoadBalancerName",
+	"aws_db_instance":            "DBInstanceIdentifier",
+	"aws_route53_zone":           "Id",
+	"aws_subnet":                 "SubnetId",
+	"aws_imagebuilder_component": "Arn",
+	"aws_imagebuilder_distribution_configuration":   "Arn",
+	"aws_imagebuilder_infrastructure_configuration": "Arn",
 }
 
 var Inputs = map[string]string{
