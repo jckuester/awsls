@@ -41,6 +41,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatch"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
+	"github.com/aws/aws-sdk-go-v2/service/codeartifact"
 	"github.com/aws/aws-sdk-go-v2/service/codebuild"
 	"github.com/aws/aws-sdk-go-v2/service/codecommit"
 	"github.com/aws/aws-sdk-go-v2/service/codedeploy"
@@ -104,6 +105,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/groundstation"
 	"github.com/aws/aws-sdk-go-v2/service/guardduty"
 	"github.com/aws/aws-sdk-go-v2/service/health"
+	"github.com/aws/aws-sdk-go-v2/service/honeycode"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/imagebuilder"
 	"github.com/aws/aws-sdk-go-v2/service/inspector"
@@ -118,6 +120,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iotsecuretunneling"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 	"github.com/aws/aws-sdk-go-v2/service/iotthingsgraph"
+	"github.com/aws/aws-sdk-go-v2/service/ivs"
 	"github.com/aws/aws-sdk-go-v2/service/kafka"
 	"github.com/aws/aws-sdk-go-v2/service/kendra"
 	"github.com/aws/aws-sdk-go-v2/service/kinesis"
@@ -269,6 +272,7 @@ type Client struct {
 	Cloudwatchconn                      *cloudwatch.Client
 	Cloudwatcheventsconn                *cloudwatchevents.Client
 	Cloudwatchlogsconn                  *cloudwatchlogs.Client
+	Codeartifactconn                    *codeartifact.Client
 	Codebuildconn                       *codebuild.Client
 	Codecommitconn                      *codecommit.Client
 	Codedeployconn                      *codedeploy.Client
@@ -332,6 +336,7 @@ type Client struct {
 	Groundstationconn                   *groundstation.Client
 	Guarddutyconn                       *guardduty.Client
 	Healthconn                          *health.Client
+	Honeycodeconn                       *honeycode.Client
 	Iamconn                             *iam.Client
 	Imagebuilderconn                    *imagebuilder.Client
 	Inspectorconn                       *inspector.Client
@@ -346,6 +351,7 @@ type Client struct {
 	Iotsecuretunnelingconn              *iotsecuretunneling.Client
 	Iotsitewiseconn                     *iotsitewise.Client
 	Iotthingsgraphconn                  *iotthingsgraph.Client
+	Ivsconn                             *ivs.Client
 	Kafkaconn                           *kafka.Client
 	Kendraconn                          *kendra.Client
 	Kinesisconn                         *kinesis.Client
@@ -500,6 +506,7 @@ func NewClient(configs ...external.Config) (*Client, error) {
 		Cloudwatchconn:                      cloudwatch.New(cfg),
 		Cloudwatcheventsconn:                cloudwatchevents.New(cfg),
 		Cloudwatchlogsconn:                  cloudwatchlogs.New(cfg),
+		Codeartifactconn:                    codeartifact.New(cfg),
 		Codebuildconn:                       codebuild.New(cfg),
 		Codecommitconn:                      codecommit.New(cfg),
 		Codedeployconn:                      codedeploy.New(cfg),
@@ -563,6 +570,7 @@ func NewClient(configs ...external.Config) (*Client, error) {
 		Groundstationconn:                   groundstation.New(cfg),
 		Guarddutyconn:                       guardduty.New(cfg),
 		Healthconn:                          health.New(cfg),
+		Honeycodeconn:                       honeycode.New(cfg),
 		Iamconn:                             iam.New(cfg),
 		Imagebuilderconn:                    imagebuilder.New(cfg),
 		Inspectorconn:                       inspector.New(cfg),
@@ -577,6 +585,7 @@ func NewClient(configs ...external.Config) (*Client, error) {
 		Iotsecuretunnelingconn:              iotsecuretunneling.New(cfg),
 		Iotsitewiseconn:                     iotsitewise.New(cfg),
 		Iotthingsgraphconn:                  iotthingsgraph.New(cfg),
+		Ivsconn:                             ivs.New(cfg),
 		Kafkaconn:                           kafka.New(cfg),
 		Kendraconn:                          kendra.New(cfg),
 		Kinesisconn:                         kinesis.New(cfg),

@@ -79,6 +79,7 @@ var ManualMatchedResourceID = map[string]string{
 	"aws_elb":                  "LoadBalancerName",
 	"aws_db_instance":          "DBInstanceIdentifier",
 	"aws_route53_zone":         "Id",
+	"aws_subnet":               "SubnetId",
 }
 
 var Inputs = map[string]string{

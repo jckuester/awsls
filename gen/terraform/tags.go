@@ -12,17 +12,34 @@ import (
 	"time"
 
 	"github.com/apex/log"
-	"github.com/jckuester/awsls/gen/util"
-	"github.com/jckuester/terradozer/pkg/provider"
+	genutil "github.com/jckuester/awsls/gen/util"
+	"github.com/jckuester/awsls/util"
 )
 
 // GenerateResourceTypesWithTagsList generates code of a list of Terraform resource types that support tags
 // and writes the code to directory outputPath.
 func GenerateResourceTypesWithTagsList(resourceTypes []string, outputPath string) ([]string, error) {
-	provider, err := provider.Init("aws", "~/.awsls", 10*time.Second)
+	awsClientKey := util.AWSClientKey{
+		Profile: os.Getenv("AWS_PROFILE"),
+		Region:  os.Getenv("AWS_DEFAULT_REGION"),
+	}
+
+	providers, err := util.NewProviderPool(
+		[]util.AWSClientKey{awsClientKey}, "3.16.0", "~/.awsls", 10*time.Second)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize Terraform AWS provider: %s", err)
 	}
+
+	provider, ok := providers[awsClientKey]
+	if !ok {
+		return nil, fmt.Errorf("Terraform AWS provider not found: %s", err)
+	}
+
+	defer func() {
+		for _, p := range providers {
+			_ = p.Close()
+		}
+	}()
 
 	var resourceTypesWithTags []string
 
@@ -60,9 +77,9 @@ func writeResourceTypesWithTags(outputPath string, resourceTypes []string) error
 		return fmt.Errorf("failed to generate Go code: %s", err)
 	}
 
-	err = util.WriteGoFile(
+	err = genutil.WriteGoFile(
 		filepath.Join(outputPath, "tags.go"),
-		util.CodeLayout,
+		genutil.CodeLayout,
 		"",
 		"resource",
 		code,

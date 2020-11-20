@@ -14,6 +14,7 @@ var ManualResourceServiceMap = map[string]string{
 	"aws_lambda_event_source_mapping":         "lambda",
 	"aws_launch_configuration":                "autoscaling",
 	"aws_lb":                                  "elasticloadbalancingv2",
+	"aws_s3_bucket":                           "s3",
 	"aws_s3_bucket_object":                    "s3",
 	"aws_s3_bucket_public_access_block":       "s3",
 	"aws_wafregional_byte_match_set":          "wafregional",

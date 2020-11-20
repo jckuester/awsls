@@ -74,14 +74,18 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListCloudhsmV2Cluster(client)
 	case "aws_cloudwatch_dashboard":
 		return ListCloudwatchDashboard(client)
-	case "aws_cloudwatch_event_rule":
-		return ListCloudwatchEventRule(client)
+	case "aws_cloudwatch_event_bus":
+		return ListCloudwatchEventBus(client)
 	case "aws_cloudwatch_log_destination":
 		return ListCloudwatchLogDestination(client)
 	case "aws_cloudwatch_log_group":
 		return ListCloudwatchLogGroup(client)
 	case "aws_cloudwatch_log_resource_policy":
 		return ListCloudwatchLogResourcePolicy(client)
+	case "aws_codeartifact_domain":
+		return ListCodeartifactDomain(client)
+	case "aws_codeartifact_repository":
+		return ListCodeartifactRepository(client)
 	case "aws_codebuild_source_credential":
 		return ListCodebuildSourceCredential(client)
 	case "aws_codecommit_repository":
@@ -112,6 +116,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListDbInstance(client)
 	case "aws_db_parameter_group":
 		return ListDbParameterGroup(client)
+	case "aws_db_proxy":
+		return ListDbProxy(client)
 	case "aws_db_security_group":
 		return ListDbSecurityGroup(client)
 	case "aws_db_snapshot":
@@ -216,8 +222,12 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListGlobalacceleratorAccelerator(client)
 	case "aws_glue_crawler":
 		return ListGlueCrawler(client)
+	case "aws_glue_dev_endpoint":
+		return ListGlueDevEndpoint(client)
 	case "aws_glue_job":
 		return ListGlueJob(client)
+	case "aws_glue_ml_transform":
+		return ListGlueMlTransform(client)
 	case "aws_glue_security_configuration":
 		return ListGlueSecurityConfiguration(client)
 	case "aws_glue_trigger":
@@ -238,6 +248,12 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListIamServiceLinkedRole(client)
 	case "aws_iam_user":
 		return ListIamUser(client)
+	case "aws_imagebuilder_component":
+		return ListImagebuilderComponent(client)
+	case "aws_imagebuilder_distribution_configuration":
+		return ListImagebuilderDistributionConfiguration(client)
+	case "aws_imagebuilder_infrastructure_configuration":
+		return ListImagebuilderInfrastructureConfiguration(client)
 	case "aws_instance":
 		return ListInstance(client)
 	case "aws_internet_gateway":
@@ -256,6 +272,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListKeyPair(client)
 	case "aws_kinesis_analytics_application":
 		return ListKinesisAnalyticsApplication(client)
+	case "aws_kinesisanalyticsv2_application":
+		return ListKinesisanalyticsv2Application(client)
 	case "aws_kms_external_key":
 		return ListKmsExternalKey(client)
 	case "aws_kms_key":
@@ -270,6 +288,12 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListLaunchTemplate(client)
 	case "aws_lb_target_group":
 		return ListLbTargetGroup(client)
+	case "aws_lex_bot":
+		return ListLexBot(client)
+	case "aws_lex_intent":
+		return ListLexIntent(client)
+	case "aws_lex_slot_type":
+		return ListLexSlotType(client)
 	case "aws_licensemanager_license_configuration":
 		return ListLicensemanagerLicenseConfiguration(client)
 	case "aws_lightsail_domain":
@@ -334,6 +358,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListRouteTable(client)
 	case "aws_s3_bucket":
 		return ListS3Bucket(client)
+	case "aws_sagemaker_code_repository":
+		return ListSagemakerCodeRepository(client)
 	case "aws_sagemaker_endpoint":
 		return ListSagemakerEndpoint(client)
 	case "aws_sagemaker_model":
@@ -342,6 +368,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListSecretsmanagerSecret(client)
 	case "aws_security_group":
 		return ListSecurityGroup(client)
+	case "aws_securityhub_action_target":
+		return ListSecurityhubActionTarget(client)
 	case "aws_service_discovery_service":
 		return ListServiceDiscoveryService(client)
 	case "aws_servicecatalog_portfolio":
@@ -458,6 +486,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListWorklinkFleet(client)
 	case "aws_workspaces_ip_group":
 		return ListWorkspacesIpGroup(client)
+	case "aws_xray_group":
+		return ListXrayGroup(client)
 	default:
 		return nil, fmt.Errorf("resource type is not (yet) supported: %s", resourceType)
 	}

@@ -4,8 +4,8 @@ go 1.13
 
 require (
 	github.com/apex/log v1.1.2
-	github.com/aws/aws-sdk-go v1.32.12
-	github.com/aws/aws-sdk-go-v2 v0.23.0
+	github.com/aws/aws-sdk-go v1.35.28
+	github.com/aws/aws-sdk-go-v2 v0.24.0
 	github.com/disneystreaming/go-ssmhelpers v0.2.1
 	github.com/fatih/color v1.9.0
 	github.com/gobwas/glob v0.2.3
