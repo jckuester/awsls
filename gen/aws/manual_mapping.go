@@ -65,6 +65,7 @@ var ManualMatchedListOps = map[string]string{
 	// GetParameters has required input fields, so DescribeParameters it is
 	"aws_ssm_parameter":          "DescribeParameters",
 	"aws_ssm_resource_data_sync": "ListResourceDataSync",
+	"aws_lb":                     "DescribeLoadBalancers",
 }
 
 var ManualMatchedOutputFields = map[string]string{

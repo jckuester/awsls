@@ -286,6 +286,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListLaunchConfiguration(client)
 	case "aws_launch_template":
 		return ListLaunchTemplate(client)
+	case "aws_lb":
+		return ListLb(client)
 	case "aws_lb_target_group":
 		return ListLbTargetGroup(client)
 	case "aws_lex_bot":
