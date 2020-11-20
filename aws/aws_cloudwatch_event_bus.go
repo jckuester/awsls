@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchevents"
 )
 
-func ListCloudwatchEventRule(client *Client) ([]Resource, error) {
-	req := client.Cloudwatcheventsconn.ListRulesRequest(&cloudwatchevents.ListRulesInput{})
+func ListCloudwatchEventBus(client *Client) ([]Resource, error) {
+	req := client.Cloudwatcheventsconn.ListEventBusesRequest(&cloudwatchevents.ListEventBusesInput{})
 
 	var result []Resource
 
@@ -18,11 +18,11 @@ func ListCloudwatchEventRule(client *Client) ([]Resource, error) {
 		return nil, err
 	}
 
-	if len(resp.Rules) > 0 {
-		for _, r := range resp.Rules {
+	if len(resp.EventBuses) > 0 {
+		for _, r := range resp.EventBuses {
 
 			result = append(result, Resource{
-				Type:      "aws_cloudwatch_event_rule",
+				Type:      "aws_cloudwatch_event_bus",
 				ID:        *r.Name,
 				Profile:   client.Profile,
 				Region:    client.Region,

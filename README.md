@@ -7,7 +7,7 @@ A list command for AWS resources.
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
 awsls supports listing of [over 200 types of resources](#supported-resources)
-across 76 different AWS services. The goal is to code-generate a list function for
+across 83 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -64,11 +64,11 @@ To see options available run `awsls --help`.
 It's recommended to install a specific version of awsls available on the
 [releases page](https://github.com/jckuester/awsls/releases).
 
-Here is the recommended way to install awsls v0.5.1:
+Here is the recommended way to install awsls v0.6.0:
 
 ```bash
 # install it into ./bin/
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.5.1
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.6.0
 ```
 
 ## Credentials, profiles and regions
@@ -87,7 +87,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 217 resource types across 77 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 233 resource types across 83 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -124,9 +124,9 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_backup_plan |  x  |  x  |
 | aws_backup_vault |  x  |  x  |
 | **batch** |
-| aws_batch_compute_environment |  |  |
-| aws_batch_job_definition |  |  |
-| aws_batch_job_queue |  |  |
+| aws_batch_compute_environment |  x  |  |
+| aws_batch_job_definition |  x  |  |
+| aws_batch_job_queue |  x  |  |
 | **cloudformation** |
 | aws_cloudformation_stack |  x  |  x  |
 | aws_cloudformation_stack_set |  x  |  |
@@ -135,11 +135,14 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **cloudwatch** |
 | aws_cloudwatch_dashboard |  |  |
 | **cloudwatchevents** |
-| aws_cloudwatch_event_rule |  x  |  |
+| aws_cloudwatch_event_bus |  x  |  |
 | **cloudwatchlogs** |
 | aws_cloudwatch_log_destination |  |  x  |
 | aws_cloudwatch_log_group |  x  |  x  |
 | aws_cloudwatch_log_resource_policy |  |  |
+| **codeartifact** |
+| aws_codeartifact_domain |  x  |  x  |
+| aws_codeartifact_repository |  x  |  |
 | **codebuild** |
 | aws_codebuild_source_credential |  |  |
 | **codecommit** |
@@ -250,7 +253,9 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_globalaccelerator_accelerator |  x  |  x  |
 | **glue** |
 | aws_glue_crawler |  x  |  x  |
+| aws_glue_dev_endpoint |  x  |  |
 | aws_glue_job |  x  |  |
+| aws_glue_ml_transform |  x  |  |
 | aws_glue_security_configuration |  |  |
 | aws_glue_trigger |  x  |  |
 | **iam** |
@@ -262,6 +267,10 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_iam_server_certificate |  |  |
 | aws_iam_service_linked_role |  |  x  |
 | aws_iam_user |  x  |  x  |
+| **imagebuilder** |
+| aws_imagebuilder_component |  x  |  |
+| aws_imagebuilder_distribution_configuration |  x  |  |
+| aws_imagebuilder_infrastructure_configuration |  x  |  |
 | **iot** |
 | aws_iot_certificate |  |  x  |
 | aws_iot_policy |  |  |
@@ -273,12 +282,18 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_msk_configuration |  |  x  |
 | **kinesisanalytics** |
 | aws_kinesis_analytics_application |  x  |  |
+| **kinesisanalyticsv2** |
+| aws_kinesisanalyticsv2_application |  x  |  |
 | **kms** |
 | aws_kms_external_key |  x  |  |
 | aws_kms_key |  x  |  |
 | **lambda** |
 | aws_lambda_event_source_mapping |  |  |
 | aws_lambda_function |  x  |  |
+| **lexmodelbuildingservice** |
+| aws_lex_bot |  |  |
+| aws_lex_intent |  |  |
+| aws_lex_slot_type |  |  |
 | **licensemanager** |
 | aws_licensemanager_license_configuration |  x  |  |
 | **lightsail** |
@@ -306,6 +321,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_db_event_subscription |  x  |  |
 | aws_db_instance |  x  |  x  |
 | aws_db_parameter_group |  x  |  |
+| aws_db_proxy |  x  |  |
 | aws_db_security_group |  x  |  | x |
 | aws_db_snapshot |  x  |  x  |
 | aws_db_subnet_group |  x  |  |
@@ -325,10 +341,13 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **s3** |
 | aws_s3_bucket |  x  |  x  |
 | **sagemaker** |
+| aws_sagemaker_code_repository |  |  x  |
 | aws_sagemaker_endpoint |  x  |  x  |
 | aws_sagemaker_model |  x  |  x  |
 | **secretsmanager** |
 | aws_secretsmanager_secret |  x  |  |
+| **securityhub** |
+| aws_securityhub_action_target |  |  |
 | **servicecatalog** |
 | aws_servicecatalog_portfolio |  x  |  x  |
 | **servicediscovery** |
@@ -391,3 +410,5 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_worklink_fleet |  |  x  |
 | **workspaces** |
 | aws_workspaces_ip_group |  x  |  |
+| **xray** |
+| aws_xray_group |  x  |  |

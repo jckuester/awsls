@@ -30,7 +30,7 @@ func APIs(awsSdkRepoPath string) (api.APIs, error) {
 		return nil, errors.Wrap(err, "failed to load API models")
 	}
 	if len(apis) == 0 {
-		return nil, fmt.Errorf("failed to load API models")
+		return nil, fmt.Errorf("no API models found")
 	}
 
 	delete(apis, "github.com/aws/aws-sdk-go-v2/service/importexport")

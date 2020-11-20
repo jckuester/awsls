@@ -4,9 +4,8 @@ package util
 
 import (
 	"fmt"
+	"go/format"
 	"io/ioutil"
-
-	"github.com/aws/aws-sdk-go/private/util"
 )
 
 const CodeLayout = `// Code is generated. DO NOT EDIT.
@@ -18,7 +17,19 @@ package %s
 `
 
 func WriteGoFile(file string, layout string, args ...interface{}) error {
-	return ioutil.WriteFile(file, []byte(util.GoFmt(fmt.Sprintf(layout, args...))), 0664)
+	return ioutil.WriteFile(file, []byte(GoFmt(fmt.Sprintf(layout, args...))), 0664)
+}
+
+// GoFmt returns the Go formatted string of the input.
+//
+// Panics if the format fails.
+func GoFmt(buf string) string {
+	formatted, err := format.Source([]byte(buf))
+	if err != nil {
+		panic(fmt.Errorf("%s\nOriginal code:\n%s", err.Error(), buf))
+	}
+
+	return string(formatted)
 }
 
 func Difference(slice1 []string, slice2 []string) []string {

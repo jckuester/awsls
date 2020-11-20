@@ -19,6 +19,10 @@ func ListWorklinkFleet(client *Client) ([]Resource, error) {
 
 		for _, r := range page.FleetSummaryList {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
 			t := *r.CreatedTime
 			result = append(result, Resource{
 				Type:      "aws_worklink_fleet",
@@ -26,7 +30,7 @@ func ListWorklinkFleet(client *Client) ([]Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
