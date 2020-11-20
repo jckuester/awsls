@@ -136,6 +136,7 @@ var SupportedTypes = []string{
 	"aws_lambda_function",
 	"aws_launch_configuration",
 	"aws_launch_template",
+	"aws_lb",
 	"aws_lb_target_group",
 	"aws_lex_bot",
 	"aws_lex_intent",

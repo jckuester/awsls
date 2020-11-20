@@ -87,7 +87,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 233 resource types across 83 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 234 resource types across 83 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -236,6 +236,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_elb |  x  |  x  |
 | **elasticloadbalancingv2** |
 | aws_alb_target_group |  x  |  |
+| aws_lb |  x  |  x  |
 | aws_lb_target_group |  x  |  |
 | **elastictranscoder** |
 | aws_elastictranscoder_pipeline |  |  |
