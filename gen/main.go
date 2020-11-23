@@ -3,6 +3,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
 	"github.com/jckuester/awsls/gen/aws"
@@ -19,6 +21,29 @@ const (
 func main() {
 	log.SetHandler(cli.Default)
 	log.SetLevel(log.DebugLevel)
+
+	profile := "myaccount"
+	region := "us-west-2"
+
+	_, ok := os.LookupEnv("AWS_PROFILE")
+	if !ok {
+		log.Infof("AWS_PROFILE not set, therefore using the following default value: %s", profile)
+
+		err := os.Setenv("AWS_PROFILE", profile)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+	}
+
+	_, ok = os.LookupEnv("AWS_DEFAULT_REGION")
+	if !ok {
+		log.Infof("AWS_DEFAULT_REGION not set, therefore using the following default value: %s", region)
+
+		err := os.Setenv("AWS_DEFAULT_REGION", region)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+	}
 
 	resourceTypes, err := terraform.GenerateResourceTypeList(terraformAwsProviderRepoPath, outputPath)
 	if err != nil {
