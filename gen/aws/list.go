@@ -25,6 +25,11 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 	listFunctionNames := map[string]string{}
 	genResourceInfo := map[string][]GeneratedResourceInfo{}
 
+	resourcesWithRequiredFieldsCount := 0
+	noOutputFieldNameFoundCount := 0
+	noListOpCandidatesFoundCount := 0
+	noResourceIDFoundCount := 0
+
 	for _, service := range ServicesCoveredByTerraform(resourceServices) {
 		fmt.Printf("\nservice: %s\n---\n", service)
 
@@ -43,65 +48,49 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 
 			service, ok := resourceServices[rType]
 			if !ok {
-				log.WithField("resource", rType).Warnf("service not found")
+				log.WithField("resource", rType).Errorf("service not found")
 				continue
 			}
-
-			var op Operation
-			var outputFieldName string
 
 			listOpCandidates := GetListOperationCandidates(rType, service, apis)
 			if len(listOpCandidates) == 0 {
-				log.WithField("resource", rType).Warnf("no list operation candidate found")
+				noListOpCandidatesFoundCount++
+				log.WithField("resource", rType).Errorf("no list operation candidate found")
+
 				continue
 			}
 
-			var listOpCandidateWithFoundOutputField []string
-			for _, listOpCandidate := range listOpCandidates {
-				outputFieldCandidates := GetOutputFieldCandidates(rType, listOpCandidate)
-				if len(outputFieldCandidates) == 0 {
+			outputFieldName, op, err := findOutputField(rType, listOpCandidates, "structure")
+			if err != nil {
+				_, _, err = findOutputField(rType, listOpCandidates, "string")
+				if err != nil {
+					noOutputFieldNameFoundCount++
+					log.WithError(err).WithField("resource", rType).Errorf("unable to find output field name")
+
 					continue
 				}
 
-				if len(outputFieldCandidates) > 1 {
-					log.WithFields(log.Fields{
-						"resource":   rType,
-						"operation":  listOpCandidate.ExportedName,
-						"candidates": outputFieldCandidates,
-					}).Infof("multiple output field candidates")
-					continue
-				}
+				log.WithField("resource", rType).Infof("found output field of type string")
 
-				listOpCandidateWithFoundOutputField = append(listOpCandidateWithFoundOutputField, listOpCandidate.ExportedName)
-				op = listOpCandidate
-				outputFieldName = outputFieldCandidates[0]
-				op.OutputListName = outputFieldName
-			}
-
-			if len(listOpCandidateWithFoundOutputField) == 0 {
-				log.WithField("resource", rType).Warnf("no list operation candidate with struct found")
-				continue
-			}
-
-			if len(listOpCandidateWithFoundOutputField) > 1 {
-				log.WithFields(log.Fields{
-					"resource":   rType,
-					"candidates": listOpCandidateWithFoundOutputField}).Warnf("multiple list operation candidates found")
-				continue
-			}
-
-			if len(op.InputRef.Shape.Required) > 0 {
-				log.WithField("resource", rType).Warnf("required input fields: %s", op.InputRef.Shape.Required)
 				continue
 			}
 
 			outputField := op.OutputRef.Shape.MemberRefs[outputFieldName]
 
+			if len(op.InputRef.Shape.Required) > 0 {
+				resourcesWithRequiredFieldsCount++
+				log.WithField("resource", rType).Errorf("required input fields: %s", op.InputRef.Shape.Required)
+
+				continue
+			}
+
 			resourceID, ok := ManualMatchedResourceID[rType]
 			if !ok {
 				resourceID, ok = resourceIDs[rType]
 				if !ok {
-					log.WithField("resource", rType).Warn("no ID found")
+					noResourceIDFoundCount++
+					log.WithField("resource", rType).Errorf("no resource ID found")
+
 					continue
 				}
 
@@ -177,7 +166,7 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 
 			genResourceInfoPerService = append(genResourceInfoPerService, genInfo)
 
-			err := writeListFunction(outputPath, &op, rType)
+			err = writeListFunction(outputPath, &op, rType)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
@@ -191,6 +180,11 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 			genResourceInfo[service] = genResourceInfoPerService
 		}
 	}
+
+	log.Infof("list functions with required fields: %d", resourcesWithRequiredFieldsCount)
+	log.Infof("unable to find output field name: %d", noOutputFieldNameFoundCount)
+	log.Infof("resources without list operation candidate: %d", noListOpCandidatesFoundCount)
+	log.Infof("no resource ID found: %d", noResourceIDFoundCount)
 
 	return listFunctionNames, genResourceInfo
 }
@@ -215,7 +209,7 @@ func GetResourceIDNameCandidates(v *api.ShapeRef) []string {
 // (e.g., field name LogGroups of type []LogGroup in output DescribeLogGroupsOutput)
 //
 // Note: if there is a manual match entry, this will be returned.
-func GetOutputFieldCandidates(resourceType string, op Operation) []string {
+func GetOutputFieldCandidates(resourceType string, op Operation, shapeType string) []string {
 	_, ok := ManualMatchedOutputFields[resourceType]
 	if ok {
 		return []string{ManualMatchedOutputFields[resourceType]}
@@ -225,7 +219,7 @@ func GetOutputFieldCandidates(resourceType string, op Operation) []string {
 
 	for fieldName, v := range op.OutputRef.Shape.MemberRefs {
 		if v.Shape.Type == "list" {
-			if v.Shape.MemberRef.Shape.Type == "structure" {
+			if v.Shape.MemberRef.Shape.Type == shapeType {
 				outputFieldCandidates = append(outputFieldCandidates, fieldName)
 			}
 		}
@@ -258,6 +252,43 @@ func GetTagsGoCode(outputField *api.ShapeRef) string {
 	}
 
 	return ""
+}
+
+func findOutputField(rType string, listOpCandidates []Operation, shapeType string) (string, Operation, error) {
+	var listOpCandidatesWithFoundOutputField []string
+	var outputFieldName string
+	var op Operation
+
+	for _, listOpCandidate := range listOpCandidates {
+		outputFieldCandidates := GetOutputFieldCandidates(rType, listOpCandidate, shapeType)
+		if len(outputFieldCandidates) == 0 {
+			continue
+		}
+
+		if len(outputFieldCandidates) > 1 {
+			log.WithFields(log.Fields{
+				"resource":   rType,
+				"operation":  listOpCandidate.ExportedName,
+				"candidates": outputFieldCandidates,
+			}).Warnf("multiple output field candidates")
+			continue
+		}
+
+		listOpCandidatesWithFoundOutputField = append(listOpCandidatesWithFoundOutputField, listOpCandidate.ExportedName)
+		op = listOpCandidate
+		outputFieldName = outputFieldCandidates[0]
+		op.OutputListName = outputFieldName
+	}
+
+	if len(listOpCandidatesWithFoundOutputField) == 0 {
+		return "", op, fmt.Errorf("no list operation candidate with struct found")
+	}
+
+	if len(listOpCandidatesWithFoundOutputField) > 1 {
+		return "", op, fmt.Errorf("multiple list operation candidates found: %s", listOpCandidatesWithFoundOutputField)
+	}
+
+	return outputFieldName, op, nil
 }
 
 func GetCreationTimeGoCode(outputField *api.ShapeRef) (string, []string) {
@@ -336,11 +367,12 @@ type ListOperationCandidates struct {
 	Describes *api.Operation
 }
 
-// GetListOperationCandidates gets the possible list operation
-//
-// Note:
-//  * The list operation can be a Get, List or Describe function
-//  * If there is a manual match entry, this will be returned.
+// GetListOperationCandidates returns all list operation candidates for a resource type.
+// A list operation is a candidate, if
+//  * it's name starts with Get, List or Describe
+//  * the operation belongs to the same service as the resource type
+//  * the name of the operation is a plural of the resource type name
+// Note: If there is a manual match entry, this will be returned.
 func GetListOperationCandidates(resourceType, service string, apis api.APIs) []Operation {
 	manualMatchedOp, ok := ManualMatchedListOps[resourceType]
 	if ok {
@@ -354,9 +386,15 @@ func GetListOperationCandidates(resourceType, service string, apis api.APIs) []O
 	var result []Operation
 
 	prefixes := []string{"Describe", "Get", "List"}
+	var ops []string
 
 	for _, prefix := range prefixes {
 		operations := operationsOfService(apis, service, prefix)
+
+		for _, op := range operations {
+			ops = append(ops, op.ExportedName)
+		}
+		sort.Strings(ops)
 
 		matchingOp := exactMatch(resourceType, operations, prefix)
 		if matchingOp != nil {
@@ -364,17 +402,21 @@ func GetListOperationCandidates(resourceType, service string, apis api.APIs) []O
 		}
 	}
 
+	if len(result) == 0 {
+		log.Debugf("list operations: %s", ops)
+	}
+
 	return result
 }
 
-func exactMatch(terraformType string, operations []*api.Operation, opPrefix string) *api.Operation {
-	plurals := pluralizeListFunctionCandidateNames(terraformType)
+func exactMatch(rType string, operations []*api.Operation, opPrefix string) *api.Operation {
+	plurals := pluralizeListFunctionCandidateNames(rType)
 
-	for _, t := range plurals {
+	for _, plural := range plurals {
 		for _, op := range operations {
-			opNoPrefix := strings.ToLower(strings.TrimPrefix(op.ExportedName, opPrefix))
+			opWithoutPrefix := strings.ToLower(strings.TrimPrefix(op.ExportedName, opPrefix))
 
-			if t == opNoPrefix {
+			if plural == opWithoutPrefix {
 				return op
 			}
 		}
@@ -383,23 +425,24 @@ func exactMatch(terraformType string, operations []*api.Operation, opPrefix stri
 	return nil
 }
 
-func pluralizeListFunctionCandidateNames(terraformType string) []string {
-	tNoPrefix := strings.TrimPrefix(terraformType, "aws_")
-	tSplit := strings.Split(tNoPrefix, "_")
+func pluralizeListFunctionCandidateNames(rType string) []string {
+	rTypeWithoutPrefix := strings.TrimPrefix(rType, "aws_")
+	tSplit := strings.Split(rTypeWithoutPrefix, "_")
 
 	var tCombined []string
 	for i := 0; i < len(tSplit); i++ {
 		tCombined = append(tCombined, strings.Join(tSplit[i:], ""))
 	}
 
-	var plural []string
+	var result []string
 	for _, c := range tCombined {
-		plural = append(plural, []string{c + "s", c + "es"}...)
+		result = append(result, []string{c + "s", c + "es"}...)
 		if strings.HasSuffix(c, "y") {
-			plural = append(plural, strings.TrimSuffix(c, "y")+"ies")
+			result = append(result, strings.TrimSuffix(c, "y")+"ies")
 		}
 	}
-	return plural
+
+	return result
 }
 
 // operationsOfService returns the operations with a given prefix that belong to a service.
