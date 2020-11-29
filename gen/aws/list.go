@@ -84,37 +84,12 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 				continue
 			}
 
-			resourceID, ok := ManualMatchedResourceID[rType]
-			if !ok {
-				resourceID, ok = resourceIDs[rType]
-				if !ok {
-					noResourceIDFoundCount++
-					log.WithField("resource", rType).Errorf("no resource ID found")
+			resourceID, err := GetResourceID(rType, resourceIDs, outputField)
+			if err != nil {
+				noResourceIDFoundCount++
+				log.WithField("resource", rType).Errorf("no resource ID found")
 
-					continue
-				}
-
-				if resourceID == "NAME_PLACEHOLDER" {
-					resourceIDCandidates := GetResourceIDNameCandidates(outputField)
-					if len(resourceIDCandidates) > 1 {
-						log.WithFields(log.Fields{
-							"resource":   rType,
-							"candidates": resourceIDCandidates,
-						}).Warnf("found multiple name field ID candidates as resource ID for NAME_PLACEHOLDER")
-
-						continue
-					}
-
-					if len(resourceIDCandidates) == 0 {
-						log.WithFields(log.Fields{
-							"resource": rType,
-						}).Warnf("found no name field candidates as resource ID for NAME_PLACEHOLDER")
-
-						continue
-					}
-
-					resourceID = resourceIDCandidates[0]
-				}
+				continue
 			}
 
 			op.TerraformType = rType
@@ -187,6 +162,34 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 	log.Infof("no resource ID found: %d", noResourceIDFoundCount)
 
 	return listFunctionNames, genResourceInfo
+}
+
+func GetResourceID(rType string, resourceIDs map[string]string, outputField *api.ShapeRef) (string, error) {
+	resourceID, ok := ManualMatchedResourceID[rType]
+	if ok {
+		return resourceID, nil
+	}
+
+	resourceID, ok = resourceIDs[rType]
+	if !ok {
+		return "", fmt.Errorf("no resource ID found")
+	}
+
+	if resourceID == "NAME_PLACEHOLDER" {
+		resourceIDCandidates := GetResourceIDNameCandidates(outputField)
+		if len(resourceIDCandidates) > 1 {
+			return "", fmt.Errorf("found multiple name field ID candidates as resource ID for NAME_PLACEHOLDER")
+
+		}
+
+		if len(resourceIDCandidates) == 0 {
+			return "", fmt.Errorf("found no name field candidates as resource ID for NAME_PLACEHOLDER")
+		}
+
+		resourceID = resourceIDCandidates[0]
+	}
+
+	return resourceID, nil
 }
 
 func GetResourceIDNameCandidates(v *api.ShapeRef) []string {
