@@ -3,6 +3,8 @@
 package main
 
 import (
+	"io/ioutil"
+	stdlog "log"
 	"os"
 
 	"github.com/apex/log"
@@ -21,6 +23,9 @@ const (
 func main() {
 	log.SetHandler(cli.Default)
 	log.SetLevel(log.DebugLevel)
+
+	// discard TRACE logs of GRPCProvider
+	stdlog.SetOutput(ioutil.Discard)
 
 	profile := "myaccount"
 	region := "us-west-2"
