@@ -4,8 +4,6 @@ package aws
 
 import (
 	"bytes"
-	"fmt"
-	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -13,14 +11,9 @@ import (
 	"github.com/jckuester/awsls/gen/util"
 )
 
-// GenerateClient writes Go code to initialize all AWS API Clients.
-func GenerateClient(outputPath string, services []string) error {
-	err := os.MkdirAll(outputPath, 0775)
-	if err != nil {
-		return fmt.Errorf("failed to create directory: %s", err)
-	}
-
-	err = util.WriteGoFile(
+// GenerateClient returns Go code that initializes all AWS API clients.
+func GenerateClient(outputPath string, services []string) {
+	err := util.WriteGoFile(
 		filepath.Join(outputPath, "client.go"),
 		util.CodeLayout,
 		"",
@@ -29,10 +22,8 @@ func GenerateClient(outputPath string, services []string) error {
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to write Go code to file: %s", err)
+		panic(err)
 	}
-
-	return nil
 }
 
 func clientGoCode(services []string) string {

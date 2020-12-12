@@ -72,6 +72,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListCloudformationStackSet(client)
 	case "aws_cloudhsm_v2_cluster":
 		return ListCloudhsmV2Cluster(client)
+	case "aws_cloudtrail":
+		return ListCloudtrail(client)
 	case "aws_cloudwatch_dashboard":
 		return ListCloudwatchDashboard(client)
 	case "aws_cloudwatch_event_bus":
@@ -486,8 +488,12 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListWafv2WebAclLoggingConfiguration(client)
 	case "aws_worklink_fleet":
 		return ListWorklinkFleet(client)
+	case "aws_workspaces_directory":
+		return ListWorkspacesDirectory(client)
 	case "aws_workspaces_ip_group":
 		return ListWorkspacesIpGroup(client)
+	case "aws_workspaces_workspace":
+		return ListWorkspacesWorkspace(client)
 	case "aws_xray_group":
 		return ListXrayGroup(client)
 	default:

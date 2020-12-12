@@ -8,7 +8,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -26,10 +25,7 @@ func GenerateResourceTypeList(providerRepoPath, outputPath string) ([]string, er
 		return nil, err
 	}
 
-	err = writeResourceTypes(outputPath, resourceTypes)
-	if err != nil {
-		return nil, err
-	}
+	writeResourceTypes(outputPath, resourceTypes)
 
 	log.WithField("length", len(resourceTypes)).Infof("Generated list of Terraform AWS resource types")
 	return resourceTypes, nil
@@ -86,18 +82,10 @@ func ResourceTypes(providerRepoPath string) ([]string, error) {
 	return result, nil
 }
 
-func writeResourceTypes(outputPath string, resourceTypes []string) error {
-	err := os.MkdirAll(outputPath, 0775)
-	if err != nil {
-		return fmt.Errorf("failed to create directory: %s", err)
-	}
+func writeResourceTypes(outputPath string, resourceTypes []string) {
+	code := resourceTypesGoCode(resourceTypes)
 
-	code, err := resourceTypesGoCode(resourceTypes)
-	if err != nil {
-		return fmt.Errorf("failed to generate Go code: %s", err)
-	}
-
-	err = util.WriteGoFile(
+	err := util.WriteGoFile(
 		filepath.Join(outputPath, "types.go"),
 		util.CodeLayout,
 		"",
@@ -106,20 +94,18 @@ func writeResourceTypes(outputPath string, resourceTypes []string) error {
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to write Go code to file: %s", err)
+		panic(err)
 	}
-
-	return nil
 }
 
-func resourceTypesGoCode(terraformTypes []string) (string, error) {
+func resourceTypesGoCode(terraformTypes []string) string {
 	var buf bytes.Buffer
 	err := resourceTypesTmpl.Execute(&buf, terraformTypes)
 	if err != nil {
-		return "", err
+		panic(err)
 	}
 
-	return strings.TrimSpace(buf.String()), nil
+	return strings.TrimSpace(buf.String())
 }
 
 var resourceTypesTmpl = template.Must(template.New("resourceTypes").Parse(`

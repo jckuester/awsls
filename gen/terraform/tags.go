@@ -67,11 +67,6 @@ func GenerateResourceTypesWithTagsList(resourceTypes []string, outputPath string
 }
 
 func writeResourceTypesWithTags(outputPath string, resourceTypes []string) error {
-	err := os.MkdirAll(outputPath, 0775)
-	if err != nil {
-		return fmt.Errorf("failed to create directory: %s", err)
-	}
-
 	code, err := resourceTypesWithTagsGoCode(resourceTypes)
 	if err != nil {
 		return fmt.Errorf("failed to generate Go code: %s", err)

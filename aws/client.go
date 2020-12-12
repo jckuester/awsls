@@ -5,6 +5,7 @@ package aws
 import (
 	"context"
 	"fmt"
+
 	"github.com/apex/log"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/accessanalyzer"

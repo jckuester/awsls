@@ -3,56 +3,53 @@
 package aws
 
 import (
+	"bytes"
 	"fmt"
 	"path/filepath"
-	"sort"
 	"strings"
+	"text/template"
 
 	"github.com/apex/log"
 	"github.com/aws/aws-sdk-go-v2/private/model/api"
 	"github.com/jckuester/awsls/gen/util"
 )
 
-type GeneratedResourceInfo struct {
-	Type         string
+type Service struct {
+	Name                   string
+	TerraformResourceTypes []ResourceType
+}
+
+type ResourceType struct {
+	Name         string
 	Tags         bool
 	CreationTime bool
 	Owner        bool
 }
 
-func GenerateListFunctions(outputPath string, resourceServices map[string]string, resourceIDs map[string]string,
-	resourceTypesWithTags []string, apis api.APIs) (map[string]string, map[string][]GeneratedResourceInfo) {
-	listFunctionNames := map[string]string{}
-	genResourceInfo := map[string][]GeneratedResourceInfo{}
+func GenerateListFunctions(outputPath string, services []Service, resourceIDs map[string]string,
+	resourceTypesWithTags []string, apis api.APIs) []Service {
 
 	resourcesWithRequiredFieldsCount := 0
 	noOutputFieldNameFoundCount := 0
 	noListOpCandidatesFoundCount := 0
 	noResourceIDFoundCount := 0
 
-	for _, service := range ServicesCoveredByTerraform(resourceServices) {
-		fmt.Printf("\nservice: %s\n---\n", service)
+	var servicesResult []Service
 
-		var genResourceInfoPerService []GeneratedResourceInfo
+	for _, service := range services {
+		fmt.Println()
+		fmt.Printf("service: %s\n---\n", service.Name)
 
-		for rType, rService := range resourceServices {
-			if rService != service {
-				continue
-			}
+		var rTypesResult []ResourceType
 
-			_, ok := ExcludedResourceTypes[rType]
+		for _, rType := range service.TerraformResourceTypes {
+			_, ok := ExcludedResourceTypes[rType.Name]
 			if ok {
 				log.WithField("resource", rType).Info("exclude")
 				continue
 			}
 
-			service, ok := resourceServices[rType]
-			if !ok {
-				log.WithField("resource", rType).Errorf("service not found")
-				continue
-			}
-
-			listOpCandidates := GetListOperationCandidates(rType, service, apis)
+			listOpCandidates := FindListOperationCandidates(rType.Name, service.Name, apis)
 			if len(listOpCandidates) == 0 {
 				noListOpCandidatesFoundCount++
 				log.WithField("resource", rType).Errorf("no list operation candidate found")
@@ -60,17 +57,17 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 				continue
 			}
 
-			outputFieldName, op, err := findOutputField(rType, listOpCandidates, "structure")
+			outputFieldName, op, err := findOutputField(rType.Name, listOpCandidates, "structure")
 			if err != nil {
-				_, _, err = findOutputField(rType, listOpCandidates, "string")
+				_, _, err = findOutputField(rType.Name, listOpCandidates, "string")
 				if err != nil {
 					noOutputFieldNameFoundCount++
-					log.WithError(err).WithField("resource", rType).Errorf("unable to find output field name")
+					log.WithError(err).WithField("resource", rType.Name).Errorf("unable to find output field name")
 
 					continue
 				}
 
-				log.WithField("resource", rType).Infof("found output field of type string")
+				log.WithField("resource", rType.Name).Infof("found output field of type string")
 
 				continue
 			}
@@ -84,53 +81,12 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 				continue
 			}
 
-			resourceID, err := GetResourceID(rType, resourceIDs, outputField)
+			resourceID, err := findResourceID(rType.Name, resourceIDs, outputField)
 			if err != nil {
 				noResourceIDFoundCount++
 				log.WithField("resource", rType).Errorf("no resource ID found")
 
 				continue
-			}
-
-			op.TerraformType = rType
-			op.ResourceID = resourceID
-			op.OpName = TypeToOpName(rType)
-
-			listFunctionNames[rType] = TypeToOpName(rType)
-
-			genInfo := GeneratedResourceInfo{
-				Type: rType,
-			}
-
-			op.Inputs = Inputs[rType]
-
-			op.GetTagsGoCode = GetTagsGoCode(outputField)
-
-			/*
-				if op.GetTagsGoCode != "" {
-					genInfo.Tags = true
-				}
-			*/
-
-			for _, rWithTags := range resourceTypesWithTags {
-				if rWithTags == rType {
-					genInfo.Tags = true
-				}
-			}
-
-			getTagCode, imports := GetCreationTimeGoCode(outputField)
-
-			op.GetCreationTimeGoCode = getTagCode
-			op.Imports = imports
-
-			if op.GetCreationTimeGoCode != "" {
-				genInfo.CreationTime = true
-			}
-
-			op.GetOwnerGoCode = GetOwnerGoCode(outputField)
-
-			if op.GetOwnerGoCode != "" {
-				genInfo.Owner = true
 			}
 
 			for k, _ := range op.InputRef.Shape.MemberRefs {
@@ -139,20 +95,31 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 				}
 			}
 
-			genResourceInfoPerService = append(genResourceInfoPerService, genInfo)
+			op.OutputFieldName = outputFieldName
+			op.TerraformType = rType.Name
+			op.ResourceID = resourceID
+			op.OpName = rType.ListFunctionName()
+			op.Inputs = Inputs[rType.Name]
 
-			err = writeListFunction(outputPath, &op, rType)
-			if err != nil {
-				log.Fatal(err.Error())
+			rType.CreationTime = op.GetCreationTimeGoCode() != ""
+			rType.Owner = op.GetOwnerGoCode() != ""
+			rType.Tags = util.Contains(resourceTypesWithTags, rType.Name)
+
+			if rType.Name != "aws_instance" {
+				// note: code is manually added for "aws_instance"
+				writeListFunction(outputPath, &op)
+			} else {
+				rType.CreationTime = true
 			}
+
+			rTypesResult = append(rTypesResult, rType)
 		}
 
-		if len(genResourceInfoPerService) > 0 {
-			sort.Slice(genResourceInfoPerService, func(i, j int) bool {
-				return genResourceInfoPerService[i].Type < genResourceInfoPerService[j].Type
+		if len(rTypesResult) > 0 {
+			servicesResult = append(servicesResult, Service{
+				Name:                   service.Name,
+				TerraformResourceTypes: rTypesResult,
 			})
-
-			genResourceInfo[service] = genResourceInfoPerService
 		}
 	}
 
@@ -161,323 +128,12 @@ func GenerateListFunctions(outputPath string, resourceServices map[string]string
 	log.Infof("resources without list operation candidate: %d", noListOpCandidatesFoundCount)
 	log.Infof("no resource ID found: %d", noResourceIDFoundCount)
 
-	return listFunctionNames, genResourceInfo
+	return servicesResult
 }
 
-func GetResourceID(rType string, resourceIDs map[string]string, outputField *api.ShapeRef) (string, error) {
-	resourceID, ok := ManualMatchedResourceID[rType]
-	if ok {
-		return resourceID, nil
-	}
-
-	resourceID, ok = resourceIDs[rType]
-	if !ok {
-		return "", fmt.Errorf("no resource ID found")
-	}
-
-	if resourceID == "NAME_PLACEHOLDER" {
-		resourceIDCandidates := GetResourceIDNameCandidates(outputField)
-		if len(resourceIDCandidates) > 1 {
-			return "", fmt.Errorf("found multiple name field ID candidates as resource ID for NAME_PLACEHOLDER")
-
-		}
-
-		if len(resourceIDCandidates) == 0 {
-			return "", fmt.Errorf("found no name field candidates as resource ID for NAME_PLACEHOLDER")
-		}
-
-		resourceID = resourceIDCandidates[0]
-	}
-
-	return resourceID, nil
-}
-
-func GetResourceIDNameCandidates(v *api.ShapeRef) []string {
-	var result []string
-
-	for k, _ := range v.Shape.MemberRef.Shape.MemberRefs {
-		if k == "Name" {
-			return []string{k}
-		}
-
-		if strings.Contains(strings.ToLower(k), "name") {
-			result = append(result, k)
-		}
-	}
-
-	return result
-}
-
-// GetOutputFieldCandidates gets the output field that contains a list of resources the given resource type
-// (e.g., field name LogGroups of type []LogGroup in output DescribeLogGroupsOutput)
-//
-// Note: if there is a manual match entry, this will be returned.
-func GetOutputFieldCandidates(resourceType string, op Operation, shapeType string) []string {
-	_, ok := ManualMatchedOutputFields[resourceType]
-	if ok {
-		return []string{ManualMatchedOutputFields[resourceType]}
-	}
-
-	var outputFieldCandidates []string
-
-	for fieldName, v := range op.OutputRef.Shape.MemberRefs {
-		if v.Shape.Type == "list" {
-			if v.Shape.MemberRef.Shape.Type == shapeType {
-				outputFieldCandidates = append(outputFieldCandidates, fieldName)
-			}
-		}
-	}
-
-	return outputFieldCandidates
-}
-
-func GetTagsGoCode(outputField *api.ShapeRef) string {
-	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
-		if k == "Tags" {
-			if v.Shape.Type == "list" {
-				return `tags := map[string]string{}
-						for _, t := range r.Tags {
-							tags[*t.Key] = *t.Value
-						}`
-			}
-
-			if v.Shape.Type == "map" {
-				return `tags := map[string]string{}
-						for k, v := range r.Tags {
-							tags[k] = v
-						}`
-			}
-		}
-
-		if strings.Contains(k, "Tag") {
-			log.Infof("tags: %s %s", k, v.Shape.Type)
-		}
-	}
-
-	return ""
-}
-
-func findOutputField(rType string, listOpCandidates []Operation, shapeType string) (string, Operation, error) {
-	var listOpCandidatesWithFoundOutputField []string
-	var outputFieldName string
-	var op Operation
-
-	for _, listOpCandidate := range listOpCandidates {
-		outputFieldCandidates := GetOutputFieldCandidates(rType, listOpCandidate, shapeType)
-		if len(outputFieldCandidates) == 0 {
-			continue
-		}
-
-		if len(outputFieldCandidates) > 1 {
-			log.WithFields(log.Fields{
-				"resource":   rType,
-				"operation":  listOpCandidate.ExportedName,
-				"candidates": outputFieldCandidates,
-			}).Warnf("multiple output field candidates")
-			continue
-		}
-
-		listOpCandidatesWithFoundOutputField = append(listOpCandidatesWithFoundOutputField, listOpCandidate.ExportedName)
-		op = listOpCandidate
-		outputFieldName = outputFieldCandidates[0]
-		op.OutputListName = outputFieldName
-	}
-
-	if len(listOpCandidatesWithFoundOutputField) == 0 {
-		return "", op, fmt.Errorf("no list operation candidate with struct found")
-	}
-
-	if len(listOpCandidatesWithFoundOutputField) > 1 {
-		return "", op, fmt.Errorf("multiple list operation candidates found: %s", listOpCandidatesWithFoundOutputField)
-	}
-
-	return outputFieldName, op, nil
-}
-
-func GetCreationTimeGoCode(outputField *api.ShapeRef) (string, []string) {
-	creationTimeFieldNames := []string{
-		"LaunchTime",
-		"CreateTime",
-		"CreateDate",
-		"CreatedTime",
-		"CreationDate",
-		"CreationTime",
-		"CreationTimestamp",
-		"StartTime",
-		"InstanceCreateTime",
-	}
-
-	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
-		for _, name := range creationTimeFieldNames {
-			if k == name {
-				if v.Shape.Type == "string" {
-					return `t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.` + k + `)
-							if err != nil {
-								return nil, err
-							}`, []string{"time"}
-				}
-
-				if v.Shape.Type == "timestamp" {
-					return `t := ` + fmt.Sprintf("*r.%s", k), []string{}
-				}
-
-				if v.Shape.Type == "long" {
-					return fmt.Sprintf("t := time.Unix(0, *r.%s * 1000000).UTC()", k), []string{"time"}
-				}
-
-				log.Warnf("uncovered creation time type: %s", v.Shape.Type)
-			}
-		}
-	}
-
-	return "", []string{}
-}
-
-func GetOwnerGoCode(outputField *api.ShapeRef) string {
-	for k, _ := range outputField.Shape.MemberRef.Shape.MemberRefs {
-		if k == "OwnerId" {
-			return `if *r.OwnerId != client.AccountID {
-						continue
-					}`
-		}
-		if strings.Contains(strings.ToLower(k), "owner") {
-			log.Infof("output; found owner field: %s", k)
-		}
-	}
-
-	return ""
-}
-
-func Operations(apis api.APIs, prefixes []string) []string {
-	var result []string
-
-	for _, a := range apis {
-		for _, v := range a.Operations {
-			for _, prefix := range prefixes {
-				if strings.HasPrefix(v.Name, prefix) && !strings.Contains(v.Name, "Tags") {
-					log.Debugf("%s", v.Name)
-					result = append(result, v.Name)
-				}
-			}
-		}
-	}
-	return result
-}
-
-type ListOperationCandidates struct {
-	List      *api.Operation
-	Get       *api.Operation
-	Describes *api.Operation
-}
-
-// GetListOperationCandidates returns all list operation candidates for a resource type.
-// A list operation is a candidate, if
-//  * it's name starts with Get, List or Describe
-//  * the operation belongs to the same service as the resource type
-//  * the name of the operation is a plural of the resource type name
-// Note: If there is a manual match entry, this will be returned.
-func GetListOperationCandidates(resourceType, service string, apis api.APIs) []Operation {
-	manualMatchedOp, ok := ManualMatchedListOps[resourceType]
-	if ok {
-		for _, op := range operationsOfService(apis, service, "") {
-			if op.ExportedName == manualMatchedOp {
-				return []Operation{{Operation: *op}}
-			}
-		}
-	}
-
-	var result []Operation
-
-	prefixes := []string{"Describe", "Get", "List"}
-	var ops []string
-
-	for _, prefix := range prefixes {
-		operations := operationsOfService(apis, service, prefix)
-
-		for _, op := range operations {
-			ops = append(ops, op.ExportedName)
-		}
-		sort.Strings(ops)
-
-		matchingOp := exactMatch(resourceType, operations, prefix)
-		if matchingOp != nil {
-			result = append(result, Operation{Operation: *matchingOp})
-		}
-	}
-
-	if len(result) == 0 {
-		log.Debugf("list operations: %s", ops)
-	}
-
-	return result
-}
-
-func exactMatch(rType string, operations []*api.Operation, opPrefix string) *api.Operation {
-	plurals := pluralizeListFunctionCandidateNames(rType)
-
-	for _, plural := range plurals {
-		for _, op := range operations {
-			opWithoutPrefix := strings.ToLower(strings.TrimPrefix(op.ExportedName, opPrefix))
-
-			if plural == opWithoutPrefix {
-				return op
-			}
-		}
-	}
-
-	return nil
-}
-
-func pluralizeListFunctionCandidateNames(rType string) []string {
-	rTypeWithoutPrefix := strings.TrimPrefix(rType, "aws_")
-	tSplit := strings.Split(rTypeWithoutPrefix, "_")
-
-	var tCombined []string
-	for i := 0; i < len(tSplit); i++ {
-		tCombined = append(tCombined, strings.Join(tSplit[i:], ""))
-	}
-
-	var result []string
-	for _, c := range tCombined {
-		result = append(result, []string{c + "s", c + "es"}...)
-		if strings.HasSuffix(c, "y") {
-			result = append(result, strings.TrimSuffix(c, "y")+"ies")
-		}
-	}
-
-	return result
-}
-
-// operationsOfService returns the operations with a given prefix that belong to a service.
-func operationsOfService(apis api.APIs, service, opPrefix string) []*api.Operation {
-	var result []*api.Operation
-
-	for _, api := range apis {
-		if service != api.PackageName() {
-			continue
-		}
-
-		for _, op := range api.Operations {
-			if strings.HasPrefix(op.ExportedName, opPrefix) {
-				result = append(result, op)
-			}
-		}
-	}
-
-	return result
-}
-
-// TypeToOpName generates a name for the list function based on the resource type.
-func TypeToOpName(terraformType string) string {
-	split := strings.Split(strings.TrimPrefix(terraformType, "aws_"), "_")
-	capitalized := strings.Title(strings.Join(split, " "))
-
-	return strings.Join(strings.Split(capitalized, " "), "")
-}
-
-func writeListFunction(outputPath string, op *Operation, terraformType string) error {
+func writeListFunction(outputPath string, op *ListOperation) {
 	err := util.WriteGoFile(
-		filepath.Join(outputPath, terraformType+".go"),
+		filepath.Join(outputPath, op.TerraformType+".go"),
 		util.CodeLayout,
 		"",
 		"aws",
@@ -485,8 +141,97 @@ func writeListFunction(outputPath string, op *Operation, terraformType string) e
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to write %s Go Code to file, %v", op.ExportedName, err)
+		panic(err)
+	}
+}
+
+type ListOperation struct {
+	api.Operation
+
+	TerraformType   string
+	ResourceID      string
+	OutputListName  string
+	OpName          string
+	Inputs          string
+	OutputFieldName string
+}
+
+func (o *ListOperation) GoCode() string {
+	var buf bytes.Buffer
+	err := listResourcesOperationTmpl.Execute(&buf, o)
+	if err != nil {
+		panic(err)
 	}
 
-	return nil
+	return strings.TrimSpace(buf.String())
 }
+
+var listResourcesOperationTmpl = template.Must(template.New("listResourcesOperation").Funcs(
+	template.FuncMap{
+		"Title": strings.Title,
+	}).Parse(`
+import(
+	"context"
+	"github.com/aws/aws-sdk-go-v2/service/{{ .API.PackageName }}"
+)
+
+{{ $reqType := printf "%sRequest" .ExportedName -}}
+{{ $pagerType := printf "%sPaginator" .ExportedName -}}
+
+func  {{.OpName}}(client *Client) ([]Resource, error) {
+    req := client.{{ .API.PackageName | Title }}conn.{{ $reqType }}(&{{ .API.PackageName }}.{{ .InputRef.GoTypeElem }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
+
+	var result []Resource
+
+	{{ if .Paginator }}
+    p := {{ .API.PackageName }}.New{{ $pagerType }}(req)
+	for p.Next(context.Background()) {
+		page := p.CurrentPage()
+
+		for _, r := range page.{{ .OutputListName }}{
+			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
+			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
+			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
+			result = append(result, Resource{
+				Type: "{{ .TerraformType }}",
+				ID: *r.{{ .ResourceID }},
+				Profile: client.Profile,
+				Region: client.Region,
+				AccountID: client.AccountID,
+				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
+				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
+			})
+		}
+	}
+
+	if err := p.Err(); err != nil {
+		return nil, err
+	}
+
+	{{ else }}
+
+    resp, err := req.Send(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.{{ .OutputListName }}) > 0 {
+		for _, r := range resp.{{ .OutputListName }}{
+			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
+			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
+			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
+			result = append(result, Resource{
+				Type: "{{ .TerraformType }}",
+				ID: *r.{{ .ResourceID }},
+				Profile: client.Profile,
+				Region: client.Region,
+				AccountID: client.AccountID,
+				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
+				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
+			})
+		}
+	}
+	{{ end }}
+	return result, nil
+}
+`))

@@ -4,7 +4,6 @@ package aws
 
 import (
 	"bytes"
-	"fmt"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -12,27 +11,25 @@ import (
 	"github.com/jckuester/awsls/gen/util"
 )
 
-// GenerateSupportedResourceTypeList generates code of a list of Terraform resource types that are currently
-// supported by awsls and writes the code to directory outputPath.
-func GenerateSupportedResourceTypeList(outputPath string, listFunctionNames map[string]string) error {
+// GenerateListOfSupportedResourceTypes code-generates a list of Terraform resource types
+// that are currently supported by awsls.
+func GenerateListOfSupportedResourceTypes(outputPath string, rTypes []ResourceType) {
 	err := util.WriteGoFile(
 		filepath.Join(outputPath, "supported.go"),
 		util.CodeLayout,
 		"",
 		"resource",
-		supportedResourcesGoCode(listFunctionNames),
+		supportedResourcesGoCode(rTypes),
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to write Go code to file: %s", err)
+		panic(err)
 	}
-
-	return nil
 }
 
-func supportedResourcesGoCode(listFunctionNames map[string]string) string {
+func supportedResourcesGoCode(rTypes []ResourceType) string {
 	var buf bytes.Buffer
-	err := supportedResourcesTmpl.Execute(&buf, listFunctionNames)
+	err := supportedResourcesTmpl.Execute(&buf, rTypes)
 	if err != nil {
 		panic(err)
 	}
@@ -43,6 +40,8 @@ func supportedResourcesGoCode(listFunctionNames map[string]string) string {
 var supportedResourcesTmpl = template.Must(template.New("supportedResources").Parse(`
 // SupportedTypes is a list of all resource types currently supported by awsls.
 var SupportedTypes = []string{
-{{ range $key, $value := . }}"{{ $key }}",
-{{ end }}}
+  {{ range . }}
+    "{{ .Name }}",
+  {{- end }}
+}
 `))
