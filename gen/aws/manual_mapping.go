@@ -9,6 +9,8 @@ var excludeServices = map[string]struct{}{
 
 // some resource types are excluded as they need be handled slightly differently
 var ExcludedResourceTypes = map[string]bool{
+	// not a resource
+	"aws_api_gateway_integration": true,
 	// is not a resource
 	"aws_acm_certificate_validation": true,
 	// ValidationError: You must specify either either listener ARNs or a load balancer ARN
@@ -33,7 +35,6 @@ var ExcludedResourceTypes = map[string]bool{
 	"aws_inspector_assessment_target":   true,
 	"aws_inspector_assessment_template": true,
 	"aws_inspector_resource_group":      true,
-	"aws_instance":                      true,
 	"aws_resourcegroups_group":          true,
 	"aws_shield_protection":             true,
 	"aws_vpn_connection":                true,
@@ -50,10 +51,15 @@ var ExcludedResourceTypes = map[string]bool{
 	"aws_default_vpc": true,
 	// Error: failed to read current state of resource: rpc error: code = Canceled desc = context canceled
 	"aws_kms_alias": true,
+	// Not a resource. This are the instances registered with an ELB. Requires the ELB name.
+	"aws_elb_attachment": true,
 }
 
 // manualMatchedListOps are list operations that could not be matched automatically
 var ManualMatchedListOps = map[string]string{
+	"aws_appautoscaling_target":           "DescribeScalableTargets",
+	"aws_appautoscaling_policy":           "DescribeScalingPolicies",
+	"aws_appautoscaling_scheduled_action": "DescribeScheduledActions",
 	// The AWS API calls it images not AMI
 	"aws_ami":                  "DescribeImages",
 	"aws_ecs_service":          "DescribeServices",
@@ -66,6 +72,8 @@ var ManualMatchedListOps = map[string]string{
 	"aws_ssm_parameter":          "DescribeParameters",
 	"aws_ssm_resource_data_sync": "ListResourceDataSync",
 	"aws_lb":                     "DescribeLoadBalancers",
+	"aws_cloudtrail":             "DescribeTrails",
+	"aws_workspaces_directory":   "DescribeWorkspaceDirectories",
 }
 
 var ManualMatchedOutputFields = map[string]string{
@@ -74,16 +82,21 @@ var ManualMatchedOutputFields = map[string]string{
 }
 
 var ManualMatchedResourceID = map[string]string{
-	"aws_autoscaling_group":      "AutoScalingGroupName",
-	"aws_launch_configuration":   "LaunchConfigurationName",
-	"aws_s3_bucket":              "Name",
-	"aws_elb":                    "LoadBalancerName",
-	"aws_db_instance":            "DBInstanceIdentifier",
-	"aws_route53_zone":           "Id",
-	"aws_subnet":                 "SubnetId",
-	"aws_imagebuilder_component": "Arn",
+	"aws_autoscaling_group":                         "AutoScalingGroupName",
+	"aws_launch_configuration":                      "LaunchConfigurationName",
+	"aws_s3_bucket":                                 "Name",
+	"aws_elb":                                       "LoadBalancerName",
+	"aws_db_instance":                               "DBInstanceIdentifier",
+	"aws_route53_zone":                              "Id",
+	"aws_ses_email_identity":                        "EmailAddress",
+	"aws_ses_domain_identity":                       "Domain",
+	"aws_simpledb_domain":                           "DomainName",
+	"aws_workspaces_workspace":                      "WorkspaceId",
+	"aws_subnet":                                    "SubnetId",
+	"aws_imagebuilder_component":                    "Arn",
 	"aws_imagebuilder_distribution_configuration":   "Arn",
 	"aws_imagebuilder_infrastructure_configuration": "Arn",
+	"aws_workspaces_directory":                      "DirectoryId",
 }
 
 var Inputs = map[string]string{

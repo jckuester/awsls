@@ -166,6 +166,92 @@ func (o *ListOperation) GoCode() string {
 	return strings.TrimSpace(buf.String())
 }
 
+func (o ListOperation) GetTagsGoCode() string {
+	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
+
+	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
+		if k == "Tags" {
+			if v.Shape.Type == "list" {
+				return `tags := map[string]string{}
+						for _, t := range r.Tags {
+							tags[*t.Key] = *t.Value
+						}`
+			}
+
+			if v.Shape.Type == "map" {
+				return `tags := map[string]string{}
+						for k, v := range r.Tags {
+							tags[k] = v
+						}`
+			}
+		}
+
+		if strings.Contains(k, "Tag") {
+			log.Infof("tags: %s %s", k, v.Shape.Type)
+		}
+	}
+
+	return ""
+}
+
+func (o ListOperation) GetCreationTimeGoCode() string {
+	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
+
+	creationTimeFieldNames := []string{
+		"LaunchTime",
+		"CreateTime",
+		"CreateDate",
+		"CreatedTime",
+		"CreationDate",
+		"CreationTime",
+		"CreationTimestamp",
+		"StartTime",
+		"InstanceCreateTime",
+	}
+
+	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
+		for _, name := range creationTimeFieldNames {
+			if k == name {
+				if v.Shape.Type == "string" {
+					return `t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.` + k + `)
+							if err != nil {
+								return nil, err
+							}`
+				}
+
+				if v.Shape.Type == "timestamp" {
+					return `t := ` + fmt.Sprintf("*r.%s", k)
+				}
+
+				if v.Shape.Type == "long" {
+					return fmt.Sprintf("t := time.Unix(0, *r.%s * 1000000).UTC()", k)
+				}
+
+				log.Warnf("uncovered creation time type: %s", v.Shape.Type)
+			}
+		}
+	}
+
+	return ""
+}
+
+func (o ListOperation) GetOwnerGoCode() string {
+	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
+
+	for k, _ := range outputField.Shape.MemberRef.Shape.MemberRefs {
+		if k == "OwnerId" {
+			return `if *r.OwnerId != client.AccountID {
+						continue
+					}`
+		}
+		if strings.Contains(strings.ToLower(k), "owner") {
+			log.Infof("output; found owner field: %s", k)
+		}
+	}
+
+	return ""
+}
+
 var listResourcesOperationTmpl = template.Must(template.New("listResourcesOperation").Funcs(
 	template.FuncMap{
 		"Title": strings.Title,

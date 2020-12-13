@@ -7,7 +7,7 @@ A list command for AWS resources.
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
 awsls supports listing of [over 200 types of resources](#supported-resources)
-across 83 different AWS services. The goal is to code-generate a list function for
+across {{ len .Services }} different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -61,15 +61,24 @@ To see options available run `awsls --help`.
 
 ## Installation
 
-It's recommended to install a specific version of awsls available on the
-[releases page](https://github.com/jckuester/awsls/releases).
+### Binary Releases
 
-Here is the recommended way to install awsls v0.6.0:
+You can download a specific version of awsls on the [releases page](https://github.com/jckuester/awsls/releases) or
+install it the following way to `./bin/`:
 
 ```bash
-# install it into ./bin/
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.6.0
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.6.1
 ```
+
+### Homebrew
+
+Homebrew users can install by:
+
+```bash
+brew install jckuester/tap/awsls
+```
+
+For more information on Homebrew taps please see the [tap documentation](https://docs.brew.sh/Taps).
 
 ## Credentials, profiles and regions
 

@@ -40,7 +40,7 @@ func supportedResourcesGoCode(rTypes []ResourceType) string {
 var supportedResourcesTmpl = template.Must(template.New("supportedResources").Parse(`
 // SupportedTypes is a list of all resource types currently supported by awsls.
 var SupportedTypes = []string{
-  {{ range . }}
+  {{- range . }}
     "{{ .Name }}",
   {{- end }}
 }

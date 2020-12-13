@@ -24,21 +24,35 @@ func ServicePkgNames(apis api.APIs) []string {
 	return result
 }
 
-// ServicesCoveredByTerraform returns the package name of all AWS services that are
-// (at least partially) covered by Terraform resources.
-func ServicesCoveredByTerraform(serviceMap map[string]string) []string {
-	serviceSet := make(map[string]bool)
+// ResourceTypesForAWSServices returns the Terraform resource types belonging to each AWS service.
+// An AWS service is only part of the result if its associated resource type list is not empty.
+func ResourceTypesForAWSServices(serviceMap map[string]string) []Service {
+	rTypesByService := make(map[string][]ResourceType)
 
-	for _, v := range serviceMap {
-		serviceSet[v] = true
+	for rType, service := range serviceMap {
+		rTypes, ok := rTypesByService[service]
+		if !ok {
+			rTypesByService[service] = []ResourceType{{Name: rType}}
+			continue
+		}
+		rTypesByService[service] = append(rTypes, ResourceType{Name: rType})
 	}
 
-	var result []string
-	for k, _ := range serviceSet {
-		result = append(result, k)
+	var result []Service
+	for service, rTypes := range rTypesByService {
+		sort.Slice(rTypes, func(i, j int) bool {
+			return rTypes[i].Name < rTypes[j].Name
+		})
+
+		result = append(result, Service{
+			Name:                   service,
+			TerraformResourceTypes: rTypes,
+		})
 	}
 
-	sort.Strings(result)
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
 
 	return result
 }

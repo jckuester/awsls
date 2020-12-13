@@ -12,7 +12,7 @@ import (
 	"github.com/apex/log"
 )
 
-// ListFunctionName generates a name for the list function of the the resource type.
+// ListFunctionName generates a name for the list function of the resource type.
 func (r ResourceType) ListFunctionName() string {
 	split := strings.Split(strings.TrimPrefix(r.Name, "aws_"), "_")
 	capitalize := strings.Title(strings.Join(split, " "))
@@ -64,8 +64,8 @@ func GetResourceIDNameCandidates(v *api.ShapeRef) []string {
 	return result
 }
 
-// GetOutputFieldCandidates gets the output field that contains a list of resources the given resource type
-// (e.g., field name LogGroups of type []LogGroup in output DescribeLogGroupsOutput)
+// GetOutputFieldCandidates gets the output field that contains a list of resources of the given resource type
+// (e.g., field name LogGroups of type []LogGroup in DescribeLogGroupsOutput)
 //
 // Note: if there is a manual match entry, this will be returned.
 func GetOutputFieldCandidates(resourceType string, op ListOperation, shapeType string) []string {
@@ -85,34 +85,6 @@ func GetOutputFieldCandidates(resourceType string, op ListOperation, shapeType s
 	}
 
 	return outputFieldCandidates
-}
-
-func (o ListOperation) GetTagsGoCode() string {
-	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
-
-	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
-		if k == "Tags" {
-			if v.Shape.Type == "list" {
-				return `tags := map[string]string{}
-						for _, t := range r.Tags {
-							tags[*t.Key] = *t.Value
-						}`
-			}
-
-			if v.Shape.Type == "map" {
-				return `tags := map[string]string{}
-						for k, v := range r.Tags {
-							tags[k] = v
-						}`
-			}
-		}
-
-		if strings.Contains(k, "Tag") {
-			log.Infof("tags: %s %s", k, v.Shape.Type)
-		}
-	}
-
-	return ""
 }
 
 func findOutputField(rType string, listOpCandidates []ListOperation, shapeType string) (string, ListOperation, error) {
@@ -150,64 +122,6 @@ func findOutputField(rType string, listOpCandidates []ListOperation, shapeType s
 	}
 
 	return outputFieldName, op, nil
-}
-
-func (o ListOperation) GetCreationTimeGoCode() string {
-	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
-
-	creationTimeFieldNames := []string{
-		"LaunchTime",
-		"CreateTime",
-		"CreateDate",
-		"CreatedTime",
-		"CreationDate",
-		"CreationTime",
-		"CreationTimestamp",
-		"StartTime",
-		"InstanceCreateTime",
-	}
-
-	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
-		for _, name := range creationTimeFieldNames {
-			if k == name {
-				if v.Shape.Type == "string" {
-					return `t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.` + k + `)
-							if err != nil {
-								return nil, err
-							}`
-				}
-
-				if v.Shape.Type == "timestamp" {
-					return `t := ` + fmt.Sprintf("*r.%s", k)
-				}
-
-				if v.Shape.Type == "long" {
-					return fmt.Sprintf("t := time.Unix(0, *r.%s * 1000000).UTC()", k)
-				}
-
-				log.Warnf("uncovered creation time type: %s", v.Shape.Type)
-			}
-		}
-	}
-
-	return ""
-}
-
-func (o ListOperation) GetOwnerGoCode() string {
-	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
-
-	for k, _ := range outputField.Shape.MemberRef.Shape.MemberRefs {
-		if k == "OwnerId" {
-			return `if *r.OwnerId != client.AccountID {
-						continue
-					}`
-		}
-		if strings.Contains(strings.ToLower(k), "owner") {
-			log.Infof("output; found owner field: %s", k)
-		}
-	}
-
-	return ""
 }
 
 func Operations(apis api.APIs, prefixes []string) []string {

@@ -7,7 +7,7 @@ A list command for AWS resources.
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
 awsls supports listing of [over 200 types of resources](#supported-resources)
-across 83 different AWS services. The goal is to code-generate a list function for
+across 84 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -96,7 +96,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 234 resource types across 83 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 237 resource types across 84 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -141,6 +141,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_cloudformation_stack_set |  x  |  |
 | **cloudhsmv2** |
 | aws_cloudhsm_v2_cluster |  x  |  |
+| **cloudtrail** |
+| aws_cloudtrail |  x  |  |
 | **cloudwatch** |
 | aws_cloudwatch_dashboard |  |  |
 | **cloudwatchevents** |
@@ -209,7 +211,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_ec2_transit_gateway_vpc_attachment |  x  |  x  |
 | aws_egress_only_internet_gateway |  x  |  |
 | aws_eip |  x  |  |
-| aws_instance |  x  | x | x |
+| aws_instance |  x  |  x  | x |
 | aws_internet_gateway |  x  |  | x |
 | aws_key_pair |  x  |  |
 | aws_launch_template |  x  |  x  |
@@ -419,6 +421,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **worklink** |
 | aws_worklink_fleet |  |  x  |
 | **workspaces** |
+| aws_workspaces_directory |  x  |  |
 | aws_workspaces_ip_group |  x  |  |
+| aws_workspaces_workspace |  x  |  |
 | **xray** |
 | aws_xray_group |  x  |  |

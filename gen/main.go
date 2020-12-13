@@ -89,21 +89,20 @@ func main() {
 		log.WithError(err).Fatal("failed to load AWS APIs")
 	}
 
-	terraformServices := aws.ResourceTypesByAWSService(resourceServices)
+	services := aws.ResourceTypesForAWSServices(resourceServices)
 	servicePkgNames := aws.ServicePkgNames(apis)
 
-	log.Infof("AWS services covered by Terraform: %d/%d",
-		len(terraformServices), len(servicePkgNames))
+	log.Infof("AWS generatedServices covered by Terraform: %d/%d", len(services), len(servicePkgNames))
 
 	/*
-		log.Debugf("AWS services not covered:")
-		diff := util.Difference(servicePkgNames, terraformServices)
+		log.Debugf("AWS generatedServices not covered:")
+		diff := util.Difference(servicePkgNames, services)
 		for _, d := range diff {
 			log.Debugf("\t%s", d)
 		}
 
-		log.Warn("AWS services used by Terraform that are named differently in AWS API v2:")
-		diff = util.Difference(terraformServices, servicePkgNames)
+		log.Warn("AWS generatedServices used by Terraform that are named differently in AWS API v2:")
+		diff = util.Difference(services, servicePkgNames)
 		for _, d := range diff {
 			log.Warnf("\t: %s", d)
 		}
@@ -111,11 +110,10 @@ func main() {
 
 	aws.GenerateClient(outputPathAWS, servicePkgNames)
 
-	services := aws.GenerateListFunctions(outputPathAWS,
-		aws.ResourceTypesByAWSService(resourceServices), resourceIDs, resourceTypesWithTags, apis)
+	generatedServices := aws.GenerateListFunctions(outputPathAWS, services, resourceIDs, resourceTypesWithTags, apis)
 
 	var rTypes []aws.ResourceType
-	for _, service := range services {
+	for _, service := range generatedServices {
 		for _, rType := range service.TerraformResourceTypes {
 			rTypes = append(rTypes, rType)
 		}
@@ -127,7 +125,7 @@ func main() {
 
 	terraform.GenerateListResourcesByTypeFunction(outputPathAWS, rTypes)
 	aws.GenerateListOfSupportedResourceTypes(outputPathResource, rTypes)
-	aws.GenerateReadme("..", services, len(rTypes))
+	aws.GenerateReadme("..", generatedServices, len(rTypes))
 
 	log.Infof("Generated list functions: %d", len(rTypes))
 }
