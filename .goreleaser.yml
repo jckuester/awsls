@@ -15,7 +15,7 @@ archives:
         format: zip
 
 brews:
-- github:
+- tap:
     owner: rothgar
     name: homebrew-tap
   homepage: "https://github.com/jckuester/awsls"
