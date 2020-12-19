@@ -4,34 +4,33 @@ package terraform
 
 import (
 	"bytes"
-	"fmt"
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/jckuester/awsls/gen/aws"
 
 	"github.com/jckuester/awsls/gen/util"
 )
 
 //GenerateListResourcesByTypeFunction generates a function to list all resources of a given Terraform resource type.
-func GenerateListResourcesByTypeFunction(outputPath string, listFunctionNames map[string]string) error {
+func GenerateListResourcesByTypeFunction(outputPath string, rTypes []aws.ResourceType) {
 	err := util.WriteGoFile(
 		filepath.Join(outputPath, "list.go"),
 		util.CodeLayout,
 		"",
 		"aws",
-		listByTypeGoCode(listFunctionNames),
+		listByTypeGoCode(rTypes),
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to write Go code to file: %s", err)
+		panic(err)
 	}
-
-	return nil
 }
 
-func listByTypeGoCode(listFunctionNames map[string]string) string {
+func listByTypeGoCode(rTypes []aws.ResourceType) string {
 	var buf bytes.Buffer
-	err := listByTypeTmpl.Execute(&buf, listFunctionNames)
+	err := listByTypeTmpl.Execute(&buf, rTypes)
 	if err != nil {
 		panic(err)
 	}
@@ -59,8 +58,8 @@ type Resource struct {
 
 func ListResourcesByType(client *Client, resourceType string) ([]Resource, error) {
 	switch resourceType {
-	{{ range $key, $value := . }}case "{{ $key }}":
-	return List{{ $value }}(client)
+	{{ range . }}case "{{ .Name }}":
+	return {{ .ListFunctionName }}(client)
 	{{ end }}default:
 		return nil, fmt.Errorf("resource type is not (yet) supported: %s", resourceType)
 	}

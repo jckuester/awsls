@@ -8,7 +8,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -30,15 +29,13 @@ func GenerateResourceIDMap(providerRepoPath, outputPath string, resourceFileName
 		resourceIDs[rType] = resourceID
 	}
 
-	err := writeResourceIDs(outputPath, resourceIDs)
-	if err != nil {
-		return nil, err
-	}
+	writeResourceIDs(outputPath, resourceIDs)
 
 	log.WithField("length", len(resourceIDs)).Infof("Generated map of resource type -> resource ID")
 
 	return resourceIDs, nil
 }
+
 func GetResourceID(providerRepoPath, fileName string) (string, error) {
 	fset := token.NewFileSet()
 
@@ -183,24 +180,18 @@ func GetResourceID(providerRepoPath, fileName string) (string, error) {
 	return "", fmt.Errorf("no ID found for resource type")
 }
 
-func writeResourceIDs(outputPath string, resourceIDs map[string]string) error {
-	err := os.MkdirAll(outputPath, 0775)
-	if err != nil {
-		return fmt.Errorf("failed to create directory: %s", err)
-	}
-
-	err = util.WriteGoFile(
+func writeResourceIDs(outputPath string, resourceIDs map[string]string) {
+	err := util.WriteGoFile(
 		filepath.Join(outputPath, "ids.go"),
 		util.CodeLayout,
 		"",
 		"resource",
 		resourceIDsGoCode(resourceIDs),
 	)
-	if err != nil {
-		return fmt.Errorf("failed to write Go code to file: %s", err)
-	}
 
-	return nil
+	if err != nil {
+		panic(err)
+	}
 }
 
 func resourceIDsGoCode(resourceIDs map[string]string) string {

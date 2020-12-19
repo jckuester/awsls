@@ -5,23 +5,23 @@ package aws
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/workspaces"
 )
 
-func ListKmsAlias(client *Client) ([]Resource, error) {
-	req := client.Kmsconn.ListAliasesRequest(&kms.ListAliasesInput{})
+func ListWorkspacesWorkspace(client *Client) ([]Resource, error) {
+	req := client.Workspacesconn.DescribeWorkspacesRequest(&workspaces.DescribeWorkspacesInput{})
 
 	var result []Resource
 
-	p := kms.NewListAliasesPaginator(req)
+	p := workspaces.NewDescribeWorkspacesPaginator(req)
 	for p.Next(context.Background()) {
 		page := p.CurrentPage()
 
-		for _, r := range page.Aliases {
+		for _, r := range page.Workspaces {
 
 			result = append(result, Resource{
-				Type:      "aws_kms_alias",
-				ID:        *r.AliasName,
+				Type:      "aws_workspaces_workspace",
+				ID:        *r.WorkspaceId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,

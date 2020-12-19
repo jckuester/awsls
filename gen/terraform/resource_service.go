@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"go/parser"
 	"go/token"
-	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -18,17 +17,14 @@ import (
 )
 
 func GenerateResourceServiceMap(providerRepoPath string, outputPath string, resourceTypes []string,
-	resourceFileNames map[string]string) (map[string]string, error) {
+	resourceFileNames map[string]string) map[string]string {
 	resourceServices := ResourceServices(providerRepoPath, resourceTypes, resourceFileNames)
 
-	err := writeResourceServices(outputPath, resourceServices)
-	if err != nil {
-		return nil, err
-	}
+	writeResourceServices(outputPath, resourceServices)
 
 	log.WithField("length", len(resourceServices)).Infof("Generated map of resource type -> AWS service")
 
-	return resourceServices, nil
+	return resourceServices
 }
 
 // resourceService returns the AWS service that the Terraform resource belongs to.
@@ -95,24 +91,18 @@ func resourceService(providerRepoPath, resourceType, resourceFileName string) (s
 	return "", fmt.Errorf("no service candidate found")
 }
 
-func writeResourceServices(outputPath string, resourceServices map[string]string) error {
-	err := os.MkdirAll(outputPath, 0775)
-	if err != nil {
-		return fmt.Errorf("failed to create directory: %s", err)
-	}
-
-	err = util.WriteGoFile(
+func writeResourceServices(outputPath string, resourceServices map[string]string) {
+	err := util.WriteGoFile(
 		filepath.Join(outputPath, "services.go"),
 		util.CodeLayout,
 		"",
 		"resource",
 		resourceServicesGoCode(resourceServices),
 	)
-	if err != nil {
-		return fmt.Errorf("failed to write Go code to file: %s", err)
-	}
 
-	return nil
+	if err != nil {
+		panic(err)
+	}
 }
 
 func resourceServicesGoCode(terraformTypes map[string]string) string {

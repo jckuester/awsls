@@ -1,5 +1,5 @@
-// TODO this resource is currently manually added, because the pattern of how
-// it's code must be generated differs from all other resources (nested for-loop
+// This resource is currently manually added, because the pattern of how
+// it's code must be generated differs from other resources (nested for-loop
 // of instances inside reservations)
 
 package aws
