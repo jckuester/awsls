@@ -19,6 +19,7 @@ func ListElasticBeanstalkEnvironment(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Environments) > 0 {
+
 		for _, r := range resp.Environments {
 
 			result = append(result, Resource{

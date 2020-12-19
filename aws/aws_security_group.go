@@ -15,9 +15,9 @@ func ListSecurityGroup(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeSecurityGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.SecurityGroups {
+		for _, r := range resp.SecurityGroups {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

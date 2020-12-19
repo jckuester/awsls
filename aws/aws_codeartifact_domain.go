@@ -15,9 +15,9 @@ func ListCodeartifactDomain(client *Client) ([]Resource, error) {
 
 	p := codeartifact.NewListDomainsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Domains {
+		for _, r := range resp.Domains {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{

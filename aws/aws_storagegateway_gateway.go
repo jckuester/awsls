@@ -15,9 +15,9 @@ func ListStoragegatewayGateway(client *Client) ([]Resource, error) {
 
 	p := storagegateway.NewListGatewaysPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Gateways {
+		for _, r := range resp.Gateways {
 
 			result = append(result, Resource{
 				Type:      "aws_storagegateway_gateway",

@@ -19,6 +19,7 @@ func ListSesTemplate(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.TemplatesMetadata) > 0 {
+
 		for _, r := range resp.TemplatesMetadata {
 
 			result = append(result, Resource{

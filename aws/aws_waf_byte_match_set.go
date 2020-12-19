@@ -19,6 +19,7 @@ func ListWafByteMatchSet(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.ByteMatchSets) > 0 {
+
 		for _, r := range resp.ByteMatchSets {
 
 			result = append(result, Resource{

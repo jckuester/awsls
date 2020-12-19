@@ -19,6 +19,7 @@ func ListWafRegexMatchSet(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.RegexMatchSets) > 0 {
+
 		for _, r := range resp.RegexMatchSets {
 
 			result = append(result, Resource{

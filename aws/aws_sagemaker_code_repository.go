@@ -15,9 +15,9 @@ func ListSagemakerCodeRepository(client *Client) ([]Resource, error) {
 
 	p := sagemaker.NewListCodeRepositoriesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.CodeRepositorySummaryList {
+		for _, r := range resp.CodeRepositorySummaryList {
 
 			t := *r.CreationTime
 			result = append(result, Resource{

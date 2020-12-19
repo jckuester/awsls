@@ -15,9 +15,9 @@ func ListAlbTargetGroup(client *Client) ([]Resource, error) {
 
 	p := elasticloadbalancingv2.NewDescribeTargetGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.TargetGroups {
+		for _, r := range resp.TargetGroups {
 
 			result = append(result, Resource{
 				Type:      "aws_alb_target_group",

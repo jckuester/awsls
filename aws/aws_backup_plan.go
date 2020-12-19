@@ -15,9 +15,9 @@ func ListBackupPlan(client *Client) ([]Resource, error) {
 
 	p := backup.NewListBackupPlansPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.BackupPlansList {
+		for _, r := range resp.BackupPlansList {
 
 			t := *r.CreationDate
 			result = append(result, Resource{

@@ -15,9 +15,9 @@ func ListEc2Fleet(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeFleetsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Fleets {
+		for _, r := range resp.Fleets {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

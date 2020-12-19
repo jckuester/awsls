@@ -15,9 +15,9 @@ func ListEfsAccessPoint(client *Client) ([]Resource, error) {
 
 	p := efs.NewDescribeAccessPointsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.AccessPoints {
+		for _, r := range resp.AccessPoints {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

@@ -15,9 +15,9 @@ func ListKmsKey(client *Client) ([]Resource, error) {
 
 	p := kms.NewListKeysPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Keys {
+		for _, r := range resp.Keys {
 
 			result = append(result, Resource{
 				Type:      "aws_kms_key",

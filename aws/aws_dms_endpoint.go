@@ -15,9 +15,9 @@ func ListDmsEndpoint(client *Client) ([]Resource, error) {
 
 	p := databasemigrationservice.NewDescribeEndpointsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Endpoints {
+		for _, r := range resp.Endpoints {
 
 			result = append(result, Resource{
 				Type:      "aws_dms_endpoint",

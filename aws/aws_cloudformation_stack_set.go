@@ -15,9 +15,9 @@ func ListCloudformationStackSet(client *Client) ([]Resource, error) {
 
 	p := cloudformation.NewListStackSetsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Summaries {
+		for _, r := range resp.Summaries {
 
 			result = append(result, Resource{
 				Type:      "aws_cloudformation_stack_set",

@@ -19,6 +19,7 @@ func ListSsmMaintenanceWindow(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.WindowIdentities) > 0 {
+
 		for _, r := range resp.WindowIdentities {
 
 			result = append(result, Resource{

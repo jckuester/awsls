@@ -15,9 +15,9 @@ func ListEc2CapacityReservation(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeCapacityReservationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.CapacityReservations {
+		for _, r := range resp.CapacityReservations {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

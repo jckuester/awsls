@@ -19,6 +19,7 @@ func ListLightsailDomain(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Domains) > 0 {
+
 		for _, r := range resp.Domains {
 
 			tags := map[string]string{}

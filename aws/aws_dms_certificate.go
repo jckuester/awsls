@@ -15,9 +15,9 @@ func ListDmsCertificate(client *Client) ([]Resource, error) {
 
 	p := databasemigrationservice.NewDescribeCertificatesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Certificates {
+		for _, r := range resp.Certificates {
 
 			result = append(result, Resource{
 				Type:      "aws_dms_certificate",

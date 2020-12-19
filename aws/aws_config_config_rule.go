@@ -19,6 +19,7 @@ func ListConfigConfigRule(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.ConfigRules) > 0 {
+
 		for _, r := range resp.ConfigRules {
 
 			result = append(result, Resource{

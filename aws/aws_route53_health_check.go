@@ -15,9 +15,9 @@ func ListRoute53HealthCheck(client *Client) ([]Resource, error) {
 
 	p := route53.NewListHealthChecksPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.HealthChecks {
+		for _, r := range resp.HealthChecks {
 
 			result = append(result, Resource{
 				Type:      "aws_route53_health_check",

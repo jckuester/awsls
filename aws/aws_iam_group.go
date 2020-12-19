@@ -15,9 +15,9 @@ func ListIamGroup(client *Client) ([]Resource, error) {
 
 	p := iam.NewListGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Groups {
+		for _, r := range resp.Groups {
 
 			t := *r.CreateDate
 			result = append(result, Resource{

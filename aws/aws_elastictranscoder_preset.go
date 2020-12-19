@@ -15,9 +15,9 @@ func ListElastictranscoderPreset(client *Client) ([]Resource, error) {
 
 	p := elastictranscoder.NewListPresetsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Presets {
+		for _, r := range resp.Presets {
 
 			result = append(result, Resource{
 				Type:      "aws_elastictranscoder_preset",

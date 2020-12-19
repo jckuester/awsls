@@ -16,9 +16,9 @@ func ListCloudwatchLogGroup(client *Client) ([]Resource, error) {
 
 	p := cloudwatchlogs.NewDescribeLogGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.LogGroups {
+		for _, r := range resp.LogGroups {
 
 			t := time.Unix(0, *r.CreationTime*1000000).UTC()
 			result = append(result, Resource{

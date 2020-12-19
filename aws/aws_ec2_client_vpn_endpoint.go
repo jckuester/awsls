@@ -16,9 +16,9 @@ func ListEc2ClientVpnEndpoint(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeClientVpnEndpointsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ClientVpnEndpoints {
+		for _, r := range resp.ClientVpnEndpoints {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

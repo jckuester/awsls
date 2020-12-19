@@ -19,6 +19,7 @@ func ListOpsworksUserProfile(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.UserProfiles) > 0 {
+
 		for _, r := range resp.UserProfiles {
 
 			result = append(result, Resource{

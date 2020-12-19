@@ -15,9 +15,9 @@ func ListSnsPlatformApplication(client *Client) ([]Resource, error) {
 
 	p := sns.NewListPlatformApplicationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.PlatformApplications {
+		for _, r := range resp.PlatformApplications {
 
 			result = append(result, Resource{
 				Type:      "aws_sns_platform_application",

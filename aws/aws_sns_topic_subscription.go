@@ -15,9 +15,9 @@ func ListSnsTopicSubscription(client *Client) ([]Resource, error) {
 
 	p := sns.NewListSubscriptionsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Subscriptions {
+		for _, r := range resp.Subscriptions {
 
 			result = append(result, Resource{
 				Type:      "aws_sns_topic_subscription",

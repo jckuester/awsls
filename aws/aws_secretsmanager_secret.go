@@ -15,9 +15,9 @@ func ListSecretsmanagerSecret(client *Client) ([]Resource, error) {
 
 	p := secretsmanager.NewListSecretsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.SecretList {
+		for _, r := range resp.SecretList {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

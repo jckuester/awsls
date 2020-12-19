@@ -15,9 +15,9 @@ func ListDbParameterGroup(client *Client) ([]Resource, error) {
 
 	p := rds.NewDescribeDBParameterGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DBParameterGroups {
+		for _, r := range resp.DBParameterGroups {
 
 			result = append(result, Resource{
 				Type:      "aws_db_parameter_group",

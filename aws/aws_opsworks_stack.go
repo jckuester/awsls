@@ -19,6 +19,7 @@ func ListOpsworksStack(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Stacks) > 0 {
+
 		for _, r := range resp.Stacks {
 
 			result = append(result, Resource{

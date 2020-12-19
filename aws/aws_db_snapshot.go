@@ -15,9 +15,9 @@ func ListDbSnapshot(client *Client) ([]Resource, error) {
 
 	p := rds.NewDescribeDBSnapshotsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DBSnapshots {
+		for _, r := range resp.DBSnapshots {
 
 			t := *r.InstanceCreateTime
 			result = append(result, Resource{

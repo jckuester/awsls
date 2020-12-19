@@ -15,9 +15,9 @@ func ListElasticacheReplicationGroup(client *Client) ([]Resource, error) {
 
 	p := elasticache.NewDescribeReplicationGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ReplicationGroups {
+		for _, r := range resp.ReplicationGroups {
 
 			result = append(result, Resource{
 				Type:      "aws_elasticache_replication_group",

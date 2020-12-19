@@ -15,9 +15,9 @@ func ListGlueJob(client *Client) ([]Resource, error) {
 
 	p := glue.NewGetJobsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Jobs {
+		for _, r := range resp.Jobs {
 
 			result = append(result, Resource{
 				Type:      "aws_glue_job",

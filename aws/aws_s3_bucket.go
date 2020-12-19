@@ -19,6 +19,7 @@ func ListS3Bucket(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Buckets) > 0 {
+
 		for _, r := range resp.Buckets {
 
 			t := *r.CreationDate

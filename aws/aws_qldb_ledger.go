@@ -15,9 +15,9 @@ func ListQldbLedger(client *Client) ([]Resource, error) {
 
 	p := qldb.NewListLedgersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Ledgers {
+		for _, r := range resp.Ledgers {
 
 			result = append(result, Resource{
 				Type:      "aws_qldb_ledger",

@@ -19,6 +19,7 @@ func ListDlmLifecyclePolicy(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Policies) > 0 {
+
 		for _, r := range resp.Policies {
 
 			tags := map[string]string{}

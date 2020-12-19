@@ -15,9 +15,9 @@ func ListEc2TrafficMirrorFilter(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeTrafficMirrorFiltersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.TrafficMirrorFilters {
+		for _, r := range resp.TrafficMirrorFilters {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

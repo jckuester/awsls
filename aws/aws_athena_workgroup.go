@@ -15,9 +15,9 @@ func ListAthenaWorkgroup(client *Client) ([]Resource, error) {
 
 	p := athena.NewListWorkGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.WorkGroups {
+		for _, r := range resp.WorkGroups {
 
 			t := *r.CreationTime
 			result = append(result, Resource{

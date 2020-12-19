@@ -19,6 +19,7 @@ func ListDaxParameterGroup(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.ParameterGroups) > 0 {
+
 		for _, r := range resp.ParameterGroups {
 
 			result = append(result, Resource{

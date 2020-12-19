@@ -19,6 +19,7 @@ func ListGameliftAlias(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Aliases) > 0 {
+
 		for _, r := range resp.Aliases {
 
 			t := *r.CreationTime

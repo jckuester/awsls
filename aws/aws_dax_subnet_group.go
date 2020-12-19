@@ -19,6 +19,7 @@ func ListDaxSubnetGroup(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.SubnetGroups) > 0 {
+
 		for _, r := range resp.SubnetGroups {
 
 			result = append(result, Resource{

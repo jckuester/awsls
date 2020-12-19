@@ -19,6 +19,7 @@ func ListCloudtrail(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.TrailList) > 0 {
+
 		for _, r := range resp.TrailList {
 
 			result = append(result, Resource{

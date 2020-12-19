@@ -15,9 +15,9 @@ func ListCurReportDefinition(client *Client) ([]Resource, error) {
 
 	p := costandusagereportservice.NewDescribeReportDefinitionsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ReportDefinitions {
+		for _, r := range resp.ReportDefinitions {
 
 			result = append(result, Resource{
 				Type:      "aws_cur_report_definition",

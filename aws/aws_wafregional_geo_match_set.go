@@ -19,6 +19,7 @@ func ListWafregionalGeoMatchSet(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.GeoMatchSets) > 0 {
+
 		for _, r := range resp.GeoMatchSets {
 
 			result = append(result, Resource{

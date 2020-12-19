@@ -15,9 +15,9 @@ func ListServicecatalogPortfolio(client *Client) ([]Resource, error) {
 
 	p := servicecatalog.NewListPortfoliosPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.PortfolioDetails {
+		for _, r := range resp.PortfolioDetails {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{

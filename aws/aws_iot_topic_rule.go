@@ -19,6 +19,7 @@ func ListIotTopicRule(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Rules) > 0 {
+
 		for _, r := range resp.Rules {
 
 			result = append(result, Resource{

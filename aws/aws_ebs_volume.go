@@ -15,9 +15,9 @@ func ListEbsVolume(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeVolumesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Volumes {
+		for _, r := range resp.Volumes {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

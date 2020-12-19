@@ -19,6 +19,7 @@ func ListVpcEndpointService(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.ServiceDetails) > 0 {
+
 		for _, r := range resp.ServiceDetails {
 
 			tags := map[string]string{}

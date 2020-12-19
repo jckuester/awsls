@@ -19,6 +19,7 @@ func ListWafRuleGroup(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.RuleGroups) > 0 {
+
 		for _, r := range resp.RuleGroups {
 
 			result = append(result, Resource{

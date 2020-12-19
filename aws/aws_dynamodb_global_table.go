@@ -19,6 +19,7 @@ func ListDynamodbGlobalTable(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.GlobalTables) > 0 {
+
 		for _, r := range resp.GlobalTables {
 
 			result = append(result, Resource{

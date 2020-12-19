@@ -15,9 +15,9 @@ func ListLexBot(client *Client) ([]Resource, error) {
 
 	p := lexmodelbuildingservice.NewGetBotsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Bots {
+		for _, r := range resp.Bots {
 
 			result = append(result, Resource{
 				Type:      "aws_lex_bot",

@@ -19,6 +19,7 @@ func ListKinesisAnalyticsApplication(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.ApplicationSummaries) > 0 {
+
 		for _, r := range resp.ApplicationSummaries {
 
 			result = append(result, Resource{

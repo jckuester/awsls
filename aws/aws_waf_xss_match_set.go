@@ -19,6 +19,7 @@ func ListWafXssMatchSet(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.XssMatchSets) > 0 {
+
 		for _, r := range resp.XssMatchSets {
 
 			result = append(result, Resource{

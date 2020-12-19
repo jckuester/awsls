@@ -15,9 +15,9 @@ func ListGlueTrigger(client *Client) ([]Resource, error) {
 
 	p := glue.NewGetTriggersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Triggers {
+		for _, r := range resp.Triggers {
 
 			result = append(result, Resource{
 				Type:      "aws_glue_trigger",

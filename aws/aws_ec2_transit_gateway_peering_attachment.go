@@ -15,9 +15,9 @@ func ListEc2TransitGatewayPeeringAttachment(client *Client) ([]Resource, error) 
 
 	p := ec2.NewDescribeTransitGatewayPeeringAttachmentsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.TransitGatewayPeeringAttachments {
+		for _, r := range resp.TransitGatewayPeeringAttachments {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

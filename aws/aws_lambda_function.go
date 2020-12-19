@@ -15,9 +15,9 @@ func ListLambdaFunction(client *Client) ([]Resource, error) {
 
 	p := lambda.NewListFunctionsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Functions {
+		for _, r := range resp.Functions {
 
 			result = append(result, Resource{
 				Type:      "aws_lambda_function",

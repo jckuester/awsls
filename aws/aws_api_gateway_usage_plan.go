@@ -15,9 +15,9 @@ func ListApiGatewayUsagePlan(client *Client) ([]Resource, error) {
 
 	p := apigateway.NewGetUsagePlansPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Items {
+		for _, r := range resp.Items {
 
 			tags := map[string]string{}
 			for k, v := range r.Tags {

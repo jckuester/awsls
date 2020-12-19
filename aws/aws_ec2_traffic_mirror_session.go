@@ -15,9 +15,9 @@ func ListEc2TrafficMirrorSession(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeTrafficMirrorSessionsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.TrafficMirrorSessions {
+		for _, r := range resp.TrafficMirrorSessions {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

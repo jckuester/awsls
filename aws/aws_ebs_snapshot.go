@@ -15,9 +15,9 @@ func ListEbsSnapshot(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeSnapshotsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Snapshots {
+		for _, r := range resp.Snapshots {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

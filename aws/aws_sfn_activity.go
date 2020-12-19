@@ -15,9 +15,9 @@ func ListSfnActivity(client *Client) ([]Resource, error) {
 
 	p := sfn.NewListActivitiesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Activities {
+		for _, r := range resp.Activities {
 
 			t := *r.CreationDate
 			result = append(result, Resource{

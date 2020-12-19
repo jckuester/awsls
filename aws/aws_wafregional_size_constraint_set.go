@@ -19,6 +19,7 @@ func ListWafregionalSizeConstraintSet(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.SizeConstraintSets) > 0 {
+
 		for _, r := range resp.SizeConstraintSets {
 
 			result = append(result, Resource{

@@ -15,9 +15,9 @@ func ListImagebuilderInfrastructureConfiguration(client *Client) ([]Resource, er
 
 	p := imagebuilder.NewListInfrastructureConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.InfrastructureConfigurationSummaryList {
+		for _, r := range resp.InfrastructureConfigurationSummaryList {
 
 			tags := map[string]string{}
 			for k, v := range r.Tags {

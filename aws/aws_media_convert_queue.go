@@ -15,9 +15,9 @@ func ListMediaConvertQueue(client *Client) ([]Resource, error) {
 
 	p := mediaconvert.NewListQueuesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Queues {
+		for _, r := range resp.Queues {
 
 			result = append(result, Resource{
 				Type:      "aws_media_convert_queue",

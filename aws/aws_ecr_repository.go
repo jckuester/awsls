@@ -15,9 +15,9 @@ func ListEcrRepository(client *Client) ([]Resource, error) {
 
 	p := ecr.NewDescribeRepositoriesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Repositories {
+		for _, r := range resp.Repositories {
 
 			result = append(result, Resource{
 				Type:      "aws_ecr_repository",

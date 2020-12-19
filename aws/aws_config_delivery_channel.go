@@ -19,6 +19,7 @@ func ListConfigDeliveryChannel(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.DeliveryChannels) > 0 {
+
 		for _, r := range resp.DeliveryChannels {
 
 			result = append(result, Resource{

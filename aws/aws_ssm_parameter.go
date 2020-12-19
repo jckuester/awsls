@@ -15,9 +15,9 @@ func ListSsmParameter(client *Client) ([]Resource, error) {
 
 	p := ssm.NewDescribeParametersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Parameters {
+		for _, r := range resp.Parameters {
 
 			result = append(result, Resource{
 				Type:      "aws_ssm_parameter",

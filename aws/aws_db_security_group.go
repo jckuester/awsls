@@ -15,9 +15,9 @@ func ListDbSecurityGroup(client *Client) ([]Resource, error) {
 
 	p := rds.NewDescribeDBSecurityGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DBSecurityGroups {
+		for _, r := range resp.DBSecurityGroups {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

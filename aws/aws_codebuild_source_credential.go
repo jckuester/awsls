@@ -19,6 +19,7 @@ func ListCodebuildSourceCredential(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.SourceCredentialsInfos) > 0 {
+
 		for _, r := range resp.SourceCredentialsInfos {
 
 			result = append(result, Resource{

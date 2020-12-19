@@ -272,36 +272,15 @@ func  {{.OpName}}(client *Client) ([]Resource, error) {
 	{{ if .Paginator }}
     p := {{ .API.PackageName }}.New{{ $pagerType }}(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
-
-		for _, r := range page.{{ .OutputListName }}{
-			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
-			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
-			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
-			result = append(result, Resource{
-				Type: "{{ .TerraformType }}",
-				ID: *r.{{ .ResourceID }},
-				Profile: client.Profile,
-				Region: client.Region,
-				AccountID: client.AccountID,
-				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
-				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
-			})
-		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
-	}
-
+		resp := p.CurrentPage()
 	{{ else }}
-
     resp, err := req.Send(context.Background())
 	if err != nil {
 		return nil, err
 	}
 
 	if len(resp.{{ .OutputListName }}) > 0 {
+	{{ end }}
 		for _, r := range resp.{{ .OutputListName }}{
 			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
 			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
@@ -317,7 +296,13 @@ func  {{.OpName}}(client *Client) ([]Resource, error) {
 			})
 		}
 	}
+
+	{{ if .Paginator }}
+	if err := p.Err(); err != nil {
+		return nil, err
+	}
 	{{ end }}
+
 	return result, nil
 }
 `))

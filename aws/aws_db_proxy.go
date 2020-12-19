@@ -15,9 +15,9 @@ func ListDbProxy(client *Client) ([]Resource, error) {
 
 	p := rds.NewDescribeDBProxiesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DBProxies {
+		for _, r := range resp.DBProxies {
 
 			result = append(result, Resource{
 				Type:      "aws_db_proxy",

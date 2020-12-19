@@ -15,9 +15,9 @@ func ListNeptuneEventSubscription(client *Client) ([]Resource, error) {
 
 	p := neptune.NewDescribeEventSubscriptionsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.EventSubscriptionsList {
+		for _, r := range resp.EventSubscriptionsList {
 
 			result = append(result, Resource{
 				Type:      "aws_neptune_event_subscription",

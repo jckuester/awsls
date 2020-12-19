@@ -15,9 +15,9 @@ func ListSubnet(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeSubnetsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Subnets {
+		for _, r := range resp.Subnets {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

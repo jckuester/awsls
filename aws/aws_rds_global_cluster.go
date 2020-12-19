@@ -15,9 +15,9 @@ func ListRdsGlobalCluster(client *Client) ([]Resource, error) {
 
 	p := rds.NewDescribeGlobalClustersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.GlobalClusters {
+		for _, r := range resp.GlobalClusters {
 
 			result = append(result, Resource{
 				Type:      "aws_rds_global_cluster",

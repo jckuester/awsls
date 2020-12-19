@@ -15,9 +15,9 @@ func ListDmsReplicationSubnetGroup(client *Client) ([]Resource, error) {
 
 	p := databasemigrationservice.NewDescribeReplicationSubnetGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ReplicationSubnetGroups {
+		for _, r := range resp.ReplicationSubnetGroups {
 
 			result = append(result, Resource{
 				Type:      "aws_dms_replication_subnet_group",

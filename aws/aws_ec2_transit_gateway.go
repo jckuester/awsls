@@ -15,9 +15,9 @@ func ListEc2TransitGateway(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeTransitGatewaysPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.TransitGateways {
+		for _, r := range resp.TransitGateways {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

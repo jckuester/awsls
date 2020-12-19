@@ -15,9 +15,9 @@ func ListEc2TrafficMirrorTarget(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeTrafficMirrorTargetsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.TrafficMirrorTargets {
+		for _, r := range resp.TrafficMirrorTargets {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

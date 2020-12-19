@@ -15,9 +15,9 @@ func ListVpcPeeringConnection(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeVpcPeeringConnectionsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.VpcPeeringConnections {
+		for _, r := range resp.VpcPeeringConnections {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

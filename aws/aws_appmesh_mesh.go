@@ -15,9 +15,9 @@ func ListAppmeshMesh(client *Client) ([]Resource, error) {
 
 	p := appmesh.NewListMeshesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Meshes {
+		for _, r := range resp.Meshes {
 
 			result = append(result, Resource{
 				Type:      "aws_appmesh_mesh",

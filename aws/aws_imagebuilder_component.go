@@ -15,9 +15,9 @@ func ListImagebuilderComponent(client *Client) ([]Resource, error) {
 
 	p := imagebuilder.NewListComponentsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ComponentVersionList {
+		for _, r := range resp.ComponentVersionList {
 
 			result = append(result, Resource{
 				Type:      "aws_imagebuilder_component",

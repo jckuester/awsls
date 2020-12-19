@@ -15,9 +15,9 @@ func ListCodecommitRepository(client *Client) ([]Resource, error) {
 
 	p := codecommit.NewListRepositoriesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Repositories {
+		for _, r := range resp.Repositories {
 
 			result = append(result, Resource{
 				Type:      "aws_codecommit_repository",

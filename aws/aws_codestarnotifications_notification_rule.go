@@ -15,9 +15,9 @@ func ListCodestarnotificationsNotificationRule(client *Client) ([]Resource, erro
 
 	p := codestarnotifications.NewListNotificationRulesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.NotificationRules {
+		for _, r := range resp.NotificationRules {
 
 			result = append(result, Resource{
 				Type:      "aws_codestarnotifications_notification_rule",

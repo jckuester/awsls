@@ -15,9 +15,9 @@ func ListIamUser(client *Client) ([]Resource, error) {
 
 	p := iam.NewListUsersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Users {
+		for _, r := range resp.Users {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

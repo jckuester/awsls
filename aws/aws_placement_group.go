@@ -19,6 +19,7 @@ func ListPlacementGroup(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.PlacementGroups) > 0 {
+
 		for _, r := range resp.PlacementGroups {
 
 			tags := map[string]string{}

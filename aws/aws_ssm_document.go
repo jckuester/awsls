@@ -15,9 +15,9 @@ func ListSsmDocument(client *Client) ([]Resource, error) {
 
 	p := ssm.NewListDocumentsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DocumentIdentifiers {
+		for _, r := range resp.DocumentIdentifiers {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

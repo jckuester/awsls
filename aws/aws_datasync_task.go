@@ -15,9 +15,9 @@ func ListDatasyncTask(client *Client) ([]Resource, error) {
 
 	p := datasync.NewListTasksPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Tasks {
+		for _, r := range resp.Tasks {
 
 			result = append(result, Resource{
 				Type:      "aws_datasync_task",

@@ -15,9 +15,9 @@ func ListCloudformationStack(client *Client) ([]Resource, error) {
 
 	p := cloudformation.NewDescribeStacksPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Stacks {
+		for _, r := range resp.Stacks {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

@@ -15,9 +15,9 @@ func ListSfnStateMachine(client *Client) ([]Resource, error) {
 
 	p := sfn.NewListStateMachinesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.StateMachines {
+		for _, r := range resp.StateMachines {
 
 			t := *r.CreationDate
 			result = append(result, Resource{

@@ -15,9 +15,9 @@ func ListIamAccessKey(client *Client) ([]Resource, error) {
 
 	p := iam.NewListAccessKeysPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.AccessKeyMetadata {
+		for _, r := range resp.AccessKeyMetadata {
 
 			t := *r.CreateDate
 			result = append(result, Resource{

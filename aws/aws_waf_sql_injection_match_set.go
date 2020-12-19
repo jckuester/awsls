@@ -19,6 +19,7 @@ func ListWafSqlInjectionMatchSet(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.SqlInjectionMatchSets) > 0 {
+
 		for _, r := range resp.SqlInjectionMatchSets {
 
 			result = append(result, Resource{

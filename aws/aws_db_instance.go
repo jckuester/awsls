@@ -15,9 +15,9 @@ func ListDbInstance(client *Client) ([]Resource, error) {
 
 	p := rds.NewDescribeDBInstancesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DBInstances {
+		for _, r := range resp.DBInstances {
 
 			t := *r.InstanceCreateTime
 			result = append(result, Resource{

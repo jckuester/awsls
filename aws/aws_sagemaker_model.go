@@ -15,9 +15,9 @@ func ListSagemakerModel(client *Client) ([]Resource, error) {
 
 	p := sagemaker.NewListModelsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Models {
+		for _, r := range resp.Models {
 
 			t := *r.CreationTime
 			result = append(result, Resource{

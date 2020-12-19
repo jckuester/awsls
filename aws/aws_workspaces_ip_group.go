@@ -19,6 +19,7 @@ func ListWorkspacesIpGroup(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Result) > 0 {
+
 		for _, r := range resp.Result {
 
 			result = append(result, Resource{
