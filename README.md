@@ -61,15 +61,24 @@ To see options available run `awsls --help`.
 
 ## Installation
 
-It's recommended to install a specific version of awsls available on the
-[releases page](https://github.com/jckuester/awsls/releases).
+### Binary Releases
 
-Here is the recommended way to install awsls v0.6.0:
+You can download a specific version of awsls on the [releases page](https://github.com/jckuester/awsls/releases) or
+install it the following way to `./bin/`:
 
 ```bash
-# install it into ./bin/
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.6.0
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.6.1
 ```
+
+### Homebrew
+
+Homebrew users can install by:
+
+```bash
+brew install jckuester/tap/awsls
+```
+
+For more information on Homebrew taps please see the [tap documentation](https://docs.brew.sh/Taps).
 
 ## Credentials, profiles and regions
 

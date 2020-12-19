@@ -23,7 +23,7 @@ archives:
 
 brews:
 - tap:
-    owner: rothgar
+    owner: jckuester
     name: homebrew-tap
   homepage: "https://github.com/jckuester/awsls"
   description: "A list command for AWS resources"
