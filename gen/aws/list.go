@@ -45,21 +45,23 @@ func GenerateListFunctions(outputPath string, services []Service, resourceIDs ma
 		for _, rType := range service.TerraformResourceTypes {
 			_, ok := ExcludedResourceTypes[rType.Name]
 			if ok {
-				log.WithField("resource", rType).Info("exclude")
+				log.WithField("resource", rType.Name).Info("exclude")
 				continue
 			}
 
 			listOpCandidates := FindListOperationCandidates(rType.Name, service.Name, apis)
 			if len(listOpCandidates) == 0 {
 				noListOpCandidatesFoundCount++
-				log.WithField("resource", rType).Errorf("no list operation candidate found")
+				log.WithField("resource", rType.Name).Errorf("no list operation candidate found")
 
 				continue
 			}
 
-			outputFieldName, op, err := findOutputField(rType.Name, listOpCandidates, "structure")
+			outputFieldType := "structure"
+			outputFieldName, op, err := findOutputField(rType.Name, listOpCandidates, outputFieldType)
 			if err != nil {
-				_, _, err = findOutputField(rType.Name, listOpCandidates, "string")
+				outputFieldType = "string"
+				outputFieldName, op, err = findOutputField(rType.Name, listOpCandidates, outputFieldType)
 				if err != nil {
 					noOutputFieldNameFoundCount++
 					log.WithError(err).WithField("resource", rType.Name).Errorf("unable to find output field name")
@@ -68,34 +70,34 @@ func GenerateListFunctions(outputPath string, services []Service, resourceIDs ma
 				}
 
 				log.WithField("resource", rType.Name).Infof("found output field of type string")
-
-				continue
 			}
 
 			outputField := op.OutputRef.Shape.MemberRefs[outputFieldName]
 
 			if len(op.InputRef.Shape.Required) > 0 {
 				resourcesWithRequiredFieldsCount++
-				log.WithField("resource", rType).Errorf("required input fields: %s", op.InputRef.Shape.Required)
+				log.WithField("resource", rType.Name).
+					Errorf("required input fields: %s", op.InputRef.Shape.Required)
 
 				continue
 			}
 
 			resourceID, err := findResourceID(rType.Name, resourceIDs, outputField)
-			if err != nil {
+			if err != nil && outputFieldType != "string" {
 				noResourceIDFoundCount++
-				log.WithField("resource", rType).Errorf("no resource ID found")
+				log.WithField("resource", rType.Name).Errorf("no resource ID found")
 
 				continue
 			}
 
 			for k, _ := range op.InputRef.Shape.MemberRefs {
 				if strings.Contains(strings.ToLower(k), "owner") {
-					log.Infof("input; found owner field for %s: %s", rType, k)
+					log.Infof("input; found owner field for %s: %s", rType.Name, k)
 				}
 			}
 
 			op.OutputFieldName = outputFieldName
+			op.OutputFieldType = outputFieldType
 			op.TerraformType = rType.Name
 			op.ResourceID = resourceID
 			op.OpName = rType.ListFunctionName()
@@ -154,6 +156,7 @@ type ListOperation struct {
 	OpName          string
 	Inputs          string
 	OutputFieldName string
+	OutputFieldType string
 }
 
 func (o *ListOperation) GoCode() string {
@@ -287,7 +290,7 @@ func  {{.OpName}}(client *Client) ([]Resource, error) {
 			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
 			result = append(result, Resource{
 				Type: "{{ .TerraformType }}",
-				ID: *r.{{ .ResourceID }},
+				{{ if ne .OutputFieldType "string" }}ID: *r.{{ .ResourceID }},{{ else }}ID: r,{{ end }}
 				Profile: client.Profile,
 				Region: client.Region,
 				AccountID: client.AccountID,
