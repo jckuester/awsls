@@ -6,7 +6,7 @@ A list command for AWS resources.
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
-awsls supports listing of [over 200 types of resources](#supported-resources)
+awsls supports listing of [over 250 types of resources](#supported-resources)
 across 91 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
