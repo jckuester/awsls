@@ -16,9 +16,9 @@ func ListRoute53ResolverEndpoint(client *Client) ([]Resource, error) {
 
 	p := route53resolver.NewListResolverEndpointsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ResolverEndpoints {
+		for _, r := range resp.ResolverEndpoints {
 
 			t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.CreationTime)
 			if err != nil {

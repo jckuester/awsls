@@ -19,6 +19,7 @@ func ListIotCertificate(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Certificates) > 0 {
+
 		for _, r := range resp.Certificates {
 
 			t := *r.CreationDate

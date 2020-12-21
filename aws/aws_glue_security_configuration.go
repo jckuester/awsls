@@ -15,9 +15,9 @@ func ListGlueSecurityConfiguration(client *Client) ([]Resource, error) {
 
 	p := glue.NewGetSecurityConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.SecurityConfigurations {
+		for _, r := range resp.SecurityConfigurations {
 
 			result = append(result, Resource{
 				Type:      "aws_glue_security_configuration",

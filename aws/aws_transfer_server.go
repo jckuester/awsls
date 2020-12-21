@@ -15,9 +15,9 @@ func ListTransferServer(client *Client) ([]Resource, error) {
 
 	p := transfer.NewListServersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Servers {
+		for _, r := range resp.Servers {
 
 			result = append(result, Resource{
 				Type:      "aws_transfer_server",

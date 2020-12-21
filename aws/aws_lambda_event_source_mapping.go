@@ -15,9 +15,9 @@ func ListLambdaEventSourceMapping(client *Client) ([]Resource, error) {
 
 	p := lambda.NewListEventSourceMappingsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.EventSourceMappings {
+		for _, r := range resp.EventSourceMappings {
 
 			result = append(result, Resource{
 				Type:      "aws_lambda_event_source_mapping",

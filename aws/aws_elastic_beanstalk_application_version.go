@@ -19,6 +19,7 @@ func ListElasticBeanstalkApplicationVersion(client *Client) ([]Resource, error) 
 	}
 
 	if len(resp.ApplicationVersions) > 0 {
+
 		for _, r := range resp.ApplicationVersions {
 
 			result = append(result, Resource{

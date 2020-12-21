@@ -19,6 +19,7 @@ func ListLightsailKeyPair(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.KeyPairs) > 0 {
+
 		for _, r := range resp.KeyPairs {
 
 			tags := map[string]string{}

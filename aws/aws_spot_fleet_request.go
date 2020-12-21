@@ -15,9 +15,9 @@ func ListSpotFleetRequest(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeSpotFleetRequestsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.SpotFleetRequestConfigs {
+		for _, r := range resp.SpotFleetRequestConfigs {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

@@ -15,9 +15,9 @@ func ListEfsFileSystem(client *Client) ([]Resource, error) {
 
 	p := efs.NewDescribeFileSystemsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.FileSystems {
+		for _, r := range resp.FileSystems {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

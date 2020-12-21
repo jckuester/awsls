@@ -19,6 +19,7 @@ func ListDxConnection(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Connections) > 0 {
+
 		for _, r := range resp.Connections {
 
 			tags := map[string]string{}

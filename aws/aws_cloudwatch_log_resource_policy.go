@@ -19,6 +19,7 @@ func ListCloudwatchLogResourcePolicy(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.ResourcePolicies) > 0 {
+
 		for _, r := range resp.ResourcePolicies {
 
 			result = append(result, Resource{

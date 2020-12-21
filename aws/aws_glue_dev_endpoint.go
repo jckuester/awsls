@@ -15,9 +15,9 @@ func ListGlueDevEndpoint(client *Client) ([]Resource, error) {
 
 	p := glue.NewGetDevEndpointsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DevEndpoints {
+		for _, r := range resp.DevEndpoints {
 
 			result = append(result, Resource{
 				Type:      "aws_glue_dev_endpoint",

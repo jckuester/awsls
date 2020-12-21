@@ -19,6 +19,7 @@ func ListWafv2WebAclLoggingConfiguration(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.LoggingConfigurations) > 0 {
+
 		for _, r := range resp.LoggingConfigurations {
 
 			result = append(result, Resource{

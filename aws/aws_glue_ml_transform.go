@@ -15,9 +15,9 @@ func ListGlueMlTransform(client *Client) ([]Resource, error) {
 
 	p := glue.NewGetMLTransformsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Transforms {
+		for _, r := range resp.Transforms {
 
 			result = append(result, Resource{
 				Type:      "aws_glue_ml_transform",

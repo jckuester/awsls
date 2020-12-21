@@ -15,9 +15,9 @@ func ListDmsReplicationTask(client *Client) ([]Resource, error) {
 
 	p := databasemigrationservice.NewDescribeReplicationTasksPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ReplicationTasks {
+		for _, r := range resp.ReplicationTasks {
 
 			result = append(result, Resource{
 				Type:      "aws_dms_replication_task",

@@ -15,9 +15,9 @@ func ListSagemakerEndpoint(client *Client) ([]Resource, error) {
 
 	p := sagemaker.NewListEndpointsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Endpoints {
+		for _, r := range resp.Endpoints {
 
 			t := *r.CreationTime
 			result = append(result, Resource{

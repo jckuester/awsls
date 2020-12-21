@@ -52,6 +52,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListAppmeshMesh(client)
 	case "aws_appsync_graphql_api":
 		return ListAppsyncGraphqlApi(client)
+	case "aws_athena_named_query":
+		return ListAthenaNamedQuery(client)
 	case "aws_athena_workgroup":
 		return ListAthenaWorkgroup(client)
 	case "aws_autoscaling_group":
@@ -88,10 +90,16 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListCodeartifactDomain(client)
 	case "aws_codeartifact_repository":
 		return ListCodeartifactRepository(client)
+	case "aws_codebuild_project":
+		return ListCodebuildProject(client)
+	case "aws_codebuild_report_group":
+		return ListCodebuildReportGroup(client)
 	case "aws_codebuild_source_credential":
 		return ListCodebuildSourceCredential(client)
 	case "aws_codecommit_repository":
 		return ListCodecommitRepository(client)
+	case "aws_codedeploy_deployment_config":
+		return ListCodedeployDeploymentConfig(client)
 	case "aws_codepipeline_webhook":
 		return ListCodepipelineWebhook(client)
 	case "aws_codestarnotifications_notification_rule":
@@ -156,6 +164,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListDxTransitVirtualInterface(client)
 	case "aws_dynamodb_global_table":
 		return ListDynamodbGlobalTable(client)
+	case "aws_dynamodb_table":
+		return ListDynamodbTable(client)
 	case "aws_ebs_snapshot":
 		return ListEbsSnapshot(client)
 	case "aws_ebs_volume":
@@ -186,6 +196,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListEcrRepository(client)
 	case "aws_ecs_cluster":
 		return ListEcsCluster(client)
+	case "aws_ecs_task_definition":
+		return ListEcsTaskDefinition(client)
 	case "aws_efs_access_point":
 		return ListEfsAccessPoint(client)
 	case "aws_efs_file_system":
@@ -194,6 +206,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListEgressOnlyInternetGateway(client)
 	case "aws_eip":
 		return ListEip(client)
+	case "aws_eks_cluster":
+		return ListEksCluster(client)
 	case "aws_elastic_beanstalk_application":
 		return ListElasticBeanstalkApplication(client)
 	case "aws_elastic_beanstalk_application_version":
@@ -218,6 +232,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListGameliftAlias(client)
 	case "aws_gamelift_build":
 		return ListGameliftBuild(client)
+	case "aws_gamelift_fleet":
+		return ListGameliftFleet(client)
 	case "aws_gamelift_game_session_queue":
 		return ListGameliftGameSessionQueue(client)
 	case "aws_globalaccelerator_accelerator":
@@ -234,8 +250,14 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListGlueSecurityConfiguration(client)
 	case "aws_glue_trigger":
 		return ListGlueTrigger(client)
+	case "aws_glue_workflow":
+		return ListGlueWorkflow(client)
+	case "aws_guardduty_detector":
+		return ListGuarddutyDetector(client)
 	case "aws_iam_access_key":
 		return ListIamAccessKey(client)
+	case "aws_iam_account_alias":
+		return ListIamAccountAlias(client)
 	case "aws_iam_group":
 		return ListIamGroup(client)
 	case "aws_iam_instance_profile":
@@ -264,6 +286,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListIotCertificate(client)
 	case "aws_iot_policy":
 		return ListIotPolicy(client)
+	case "aws_iot_role_alias":
+		return ListIotRoleAlias(client)
 	case "aws_iot_thing":
 		return ListIotThing(client)
 	case "aws_iot_thing_type":
@@ -274,6 +298,10 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListKeyPair(client)
 	case "aws_kinesis_analytics_application":
 		return ListKinesisAnalyticsApplication(client)
+	case "aws_kinesis_firehose_delivery_stream":
+		return ListKinesisFirehoseDeliveryStream(client)
+	case "aws_kinesis_stream":
+		return ListKinesisStream(client)
 	case "aws_kinesisanalyticsv2_application":
 		return ListKinesisanalyticsv2Application(client)
 	case "aws_kms_external_key":
@@ -382,6 +410,10 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListSesActiveReceiptRuleSet(client)
 	case "aws_ses_configuration_set":
 		return ListSesConfigurationSet(client)
+	case "aws_ses_domain_identity":
+		return ListSesDomainIdentity(client)
+	case "aws_ses_email_identity":
+		return ListSesEmailIdentity(client)
 	case "aws_ses_receipt_filter":
 		return ListSesReceiptFilter(client)
 	case "aws_ses_receipt_rule_set":
@@ -392,6 +424,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListSfnActivity(client)
 	case "aws_sfn_state_machine":
 		return ListSfnStateMachine(client)
+	case "aws_simpledb_domain":
+		return ListSimpledbDomain(client)
 	case "aws_sns_platform_application":
 		return ListSnsPlatformApplication(client)
 	case "aws_sns_topic":
@@ -402,6 +436,8 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListSpotFleetRequest(client)
 	case "aws_spot_instance_request":
 		return ListSpotInstanceRequest(client)
+	case "aws_sqs_queue":
+		return ListSqsQueue(client)
 	case "aws_ssm_activation":
 		return ListSsmActivation(client)
 	case "aws_ssm_association":

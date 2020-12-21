@@ -19,6 +19,7 @@ func ListVpnGateway(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.VpnGateways) > 0 {
+
 		for _, r := range resp.VpnGateways {
 
 			tags := map[string]string{}

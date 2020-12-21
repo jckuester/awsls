@@ -15,9 +15,9 @@ func ListCodepipelineWebhook(client *Client) ([]Resource, error) {
 
 	p := codepipeline.NewListWebhooksPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Webhooks {
+		for _, r := range resp.Webhooks {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

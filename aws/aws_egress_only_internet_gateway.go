@@ -15,9 +15,9 @@ func ListEgressOnlyInternetGateway(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeEgressOnlyInternetGatewaysPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.EgressOnlyInternetGateways {
+		for _, r := range resp.EgressOnlyInternetGateways {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

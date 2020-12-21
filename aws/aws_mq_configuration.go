@@ -19,6 +19,7 @@ func ListMqConfiguration(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Configurations) > 0 {
+
 		for _, r := range resp.Configurations {
 
 			tags := map[string]string{}

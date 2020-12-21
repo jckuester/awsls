@@ -15,9 +15,9 @@ func ListDatasyncAgent(client *Client) ([]Resource, error) {
 
 	p := datasync.NewListAgentsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Agents {
+		for _, r := range resp.Agents {
 
 			result = append(result, Resource{
 				Type:      "aws_datasync_agent",

@@ -15,9 +15,9 @@ func ListDbSubnetGroup(client *Client) ([]Resource, error) {
 
 	p := rds.NewDescribeDBSubnetGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DBSubnetGroups {
+		for _, r := range resp.DBSubnetGroups {
 
 			result = append(result, Resource{
 				Type:      "aws_db_subnet_group",

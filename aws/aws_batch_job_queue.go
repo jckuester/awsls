@@ -15,9 +15,9 @@ func ListBatchJobQueue(client *Client) ([]Resource, error) {
 
 	p := batch.NewDescribeJobQueuesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.JobQueues {
+		for _, r := range resp.JobQueues {
 
 			result = append(result, Resource{
 				Type:      "aws_batch_job_queue",

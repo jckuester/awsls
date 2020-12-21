@@ -19,6 +19,7 @@ func ListConfigConfigurationRecorder(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.ConfigurationRecorders) > 0 {
+
 		for _, r := range resp.ConfigurationRecorders {
 
 			result = append(result, Resource{

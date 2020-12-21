@@ -19,6 +19,7 @@ func ListSesReceiptRuleSet(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.RuleSets) > 0 {
+
 		for _, r := range resp.RuleSets {
 
 			result = append(result, Resource{

@@ -19,6 +19,7 @@ func ListSesConfigurationSet(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.ConfigurationSets) > 0 {
+
 		for _, r := range resp.ConfigurationSets {
 
 			result = append(result, Resource{

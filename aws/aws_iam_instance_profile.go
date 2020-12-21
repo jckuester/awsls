@@ -15,9 +15,9 @@ func ListIamInstanceProfile(client *Client) ([]Resource, error) {
 
 	p := iam.NewListInstanceProfilesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.InstanceProfiles {
+		for _, r := range resp.InstanceProfiles {
 
 			t := *r.CreateDate
 			result = append(result, Resource{

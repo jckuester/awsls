@@ -15,9 +15,9 @@ func ListWorklinkFleet(client *Client) ([]Resource, error) {
 
 	p := worklink.NewListFleetsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.FleetSummaryList {
+		for _, r := range resp.FleetSummaryList {
 
 			tags := map[string]string{}
 			for k, v := range r.Tags {

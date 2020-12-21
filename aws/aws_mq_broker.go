@@ -19,6 +19,7 @@ func ListMqBroker(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.BrokerSummaries) > 0 {
+
 		for _, r := range resp.BrokerSummaries {
 
 			result = append(result, Resource{

@@ -15,9 +15,9 @@ func ListAcmCertificate(client *Client) ([]Resource, error) {
 
 	p := acm.NewListCertificatesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.CertificateSummaryList {
+		for _, r := range resp.CertificateSummaryList {
 
 			result = append(result, Resource{
 				Type:      "aws_acm_certificate",

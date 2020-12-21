@@ -226,7 +226,6 @@ func printResources(resources []aws.Resource, hasAttrs map[string]bool, attribut
 			v := "N/A"
 
 			_, ok := hasAttrs[attr]
-
 			if ok {
 				var err error
 				v, err = resource.GetAttribute(attr, &r)

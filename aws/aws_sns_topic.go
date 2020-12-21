@@ -15,9 +15,9 @@ func ListSnsTopic(client *Client) ([]Resource, error) {
 
 	p := sns.NewListTopicsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Topics {
+		for _, r := range resp.Topics {
 
 			result = append(result, Resource{
 				Type:      "aws_sns_topic",

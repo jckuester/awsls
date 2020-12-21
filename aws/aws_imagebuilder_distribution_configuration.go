@@ -15,9 +15,9 @@ func ListImagebuilderDistributionConfiguration(client *Client) ([]Resource, erro
 
 	p := imagebuilder.NewListDistributionConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DistributionConfigurationSummaryList {
+		for _, r := range resp.DistributionConfigurationSummaryList {
 
 			tags := map[string]string{}
 			for k, v := range r.Tags {

@@ -15,9 +15,9 @@ func ListRoute53ResolverRule(client *Client) ([]Resource, error) {
 
 	p := route53resolver.NewListResolverRulesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ResolverRules {
+		for _, r := range resp.ResolverRules {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

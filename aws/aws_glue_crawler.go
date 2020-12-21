@@ -15,9 +15,9 @@ func ListGlueCrawler(client *Client) ([]Resource, error) {
 
 	p := glue.NewGetCrawlersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Crawlers {
+		for _, r := range resp.Crawlers {
 
 			t := *r.CreationTime
 			result = append(result, Resource{

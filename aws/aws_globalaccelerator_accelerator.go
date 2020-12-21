@@ -19,6 +19,7 @@ func ListGlobalacceleratorAccelerator(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Accelerators) > 0 {
+
 		for _, r := range resp.Accelerators {
 
 			t := *r.CreatedTime

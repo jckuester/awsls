@@ -19,6 +19,7 @@ func ListCloudwatchEventBus(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.EventBuses) > 0 {
+
 		for _, r := range resp.EventBuses {
 
 			result = append(result, Resource{

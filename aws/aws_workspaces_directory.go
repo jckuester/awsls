@@ -15,9 +15,9 @@ func ListWorkspacesDirectory(client *Client) ([]Resource, error) {
 
 	p := workspaces.NewDescribeWorkspaceDirectoriesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Directories {
+		for _, r := range resp.Directories {
 
 			result = append(result, Resource{
 				Type:      "aws_workspaces_directory",

@@ -15,9 +15,9 @@ func ListNatGateway(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeNatGatewaysPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.NatGateways {
+		for _, r := range resp.NatGateways {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

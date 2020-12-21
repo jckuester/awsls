@@ -19,6 +19,7 @@ func ListSesReceiptFilter(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Filters) > 0 {
+
 		for _, r := range resp.Filters {
 
 			result = append(result, Resource{

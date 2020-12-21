@@ -16,9 +16,9 @@ func ListCloudwatchLogDestination(client *Client) ([]Resource, error) {
 
 	p := cloudwatchlogs.NewDescribeDestinationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Destinations {
+		for _, r := range resp.Destinations {
 
 			t := time.Unix(0, *r.CreationTime*1000000).UTC()
 			result = append(result, Resource{

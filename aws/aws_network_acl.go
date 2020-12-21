@@ -15,9 +15,9 @@ func ListNetworkAcl(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeNetworkAclsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.NetworkAcls {
+		for _, r := range resp.NetworkAcls {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

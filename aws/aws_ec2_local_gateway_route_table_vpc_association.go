@@ -15,9 +15,9 @@ func ListEc2LocalGatewayRouteTableVpcAssociation(client *Client) ([]Resource, er
 
 	p := ec2.NewDescribeLocalGatewayRouteTableVpcAssociationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.LocalGatewayRouteTableVpcAssociations {
+		for _, r := range resp.LocalGatewayRouteTableVpcAssociations {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

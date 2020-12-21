@@ -15,9 +15,9 @@ func ListNetworkInterface(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeNetworkInterfacesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.NetworkInterfaces {
+		for _, r := range resp.NetworkInterfaces {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

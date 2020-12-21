@@ -15,9 +15,9 @@ func ListLexSlotType(client *Client) ([]Resource, error) {
 
 	p := lexmodelbuildingservice.NewGetSlotTypesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.SlotTypes {
+		for _, r := range resp.SlotTypes {
 
 			result = append(result, Resource{
 				Type:      "aws_lex_slot_type",

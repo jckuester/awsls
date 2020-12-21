@@ -15,9 +15,9 @@ func ListLexIntent(client *Client) ([]Resource, error) {
 
 	p := lexmodelbuildingservice.NewGetIntentsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Intents {
+		for _, r := range resp.Intents {
 
 			result = append(result, Resource{
 				Type:      "aws_lex_intent",

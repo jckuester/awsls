@@ -15,9 +15,9 @@ func ListSsmActivation(client *Client) ([]Resource, error) {
 
 	p := ssm.NewDescribeActivationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ActivationList {
+		for _, r := range resp.ActivationList {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

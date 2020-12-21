@@ -15,9 +15,9 @@ func ListAccessanalyzerAnalyzer(client *Client) ([]Resource, error) {
 
 	p := accessanalyzer.NewListAnalyzersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Analyzers {
+		for _, r := range resp.Analyzers {
 
 			tags := map[string]string{}
 			for k, v := range r.Tags {

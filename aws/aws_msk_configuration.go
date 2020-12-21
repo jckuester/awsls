@@ -15,9 +15,9 @@ func ListMskConfiguration(client *Client) ([]Resource, error) {
 
 	p := kafka.NewListConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Configurations {
+		for _, r := range resp.Configurations {
 
 			t := *r.CreationTime
 			result = append(result, Resource{

@@ -15,9 +15,9 @@ func ListAutoscalingGroup(client *Client) ([]Resource, error) {
 
 	p := autoscaling.NewDescribeAutoScalingGroupsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.AutoScalingGroups {
+		for _, r := range resp.AutoScalingGroups {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

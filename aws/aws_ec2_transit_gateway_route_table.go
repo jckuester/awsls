@@ -15,9 +15,9 @@ func ListEc2TransitGatewayRouteTable(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeTransitGatewayRouteTablesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.TransitGatewayRouteTables {
+		for _, r := range resp.TransitGatewayRouteTables {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

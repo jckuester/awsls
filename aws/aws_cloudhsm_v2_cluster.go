@@ -15,9 +15,9 @@ func ListCloudhsmV2Cluster(client *Client) ([]Resource, error) {
 
 	p := cloudhsmv2.NewDescribeClustersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Clusters {
+		for _, r := range resp.Clusters {
 
 			result = append(result, Resource{
 				Type:      "aws_cloudhsm_v2_cluster",

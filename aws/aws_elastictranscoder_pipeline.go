@@ -15,9 +15,9 @@ func ListElastictranscoderPipeline(client *Client) ([]Resource, error) {
 
 	p := elastictranscoder.NewListPipelinesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Pipelines {
+		for _, r := range resp.Pipelines {
 
 			result = append(result, Resource{
 				Type:      "aws_elastictranscoder_pipeline",

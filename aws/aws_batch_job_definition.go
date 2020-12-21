@@ -15,9 +15,9 @@ func ListBatchJobDefinition(client *Client) ([]Resource, error) {
 
 	p := batch.NewDescribeJobDefinitionsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.JobDefinitions {
+		for _, r := range resp.JobDefinitions {
 
 			result = append(result, Resource{
 				Type:      "aws_batch_job_definition",

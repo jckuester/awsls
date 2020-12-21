@@ -19,6 +19,7 @@ func ListSsmPatchBaseline(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.BaselineIdentities) > 0 {
+
 		for _, r := range resp.BaselineIdentities {
 
 			result = append(result, Resource{

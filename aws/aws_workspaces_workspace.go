@@ -15,9 +15,9 @@ func ListWorkspacesWorkspace(client *Client) ([]Resource, error) {
 
 	p := workspaces.NewDescribeWorkspacesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Workspaces {
+		for _, r := range resp.Workspaces {
 
 			result = append(result, Resource{
 				Type:      "aws_workspaces_workspace",

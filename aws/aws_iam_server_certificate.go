@@ -15,9 +15,9 @@ func ListIamServerCertificate(client *Client) ([]Resource, error) {
 
 	p := iam.NewListServerCertificatesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ServerCertificateMetadataList {
+		for _, r := range resp.ServerCertificateMetadataList {
 
 			result = append(result, Resource{
 				Type:      "aws_iam_server_certificate",

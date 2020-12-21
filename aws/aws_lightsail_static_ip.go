@@ -19,6 +19,7 @@ func ListLightsailStaticIp(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.StaticIps) > 0 {
+
 		for _, r := range resp.StaticIps {
 
 			result = append(result, Resource{

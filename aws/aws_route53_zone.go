@@ -15,9 +15,9 @@ func ListRoute53Zone(client *Client) ([]Resource, error) {
 
 	p := route53.NewListHostedZonesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.HostedZones {
+		for _, r := range resp.HostedZones {
 
 			result = append(result, Resource{
 				Type:      "aws_route53_zone",

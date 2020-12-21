@@ -15,9 +15,9 @@ func ListSecurityhubActionTarget(client *Client) ([]Resource, error) {
 
 	p := securityhub.NewDescribeActionTargetsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ActionTargets {
+		for _, r := range resp.ActionTargets {
 
 			result = append(result, Resource{
 				Type:      "aws_securityhub_action_target",

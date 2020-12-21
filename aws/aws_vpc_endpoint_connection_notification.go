@@ -15,9 +15,9 @@ func ListVpcEndpointConnectionNotification(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeVpcEndpointConnectionNotificationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ConnectionNotificationSet {
+		for _, r := range resp.ConnectionNotificationSet {
 
 			result = append(result, Resource{
 				Type:      "aws_vpc_endpoint_connection_notification",

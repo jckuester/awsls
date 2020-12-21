@@ -19,6 +19,7 @@ func ListSsmPatchGroup(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Mappings) > 0 {
+
 		for _, r := range resp.Mappings {
 
 			result = append(result, Resource{

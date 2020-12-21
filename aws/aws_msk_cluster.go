@@ -15,9 +15,9 @@ func ListMskCluster(client *Client) ([]Resource, error) {
 
 	p := kafka.NewListClustersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ClusterInfoList {
+		for _, r := range resp.ClusterInfoList {
 
 			tags := map[string]string{}
 			for k, v := range r.Tags {

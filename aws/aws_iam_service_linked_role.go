@@ -15,9 +15,9 @@ func ListIamServiceLinkedRole(client *Client) ([]Resource, error) {
 
 	p := iam.NewListRolesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Roles {
+		for _, r := range resp.Roles {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

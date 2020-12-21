@@ -19,6 +19,7 @@ func ListIotThing(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Things) > 0 {
+
 		for _, r := range resp.Things {
 
 			result = append(result, Resource{

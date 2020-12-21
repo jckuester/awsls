@@ -15,9 +15,9 @@ func ListRoute53ResolverRuleAssociation(client *Client) ([]Resource, error) {
 
 	p := route53resolver.NewListResolverRuleAssociationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ResolverRuleAssociations {
+		for _, r := range resp.ResolverRuleAssociations {
 
 			result = append(result, Resource{
 				Type:      "aws_route53_resolver_rule_association",

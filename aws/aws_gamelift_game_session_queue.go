@@ -19,6 +19,7 @@ func ListGameliftGameSessionQueue(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.GameSessionQueues) > 0 {
+
 		for _, r := range resp.GameSessionQueues {
 
 			result = append(result, Resource{

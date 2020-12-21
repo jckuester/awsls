@@ -15,9 +15,9 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeInternetGatewaysPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.InternetGateways {
+		for _, r := range resp.InternetGateways {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

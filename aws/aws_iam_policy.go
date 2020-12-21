@@ -17,9 +17,9 @@ func ListIamPolicy(client *Client) ([]Resource, error) {
 
 	p := iam.NewListPoliciesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Policies {
+		for _, r := range resp.Policies {
 
 			t := *r.CreateDate
 			result = append(result, Resource{

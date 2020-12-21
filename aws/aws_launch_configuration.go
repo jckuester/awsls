@@ -15,9 +15,9 @@ func ListLaunchConfiguration(client *Client) ([]Resource, error) {
 
 	p := autoscaling.NewDescribeLaunchConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.LaunchConfigurations {
+		for _, r := range resp.LaunchConfigurations {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{

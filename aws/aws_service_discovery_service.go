@@ -15,9 +15,9 @@ func ListServiceDiscoveryService(client *Client) ([]Resource, error) {
 
 	p := servicediscovery.NewListServicesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Services {
+		for _, r := range resp.Services {
 
 			t := *r.CreateDate
 			result = append(result, Resource{

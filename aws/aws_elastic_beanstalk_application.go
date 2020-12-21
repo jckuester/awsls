@@ -19,6 +19,7 @@ func ListElasticBeanstalkApplication(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.Applications) > 0 {
+
 		for _, r := range resp.Applications {
 
 			result = append(result, Resource{

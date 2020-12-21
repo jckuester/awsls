@@ -15,9 +15,9 @@ func ListVpcEndpoint(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeVpcEndpointsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.VpcEndpoints {
+		for _, r := range resp.VpcEndpoints {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

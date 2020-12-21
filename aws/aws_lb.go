@@ -15,9 +15,9 @@ func ListLb(client *Client) ([]Resource, error) {
 
 	p := elasticloadbalancingv2.NewDescribeLoadBalancersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.LoadBalancers {
+		for _, r := range resp.LoadBalancers {
 
 			t := *r.CreatedTime
 			result = append(result, Resource{

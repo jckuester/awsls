@@ -15,9 +15,9 @@ func ListBackupVault(client *Client) ([]Resource, error) {
 
 	p := backup.NewListBackupVaultsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.BackupVaultList {
+		for _, r := range resp.BackupVaultList {
 
 			t := *r.CreationDate
 			result = append(result, Resource{

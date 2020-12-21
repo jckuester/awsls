@@ -15,9 +15,9 @@ func ListRedshiftCluster(client *Client) ([]Resource, error) {
 
 	p := redshift.NewDescribeClustersPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Clusters {
+		for _, r := range resp.Clusters {
 
 			tags := map[string]string{}
 			for _, t := range r.Tags {

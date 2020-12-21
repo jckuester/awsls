@@ -15,9 +15,9 @@ func ListRouteTable(client *Client) ([]Resource, error) {
 
 	p := ec2.NewDescribeRouteTablesPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.RouteTables {
+		for _, r := range resp.RouteTables {
 			if *r.OwnerId != client.AccountID {
 				continue
 			}

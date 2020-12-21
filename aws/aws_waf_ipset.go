@@ -19,6 +19,7 @@ func ListWafIpset(client *Client) ([]Resource, error) {
 	}
 
 	if len(resp.IPSets) > 0 {
+
 		for _, r := range resp.IPSets {
 
 			result = append(result, Resource{

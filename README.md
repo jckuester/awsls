@@ -6,8 +6,8 @@ A list command for AWS resources.
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
-awsls supports listing of [over 200 types of resources](#supported-resources)
-across 84 different AWS services. The goal is to code-generate a list function for
+awsls supports listing of [over 250 types of resources](#supported-resources)
+across 91 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -67,7 +67,7 @@ You can download a specific version of awsls on the [releases page](https://gith
 install it the following way to `./bin/`:
 
 ```bash
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.6.1
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.7.0
 ```
 
 ### Homebrew
@@ -96,7 +96,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 237 resource types across 84 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 255 resource types across 91 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -125,6 +125,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **appsync** |
 | aws_appsync_graphql_api |  x  |  |
 | **athena** |
+| aws_athena_named_query |  |  |
 | aws_athena_workgroup |  x  |  x  |
 | **autoscaling** |
 | aws_autoscaling_group |  x  |  x  |
@@ -155,9 +156,13 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_codeartifact_domain |  x  |  x  |
 | aws_codeartifact_repository |  x  |  |
 | **codebuild** |
+| aws_codebuild_project |  x  |  |
+| aws_codebuild_report_group |  x  |  |
 | aws_codebuild_source_credential |  |  |
 | **codecommit** |
 | aws_codecommit_repository |  x  |  |
+| **codedeploy** |
+| aws_codedeploy_deployment_config |  |  |
 | **codepipeline** |
 | aws_codepipeline_webhook |  x  |  |
 | **codestarnotifications** |
@@ -194,6 +199,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_dlm_lifecycle_policy |  x  |  |
 | **dynamodb** |
 | aws_dynamodb_global_table |  |  |
+| aws_dynamodb_table |  x  |  |
 | **ec2** |
 | aws_ami |  x  |  x  | x |
 | aws_ebs_snapshot |  x  |  x  | x |
@@ -234,9 +240,12 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_ecr_repository |  x  |  |
 | **ecs** |
 | aws_ecs_cluster |  x  |  |
+| aws_ecs_task_definition |  x  |  |
 | **efs** |
 | aws_efs_access_point |  x  |  | x |
 | aws_efs_file_system |  x  |  x  | x |
+| **eks** |
+| aws_eks_cluster |  x  |  |
 | **elasticache** |
 | aws_elasticache_replication_group |  x  |  |
 | **elasticbeanstalk** |
@@ -254,12 +263,15 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_elastictranscoder_preset |  |  |
 | **emr** |
 | aws_emr_security_configuration |  |  |
+| **firehose** |
+| aws_kinesis_firehose_delivery_stream |  x  |  |
 | **fsx** |
 | aws_fsx_lustre_file_system |  x  |  x  | x |
 | aws_fsx_windows_file_system |  x  |  x  | x |
 | **gamelift** |
 | aws_gamelift_alias |  x  |  x  |
 | aws_gamelift_build |  x  |  x  |
+| aws_gamelift_fleet |  x  |  |
 | aws_gamelift_game_session_queue |  x  |  |
 | **globalaccelerator** |
 | aws_globalaccelerator_accelerator |  x  |  x  |
@@ -270,8 +282,12 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_glue_ml_transform |  x  |  |
 | aws_glue_security_configuration |  |  |
 | aws_glue_trigger |  x  |  |
+| aws_glue_workflow |  x  |  |
+| **guardduty** |
+| aws_guardduty_detector |  x  |  |
 | **iam** |
 | aws_iam_access_key |  |  x  |
+| aws_iam_account_alias |  |  |
 | aws_iam_group |  |  x  |
 | aws_iam_instance_profile |  |  x  |
 | aws_iam_policy |  |  x  |
@@ -286,12 +302,15 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **iot** |
 | aws_iot_certificate |  |  x  |
 | aws_iot_policy |  |  |
+| aws_iot_role_alias |  |  |
 | aws_iot_thing |  |  |
 | aws_iot_thing_type |  |  |
 | aws_iot_topic_rule |  x  |  |
 | **kafka** |
 | aws_msk_cluster |  x  |  x  |
 | aws_msk_configuration |  |  x  |
+| **kinesis** |
+| aws_kinesis_stream |  x  |  |
 | **kinesisanalytics** |
 | aws_kinesis_analytics_application |  x  |  |
 | **kinesisanalyticsv2** |
@@ -367,16 +386,22 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **ses** |
 | aws_ses_active_receipt_rule_set |  |  |
 | aws_ses_configuration_set |  |  |
+| aws_ses_domain_identity |  |  |
+| aws_ses_email_identity |  |  |
 | aws_ses_receipt_filter |  |  |
 | aws_ses_receipt_rule_set |  |  |
 | aws_ses_template |  |  |
 | **sfn** |
 | aws_sfn_activity |  x  |  x  |
 | aws_sfn_state_machine |  x  |  x  |
+| **simpledb** |
+| aws_simpledb_domain |  |  |
 | **sns** |
 | aws_sns_platform_application |  |  |
 | aws_sns_topic |  x  |  |
 | aws_sns_topic_subscription |  |  |
+| **sqs** |
+| aws_sqs_queue |  x  |  |
 | **ssm** |
 | aws_ssm_activation |  x  |  |
 | aws_ssm_association |  |  |

@@ -15,9 +15,9 @@ func ListSsmAssociation(client *Client) ([]Resource, error) {
 
 	p := ssm.NewListAssociationsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Associations {
+		for _, r := range resp.Associations {
 
 			result = append(result, Resource{
 				Type:      "aws_ssm_association",

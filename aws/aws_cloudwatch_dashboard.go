@@ -15,9 +15,9 @@ func ListCloudwatchDashboard(client *Client) ([]Resource, error) {
 
 	p := cloudwatch.NewListDashboardsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.DashboardEntries {
+		for _, r := range resp.DashboardEntries {
 
 			result = append(result, Resource{
 				Type:      "aws_cloudwatch_dashboard",

@@ -15,9 +15,9 @@ func ListMediaPackageChannel(client *Client) ([]Resource, error) {
 
 	p := mediapackage.NewListChannelsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.Channels {
+		for _, r := range resp.Channels {
 
 			tags := map[string]string{}
 			for k, v := range r.Tags {

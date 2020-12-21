@@ -15,9 +15,9 @@ func ListBatchComputeEnvironment(client *Client) ([]Resource, error) {
 
 	p := batch.NewDescribeComputeEnvironmentsPaginator(req)
 	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+		resp := p.CurrentPage()
 
-		for _, r := range page.ComputeEnvironments {
+		for _, r := range resp.ComputeEnvironments {
 
 			result = append(result, Resource{
 				Type:      "aws_batch_compute_environment",
