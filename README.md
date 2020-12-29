@@ -67,7 +67,7 @@ You can download a specific version of awsls on the [releases page](https://gith
 install it the following way to `./bin/`:
 
 ```bash
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.7.0
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.8.0
 ```
 
 ### Homebrew
@@ -96,7 +96,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 255 resource types across 91 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 261 resource types across 91 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -356,12 +356,18 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_db_security_group |  x  |  | x |
 | aws_db_snapshot |  x  |  x  |
 | aws_db_subnet_group |  x  |  |
+| aws_rds_cluster |  x  |  |
+| aws_rds_cluster_endpoint |  x  |  |
+| aws_rds_cluster_parameter_group |  x  |  |
 | aws_rds_global_cluster |  |  |
 | **redshift** |
 | aws_redshift_cluster |  x  |  |
 | aws_redshift_event_subscription |  x  |  |
+| aws_redshift_parameter_group |  x  |  |
+| aws_redshift_security_group |  |  |
 | aws_redshift_snapshot_copy_grant |  x  |  |
 | aws_redshift_snapshot_schedule |  x  |  |
+| aws_redshift_subnet_group |  x  |  |
 | **route53** |
 | aws_route53_health_check |  x  |  |
 | aws_route53_zone |  x  |  |

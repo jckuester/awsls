@@ -366,16 +366,28 @@ func ListResourcesByType(client *Client, resourceType string) ([]Resource, error
 		return ListPlacementGroup(client)
 	case "aws_qldb_ledger":
 		return ListQldbLedger(client)
+	case "aws_rds_cluster":
+		return ListRdsCluster(client)
+	case "aws_rds_cluster_endpoint":
+		return ListRdsClusterEndpoint(client)
+	case "aws_rds_cluster_parameter_group":
+		return ListRdsClusterParameterGroup(client)
 	case "aws_rds_global_cluster":
 		return ListRdsGlobalCluster(client)
 	case "aws_redshift_cluster":
 		return ListRedshiftCluster(client)
 	case "aws_redshift_event_subscription":
 		return ListRedshiftEventSubscription(client)
+	case "aws_redshift_parameter_group":
+		return ListRedshiftParameterGroup(client)
+	case "aws_redshift_security_group":
+		return ListRedshiftSecurityGroup(client)
 	case "aws_redshift_snapshot_copy_grant":
 		return ListRedshiftSnapshotCopyGrant(client)
 	case "aws_redshift_snapshot_schedule":
 		return ListRedshiftSnapshotSchedule(client)
+	case "aws_redshift_subnet_group":
+		return ListRedshiftSubnetGroup(client)
 	case "aws_route53_health_check":
 		return ListRoute53HealthCheck(client)
 	case "aws_route53_resolver_endpoint":

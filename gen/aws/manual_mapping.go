@@ -53,6 +53,8 @@ var ExcludedResourceTypes = map[string]bool{
 	"aws_kms_alias": true,
 	// Not a resource. This are the instances registered with an ELB. Requires the ELB name.
 	"aws_elb_attachment": true,
+	// use aws_db_instance and filter by the cluster ID to get DB instances for a particular cluster
+	"aws_rds_cluster_instance": true,
 }
 
 // manualMatchedListOps are list operations that could not be matched automatically
@@ -69,11 +71,17 @@ var ManualMatchedListOps = map[string]string{
 	"aws_route53_zone":         "ListHostedZones",
 	"aws_cloudformation_stack": "DescribeStacks",
 	// GetParameters has required input fields, so DescribeParameters it is
-	"aws_ssm_parameter":          "DescribeParameters",
-	"aws_ssm_resource_data_sync": "ListResourceDataSync",
-	"aws_lb":                     "DescribeLoadBalancers",
-	"aws_cloudtrail":             "DescribeTrails",
-	"aws_workspaces_directory":   "DescribeWorkspaceDirectories",
+	"aws_ssm_parameter":               "DescribeParameters",
+	"aws_ssm_resource_data_sync":      "ListResourceDataSync",
+	"aws_lb":                          "DescribeLoadBalancers",
+	"aws_cloudtrail":                  "DescribeTrails",
+	"aws_workspaces_directory":        "DescribeWorkspaceDirectories",
+	"aws_rds_cluster":                 "DescribeDBClusters",
+	"aws_rds_cluster_endpoint":        "DescribeDBClusterEndpoints",
+	"aws_rds_cluster_parameter_group": "DescribeDBClusterParameterGroups",
+	"aws_redshift_parameter_group":    "DescribeClusterParameterGroups",
+	"aws_redshift_security_group":     "DescribeClusterSecurityGroups",
+	"aws_redshift_subnet_group":       "DescribeClusterSubnetGroups",
 }
 
 var ManualMatchedOutputFields = map[string]string{
@@ -97,6 +105,8 @@ var ManualMatchedResourceID = map[string]string{
 	"aws_imagebuilder_distribution_configuration":   "Arn",
 	"aws_imagebuilder_infrastructure_configuration": "Arn",
 	"aws_workspaces_directory":                      "DirectoryId",
+	"aws_rds_cluster":                               "DBClusterIdentifier",
+	"aws_rds_cluster_endpoint":                      "DBClusterEndpointIdentifier",
 }
 
 var Inputs = map[string]string{
