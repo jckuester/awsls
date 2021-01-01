@@ -9,7 +9,9 @@ import (
 )
 
 func ListEbsSnapshot(client *Client) ([]Resource, error) {
-	req := client.Ec2conn.DescribeSnapshotsRequest(&ec2.DescribeSnapshotsInput{})
+	req := client.Ec2conn.DescribeSnapshotsRequest(&ec2.DescribeSnapshotsInput{
+		OwnerIds: []string{"self"},
+	})
 
 	var result []Resource
 

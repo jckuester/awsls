@@ -10,7 +10,9 @@ import (
 )
 
 func ListAmi(client *Client) ([]Resource, error) {
-	req := client.Ec2conn.DescribeImagesRequest(&ec2.DescribeImagesInput{})
+	req := client.Ec2conn.DescribeImagesRequest(&ec2.DescribeImagesInput{
+		Owners: []string{"self"},
+	})
 
 	var result []Resource
 

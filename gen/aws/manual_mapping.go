@@ -112,4 +112,10 @@ var Inputs = map[string]string{
 	"aws_iam_policy": `
 Scope: "Local",
 `,
+	"aws_ebs_snapshot": `
+OwnerIds: []string{"self"},
+`,
+	"aws_ami": `
+Owners: []string{"self"},
+`,
 }
