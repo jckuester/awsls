@@ -9,33 +9,28 @@ import (
 )
 
 func ListEcsCluster(client *Client) ([]Resource, error) {
-	req := client.Ecsconn.DescribeClustersRequest(&ecs.DescribeClustersInput{})
+	req := client.Ecsconn.ListClustersRequest(&ecs.ListClustersInput{})
 
 	var result []Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
+	p := ecs.NewListClustersPaginator(req)
+	for p.Next(context.Background()) {
+		resp := p.CurrentPage()
 
-	if len(resp.Clusters) > 0 {
-
-		for _, r := range resp.Clusters {
-
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
+		for _, r := range resp.ClusterArns {
 
 			result = append(result, Resource{
 				Type:      "aws_ecs_cluster",
-				ID:        *r.ClusterArn,
+				ID:        r,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
+	}
+
+	if err := p.Err(); err != nil {
+		return nil, err
 	}
 
 	return result, nil

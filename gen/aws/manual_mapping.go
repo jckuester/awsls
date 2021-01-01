@@ -65,7 +65,7 @@ var ManualMatchedListOps = map[string]string{
 	// The AWS API calls it images not AMI
 	"aws_ami":                  "DescribeImages",
 	"aws_ecs_service":          "DescribeServices",
-	"aws_ecs_cluster":          "DescribeClusters",
+	"aws_ecs_cluster":          "ListClusters",
 	"aws_eip":                  "DescribeAddresses",
 	"aws_elb":                  "DescribeLoadBalancers",
 	"aws_route53_zone":         "ListHostedZones",
@@ -86,7 +86,6 @@ var ManualMatchedListOps = map[string]string{
 
 var ManualMatchedOutputFields = map[string]string{
 	"aws_ecs_service": "ServicePkgNames",
-	"aws_ecs_cluster": "Clusters",
 }
 
 var ManualMatchedResourceID = map[string]string{
