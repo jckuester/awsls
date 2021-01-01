@@ -137,7 +137,7 @@ func mainExitCode() int {
 	}
 
 	// initialize a Terraform AWS provider for each AWS client with a matching config
-	providers, err := util.NewProviderPool(clientKeys, "2.68.0", "~/.awsls", 10*time.Second)
+	providers, err := util.NewProviderPool(clientKeys, "v3.16.0", "~/.awsls", 10*time.Second)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
 
