@@ -22,12 +22,12 @@ archives:
         format: zip
 
 brews:
-- tap:
-    owner: jckuester
-    name: homebrew-tap
-  homepage: "https://github.com/jckuester/awsls"
-  description: "A list command for AWS resources"
-  folder: Formula
+  - tap:
+      owner: jckuester
+      name: homebrew-tap
+    homepage: "https://github.com/jckuester/awsls"
+    description: "A list command for AWS resources"
+    folder: Formula
 
 checksum:
   name_template: 'checksums.txt'
