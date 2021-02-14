@@ -1,28 +1,39 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	stdlog "log"
 	"os"
+	"os/signal"
 	"strings"
+	"sync"
 	"text/tabwriter"
 	"time"
 
-	"github.com/jckuester/awsls/util"
+	"github.com/jckuester/terradozer/pkg/provider"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
 	aws_ssmhelpers "github.com/disneystreaming/go-ssmhelpers/aws"
 	"github.com/fatih/color"
-	"github.com/jckuester/awsls/aws"
+	awsls "github.com/jckuester/awsls/aws"
 	"github.com/jckuester/awsls/internal"
 	"github.com/jckuester/awsls/resource"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 	flag "github.com/spf13/pflag"
 )
 
 func main() {
 	os.Exit(mainExitCode())
+}
+
+type UpdatedResources struct {
+	Resources []awsls.Resource
+	Errors    []error
 }
 
 func mainExitCode() int {
@@ -121,7 +132,7 @@ func mainExitCode() int {
 		profiles = profilesFromConfig
 	}
 
-	clients, err := util.NewAWSClientPool(profiles, regions)
+	clients, err := aws.NewClientPool(profiles, regions)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
 
@@ -131,22 +142,27 @@ func mainExitCode() int {
 	// suppress provider debug and info logs
 	log.SetLevel(log.ErrorLevel)
 
-	clientKeys := make([]util.AWSClientKey, 0, len(clients))
+	clientKeys := make([]aws.ClientKey, 0, len(clients))
 	for k := range clients {
 		clientKeys = append(clientKeys, k)
 	}
 
-	// initialize a Terraform AWS provider for each AWS client with a matching config
-	providers, err := util.NewProviderPool(clientKeys, "v3.16.0", "~/.awsls", 10*time.Second)
-	if err != nil {
-		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
+	ctx := context.Background()
 
-		return 1
-	}
-
+	// trap Ctrl+C and call cancel on the context
+	ctx, cancel := context.WithCancel(ctx)
+	signalCh := make(chan os.Signal, 1)
+	signal.Notify(signalCh, ignoreSignals...)
+	signal.Notify(signalCh, forwardSignals...)
 	defer func() {
-		for _, p := range providers {
-			_ = p.Close()
+		signal.Stop(signalCh)
+		cancel()
+	}()
+	go func() {
+		select {
+		case <-signalCh:
+			cancel()
+		case <-ctx.Done():
 		}
 	}()
 
@@ -154,42 +170,44 @@ func mainExitCode() int {
 		log.SetLevel(log.DebugLevel)
 	}
 
+	// initialize a Terraform AWS provider for each AWS client with a matching config
+	providers, err := terraform.NewProviderPool(ctx, clientKeys, "v3.16.0", "~/.awsls", 10*time.Second)
+	if err != nil {
+		if !errors.Is(err, context.Canceled) {
+			fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
+		}
+		return 1
+	}
+	defer func() {
+		for _, p := range providers {
+			_ = p.Close()
+		}
+	}()
+
 	for _, rType := range matchedTypes {
-		var resources []aws.Resource
-		var hasAttrs map[string]bool
+		// any provider here is sufficient to check if a resource type has attributes
+		p := providers[clientKeys[0]]
 
-		for key, client := range clients {
-			err := client.SetAccountID()
-			if err != nil {
+		hasAttrs, err := resource.HasAttributes(attributes, rType, &p)
+		if err != nil {
+			fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: "+
+				"%s\n", err))
+			return 1
+		}
+
+		var resources []awsls.Resource
+
+		resourcesCh := make(chan UpdatedResources, 1)
+		go func() { resourcesCh <- listResourcesOfType(rType, hasAttrs, clients, providers) }()
+		select {
+		case <-ctx.Done():
+			return 1
+		case result := <-resourcesCh:
+			resources = result.Resources
+
+			for _, err := range result.Errors {
 				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
-
-				return 1
 			}
-
-			res, err := aws.ListResourcesByType(&client, rType)
-			if err != nil {
-				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
-
-				continue
-			}
-
-			provider := providers[key]
-
-			hasAttrs, err = resource.HasAttributes(attributes, rType, &provider)
-			if err != nil {
-				fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: "+
-					"%s\n", err))
-
-				continue
-			}
-
-			if len(hasAttrs) > 0 {
-				// for performance reasons:
-				// only fetch state if some attributes need to be displayed for this resource type
-				res = resource.GetStates(res, providers)
-			}
-
-			resources = append(resources, res...)
 		}
 
 		if len(resources) == 0 {
@@ -202,7 +220,69 @@ func mainExitCode() int {
 	return 0
 }
 
-func printResources(resources []aws.Resource, hasAttrs map[string]bool, attributes []string) {
+// listResourcesOfType lists resources of given resource type in parallel for multiple accounts and regions.
+func listResourcesOfType(rType string, hasAttrs map[string]bool, clients map[aws.ClientKey]awsls.Client,
+	providers map[aws.ClientKey]provider.TerraformProvider) UpdatedResources {
+	var wg sync.WaitGroup
+	sem := internal.NewSemaphore(5)
+
+	resources := terraform.ResourcesThreadSafe{
+		Resources: []awsls.Resource{},
+	}
+
+	for key, client := range clients {
+		log.WithFields(log.Fields{
+			"type":    rType,
+			"region":  key.Region,
+			"profile": key.Profile,
+			"time":    time.Now().Format("04:05.000"),
+		}).Debugf("start listing resources")
+
+		wg.Add(1)
+
+		go func(client awsls.Client) {
+			defer wg.Done()
+
+			// Acquire a semaphore so that we can limit concurrency
+			sem.Acquire()
+			defer sem.Release()
+
+			err := client.SetAccountID()
+			if err != nil {
+				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
+				return
+			}
+
+			res, err := awsls.ListResourcesByType(&client, rType)
+			if err != nil {
+				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
+				return
+			}
+
+			if len(hasAttrs) > 0 {
+				// for performance reasons:
+				// only fetch state if some attributes need to be displayed for this resource type
+				updatesRes, errs := terraform.UpdateStates(res, providers)
+				res = updatesRes
+
+				resources.Lock()
+				resources.Errors = append(resources.Errors, errs...)
+				resources.Unlock()
+			}
+
+			resources.Lock()
+			resources.Resources = append(resources.Resources, res...)
+			resources.Unlock()
+		}(client)
+	}
+
+	// Wait until listing resources of this type completes for every account and region
+	wg.Wait()
+
+	return UpdatedResources{resources.Resources, resources.Errors}
+}
+
+func printResources(resources []awsls.Resource, hasAttrs map[string]bool, attributes []string) {
 	const padding = 3
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.TabIndent)
 
