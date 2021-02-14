@@ -9,11 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
-	"sync"
-	"text/tabwriter"
 	"time"
-
-	"github.com/jckuester/terradozer/pkg/provider"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
@@ -21,7 +17,7 @@ import (
 	"github.com/fatih/color"
 	awsls "github.com/jckuester/awsls/aws"
 	"github.com/jckuester/awsls/internal"
-	"github.com/jckuester/awsls/resource"
+	resource "github.com/jckuester/awsls/resource"
 	"github.com/jckuester/awstools-lib/aws"
 	"github.com/jckuester/awstools-lib/terraform"
 	flag "github.com/spf13/pflag"
@@ -29,11 +25,6 @@ import (
 
 func main() {
 	os.Exit(mainExitCode())
-}
-
-type UpdatedResources struct {
-	Resources []awsls.Resource
-	Errors    []error
 }
 
 func mainExitCode() int {
@@ -197,8 +188,8 @@ func mainExitCode() int {
 
 		var resources []awsls.Resource
 
-		resourcesCh := make(chan UpdatedResources, 1)
-		go func() { resourcesCh <- listResourcesOfType(rType, hasAttrs, clients, providers) }()
+		resourcesCh := make(chan resource.UpdatedResources, 1)
+		go func() { resourcesCh <- resource.ListInMultipleAccountsAndRegions(rType, hasAttrs, clients, providers) }()
 		select {
 		case <-ctx.Done():
 			return 1
@@ -214,127 +205,10 @@ func mainExitCode() int {
 			continue
 		}
 
-		printResources(resources, hasAttrs, attributes)
+		resource.PrintResources(resources, hasAttrs, attributes)
 	}
 
 	return 0
-}
-
-// listResourcesOfType lists resources of given resource type in parallel for multiple accounts and regions.
-func listResourcesOfType(rType string, hasAttrs map[string]bool, clients map[aws.ClientKey]awsls.Client,
-	providers map[aws.ClientKey]provider.TerraformProvider) UpdatedResources {
-	var wg sync.WaitGroup
-	sem := internal.NewSemaphore(5)
-
-	resources := terraform.ResourcesThreadSafe{
-		Resources: []awsls.Resource{},
-	}
-
-	for key, client := range clients {
-		log.WithFields(log.Fields{
-			"type":    rType,
-			"region":  key.Region,
-			"profile": key.Profile,
-			"time":    time.Now().Format("04:05.000"),
-		}).Debugf("start listing resources")
-
-		wg.Add(1)
-
-		go func(client awsls.Client) {
-			defer wg.Done()
-
-			// Acquire a semaphore so that we can limit concurrency
-			sem.Acquire()
-			defer sem.Release()
-
-			err := client.SetAccountID()
-			if err != nil {
-				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
-				return
-			}
-
-			res, err := awsls.ListResourcesByType(&client, rType)
-			if err != nil {
-				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
-				return
-			}
-
-			if len(hasAttrs) > 0 {
-				// for performance reasons:
-				// only fetch state if some attributes need to be displayed for this resource type
-				updatesRes, errs := terraform.UpdateStates(res, providers)
-				res = updatesRes
-
-				resources.Lock()
-				resources.Errors = append(resources.Errors, errs...)
-				resources.Unlock()
-			}
-
-			resources.Lock()
-			resources.Resources = append(resources.Resources, res...)
-			resources.Unlock()
-		}(client)
-	}
-
-	// Wait until listing resources of this type completes for every account and region
-	wg.Wait()
-
-	return UpdatedResources{resources.Resources, resources.Errors}
-}
-
-func printResources(resources []awsls.Resource, hasAttrs map[string]bool, attributes []string) {
-	const padding = 3
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.TabIndent)
-
-	printHeader(w, attributes)
-
-	for _, r := range resources {
-		profile := `N/A`
-		if r.Profile != "" {
-			profile = r.Profile
-		}
-
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s", r.Type, r.ID, profile, r.Region)
-
-		if r.CreatedAt != nil {
-			fmt.Fprintf(w, "\t%s", r.CreatedAt.Format("2006-01-02 15:04:05"))
-		} else {
-			fmt.Fprint(w, "\tN/A")
-		}
-
-		for _, attr := range attributes {
-			v := "N/A"
-
-			_, ok := hasAttrs[attr]
-			if ok {
-				var err error
-				v, err = resource.GetAttribute(attr, &r)
-				if err != nil {
-					log.WithFields(log.Fields{
-						"type": r.Type,
-						"id":   r.ID}).WithError(err).Debug("failed to get attribute")
-					v = "error"
-				}
-			}
-
-			fmt.Fprintf(w, "\t%s", v)
-		}
-
-		fmt.Fprintf(w, "\t\n")
-	}
-
-	w.Flush()
-	fmt.Println()
-}
-
-func printHeader(w *tabwriter.Writer, attributes []string) {
-	fmt.Fprintf(w, "TYPE\tID\tPROFILE\tREGION\tCREATED")
-
-	for _, attribute := range attributes {
-		fmt.Fprintf(w, "\t%s", strings.ToUpper(attribute))
-	}
-
-	fmt.Fprintf(w, "\t\n")
 }
 
 func printHelp(fs *flag.FlagSet) {
