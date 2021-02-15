@@ -1,23 +1,25 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	stdlog "log"
 	"os"
+	"os/signal"
 	"strings"
-	"text/tabwriter"
 	"time"
-
-	"github.com/jckuester/awsls/util"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
 	aws_ssmhelpers "github.com/disneystreaming/go-ssmhelpers/aws"
 	"github.com/fatih/color"
-	"github.com/jckuester/awsls/aws"
+	awsls "github.com/jckuester/awsls/aws"
 	"github.com/jckuester/awsls/internal"
-	"github.com/jckuester/awsls/resource"
+	resource "github.com/jckuester/awsls/resource"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 	flag "github.com/spf13/pflag"
 )
 
@@ -121,7 +123,7 @@ func mainExitCode() int {
 		profiles = profilesFromConfig
 	}
 
-	clients, err := util.NewAWSClientPool(profiles, regions)
+	clients, err := aws.NewClientPool(profiles, regions)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
 
@@ -131,22 +133,28 @@ func mainExitCode() int {
 	// suppress provider debug and info logs
 	log.SetLevel(log.ErrorLevel)
 
-	clientKeys := make([]util.AWSClientKey, 0, len(clients))
+	clientKeys := make([]aws.ClientKey, 0, len(clients))
 	for k := range clients {
 		clientKeys = append(clientKeys, k)
 	}
 
-	// initialize a Terraform AWS provider for each AWS client with a matching config
-	providers, err := util.NewProviderPool(clientKeys, "v3.16.0", "~/.awsls", 10*time.Second)
-	if err != nil {
-		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
+	ctx := context.Background()
 
-		return 1
-	}
-
+	// trap Ctrl+C and call cancel on the context
+	ctx, cancel := context.WithCancel(ctx)
+	signalCh := make(chan os.Signal, 1)
+	signal.Notify(signalCh, ignoreSignals...)
+	signal.Notify(signalCh, forwardSignals...)
 	defer func() {
-		for _, p := range providers {
-			_ = p.Close()
+		signal.Stop(signalCh)
+		cancel()
+	}()
+	go func() {
+		select {
+		case <-signalCh:
+			fmt.Fprint(os.Stderr, color.RedString("\nAborting...\n"))
+			cancel()
+		case <-ctx.Done():
 		}
 	}()
 
@@ -154,107 +162,54 @@ func mainExitCode() int {
 		log.SetLevel(log.DebugLevel)
 	}
 
+	// initialize a Terraform AWS provider for each AWS client with a matching config
+	providers, err := terraform.NewProviderPool(ctx, clientKeys, "v3.16.0", "~/.awsls", 10*time.Second)
+	if err != nil {
+		if !errors.Is(err, context.Canceled) {
+			fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
+		}
+		return 1
+	}
+	defer func() {
+		for _, p := range providers {
+			_ = p.Close()
+		}
+	}()
+
 	for _, rType := range matchedTypes {
-		var resources []aws.Resource
-		var hasAttrs map[string]bool
+		// any provider here is sufficient to check if a resource type has attributes
+		p := providers[clientKeys[0]]
 
-		for key, client := range clients {
-			err := client.SetAccountID()
-			if err != nil {
+		hasAttrs, err := resource.HasAttributes(attributes, rType, &p)
+		if err != nil {
+			fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: "+
+				"%s\n", err))
+			return 1
+		}
+
+		var resources []awsls.Resource
+
+		resourcesCh := make(chan resource.UpdatedResources, 1)
+		go func() { resourcesCh <- resource.ListInMultipleAccountsAndRegions(rType, hasAttrs, clients, providers) }()
+		select {
+		case <-ctx.Done():
+			return 1
+		case result := <-resourcesCh:
+			resources = result.Resources
+
+			for _, err := range result.Errors {
 				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
-
-				return 1
 			}
-
-			res, err := aws.ListResourcesByType(&client, rType)
-			if err != nil {
-				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
-
-				continue
-			}
-
-			provider := providers[key]
-
-			hasAttrs, err = resource.HasAttributes(attributes, rType, &provider)
-			if err != nil {
-				fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: "+
-					"%s\n", err))
-
-				continue
-			}
-
-			if len(hasAttrs) > 0 {
-				// for performance reasons:
-				// only fetch state if some attributes need to be displayed for this resource type
-				res = resource.GetStates(res, providers)
-			}
-
-			resources = append(resources, res...)
 		}
 
 		if len(resources) == 0 {
 			continue
 		}
 
-		printResources(resources, hasAttrs, attributes)
+		resource.PrintResources(resources, hasAttrs, attributes)
 	}
 
 	return 0
-}
-
-func printResources(resources []aws.Resource, hasAttrs map[string]bool, attributes []string) {
-	const padding = 3
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.TabIndent)
-
-	printHeader(w, attributes)
-
-	for _, r := range resources {
-		profile := `N/A`
-		if r.Profile != "" {
-			profile = r.Profile
-		}
-
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s", r.Type, r.ID, profile, r.Region)
-
-		if r.CreatedAt != nil {
-			fmt.Fprintf(w, "\t%s", r.CreatedAt.Format("2006-01-02 15:04:05"))
-		} else {
-			fmt.Fprint(w, "\tN/A")
-		}
-
-		for _, attr := range attributes {
-			v := "N/A"
-
-			_, ok := hasAttrs[attr]
-			if ok {
-				var err error
-				v, err = resource.GetAttribute(attr, &r)
-				if err != nil {
-					log.WithFields(log.Fields{
-						"type": r.Type,
-						"id":   r.ID}).WithError(err).Debug("failed to get attribute")
-					v = "error"
-				}
-			}
-
-			fmt.Fprintf(w, "\t%s", v)
-		}
-
-		fmt.Fprintf(w, "\t\n")
-	}
-
-	w.Flush()
-	fmt.Println()
-}
-
-func printHeader(w *tabwriter.Writer, attributes []string) {
-	fmt.Fprintf(w, "TYPE\tID\tPROFILE\tREGION\tCREATED")
-
-	for _, attribute := range attributes {
-		fmt.Fprintf(w, "\t%s", strings.ToUpper(attribute))
-	}
-
-	fmt.Fprintf(w, "\t\n")
 }
 
 func printHelp(fs *flag.FlagSet) {

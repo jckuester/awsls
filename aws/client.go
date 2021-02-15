@@ -5,6 +5,7 @@ package aws
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/apex/log"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
@@ -711,6 +712,7 @@ func NewClient(configs ...external.Config) (*Client, error) {
 	log.WithFields(log.Fields{
 		"profile": profile,
 		"region":  cfg.Region,
+		"time":    time.Now().Format("04:05.000"),
 	}).Debugf("created new instance of AWS client")
 
 	return client, nil

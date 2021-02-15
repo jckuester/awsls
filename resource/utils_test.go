@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/jckuester/awsls/resource"
+	resource "github.com/jckuester/awsls/resource"
 	"github.com/stretchr/testify/assert"
 )
 
