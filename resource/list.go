@@ -25,7 +25,7 @@ type UpdatedResources struct {
 func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 	clients map[aws.ClientKey]awsls.Client, providers map[aws.ClientKey]provider.TerraformProvider) UpdatedResources {
 	var wg sync.WaitGroup
-	sem := internal.NewSemaphore(5)
+	sem := internal.NewSemaphore(10)
 
 	resources := terraform.ResourcesThreadSafe{
 		Resources: []awsls.Resource{},
@@ -63,7 +63,7 @@ func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 			if len(hasAttrs) > 0 {
 				// for performance reasons:
 				// only fetch state if some attributes need to be displayed for this resource type
-				updatesRes, errs := terraform.UpdateStates(res, providers)
+				updatesRes, errs := terraform.UpdateStates(res, providers, 10)
 				res = updatesRes
 
 				resources.Lock()

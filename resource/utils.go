@@ -2,24 +2,17 @@ package resource
 
 import (
 	"fmt"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
-
-	"github.com/jckuester/awsls/util"
 
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 
 	"github.com/apex/log"
-	"github.com/fatih/color"
 	"github.com/gobwas/glob"
 	"github.com/jckuester/awsls/aws"
-	"github.com/jckuester/awsls/internal"
 	"github.com/jckuester/terradozer/pkg/provider"
-	terradozerRes "github.com/jckuester/terradozer/pkg/resource"
 )
 
 // IsType returns true if the given string is a Terraform AWS resource type.
@@ -79,69 +72,6 @@ func SupportsTags(s string) bool {
 	}
 
 	return false
-}
-
-// resourcesThreadSafe is a list implementation to store resources concurrently.
-type resourcesThreadSafe struct {
-	sync.Mutex
-	resources []aws.Resource
-}
-
-// GetStates fetches the Terraform state for each resource via the Terraform AWS Provider.
-// Returns only resources which still exist (i.e. state isn't of type cty.Nil after update).
-func GetStates(resources []aws.Resource, providers map[util.AWSClientKey]provider.TerraformProvider) []aws.Resource {
-	var wg sync.WaitGroup
-
-	result := &resourcesThreadSafe{
-		resources: []aws.Resource{},
-	}
-
-	sem := internal.NewSemaphore(5)
-	for i := range resources {
-		wg.Add(1)
-		go func(i int) {
-			defer wg.Done()
-
-			// Acquire a semaphore so that we can limit concurrency
-			sem.Acquire()
-			defer sem.Release()
-
-			r := &resources[i]
-
-			key := util.AWSClientKey{
-				Profile: r.Profile,
-				Region:  r.Region,
-			}
-
-			p, ok := providers[key]
-
-			if !ok {
-				panic(fmt.Sprintf("could not find Terraform AWS Provider for key: %v", key))
-			}
-
-			r.UpdatableResource = terradozerRes.New(r.Type, r.ID, nil, &p)
-
-			err := r.UpdateState()
-			if err != nil {
-				fmt.Fprint(os.Stderr, color.RedString("Error: %s\n", err))
-			}
-
-			// filter out resources that don't exist anymore
-			// (e.g., ECS clusters in state INACTIVE)
-			if r.State() != nil && r.State().IsNull() {
-				return
-			}
-
-			result.Lock()
-			result.resources = append(result.resources, *r)
-			result.Unlock()
-		}(i)
-	}
-
-	// Wait for all updates to complete
-	wg.Wait()
-
-	return resources
 }
 
 // HasAttributes returns only the attributes that the given Terraform resource type supports out of a given

@@ -734,6 +734,8 @@ github.com/jckuester/awstools-lib v0.0.0-20210214124804-d61556f035ab h1:WUR10Dj0
 github.com/jckuester/awstools-lib v0.0.0-20210214124804-d61556f035ab/go.mod h1:71+ozVxBDbhfKZH5ybJVxWo+mO1SVfpGiLfwXU5qD/w=
 github.com/jckuester/awstools-lib v0.0.0-20210214131601-bbe567b52f2b h1:jitMIosIgzDzr1J6yq6/PUlOUK5cbJs3WQoCClpe380=
 github.com/jckuester/awstools-lib v0.0.0-20210214131601-bbe567b52f2b/go.mod h1:71+ozVxBDbhfKZH5ybJVxWo+mO1SVfpGiLfwXU5qD/w=
+github.com/jckuester/awstools-lib v0.0.0-20210215194522-14607cce3470 h1:d//j4SZKiysxLC/1/hLZ/VdQGJBrQG6hKHl6v61loWA=
+github.com/jckuester/awstools-lib v0.0.0-20210215194522-14607cce3470/go.mod h1:71+ozVxBDbhfKZH5ybJVxWo+mO1SVfpGiLfwXU5qD/w=
 github.com/jckuester/terradozer v0.1.3 h1:xrRxr+L58QAVz5Kwq2fyWCNiK1NWOuKo8g5Q2664WZ4=
 github.com/jckuester/terradozer v0.1.3/go.mod h1:ER3EJojZmO2u6lfcdgnmC+Nrg/TV2T2bacY5FZpqgks=
 github.com/jhump/protoreflect v1.6.0 h1:h5jfMVslIg6l29nsMs0D8Wj17RDVdNYti0vDN/PZZoE=
