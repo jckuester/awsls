@@ -182,8 +182,8 @@ func mainExitCode() int {
 
 		hasAttrs, err := resource.HasAttributes(attributes, rType, &p)
 		if err != nil {
-			fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: "+
-				"%s\n", err))
+			fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: %s\n",
+				err))
 			return 1
 		}
 

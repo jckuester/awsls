@@ -15,19 +15,21 @@ import (
 	"github.com/jckuester/terradozer/pkg/provider"
 )
 
+// UpdatedResources contains resources which Terraform state
+// has been updated. Failed updates are logged in the Errors array.
 type UpdatedResources struct {
 	Resources []awsls.Resource
 	Errors    []error
 }
 
-// ListInMultipleAccountsAndRegions lists resources of given resource type in parallel
-// for multiple accounts and regions.
+// ListInMultipleAccountsAndRegions lists resources of a given resource type in parallel for multiple accounts and
+// regions and updates the resources' Terraform state.
 func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 	clients map[aws.ClientKey]awsls.Client, providers map[aws.ClientKey]provider.TerraformProvider) UpdatedResources {
 	var wg sync.WaitGroup
 	sem := internal.NewSemaphore(10)
 
-	resources := terraform.ResourcesThreadSafe{
+	result := terraform.ResourcesThreadSafe{
 		Resources: []awsls.Resource{},
 	}
 
@@ -54,7 +56,7 @@ func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 				return
 			}
 
-			res, err := awsls.ListResourcesByType(&client, rType)
+			resources, err := awsls.ListResourcesByType(&client, rType)
 			if err != nil {
 				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
 				return
@@ -63,22 +65,22 @@ func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 			if len(hasAttrs) > 0 {
 				// for performance reasons:
 				// only fetch state if some attributes need to be displayed for this resource type
-				updatesRes, errs := terraform.UpdateStates(res, providers, 10)
-				res = updatesRes
+				updatesResources, errs := terraform.UpdateStates(resources, providers, 10)
+				resources = updatesResources
 
-				resources.Lock()
-				resources.Errors = append(resources.Errors, errs...)
-				resources.Unlock()
+				result.Lock()
+				result.Errors = append(result.Errors, errs...)
+				result.Unlock()
 			}
 
-			resources.Lock()
-			resources.Resources = append(resources.Resources, res...)
-			resources.Unlock()
+			result.Lock()
+			result.Resources = append(result.Resources, resources...)
+			result.Unlock()
 		}(client)
 	}
 
 	// Wait until listing resources of this type completes for every account and region
 	wg.Wait()
 
-	return UpdatedResources{resources.Resources, resources.Errors}
+	return UpdatedResources{result.Resources, result.Errors}
 }

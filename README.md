@@ -67,7 +67,7 @@ You can download a specific version of awsls on the [releases page](https://gith
 install it the following way to `./bin/`:
 
 ```bash
-curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.8.1
+curl -sSfL https://raw.githubusercontent.com/jckuester/awsls/master/install.sh | sh -s v0.8.2
 ```
 
 ### Homebrew
