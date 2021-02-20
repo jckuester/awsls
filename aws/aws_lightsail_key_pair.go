@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/lightsail"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLightsailKeyPair(client *Client) ([]Resource, error) {
+func ListLightsailKeyPair(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Lightsailconn.GetKeyPairsRequest(&lightsail.GetKeyPairsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListLightsailKeyPair(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_lightsail_key_pair",
 				ID:        *r.Name,
 				Profile:   client.Profile,

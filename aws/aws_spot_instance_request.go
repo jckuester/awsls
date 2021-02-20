@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSpotInstanceRequest(client *Client) ([]Resource, error) {
+func ListSpotInstanceRequest(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeSpotInstanceRequestsRequest(&ec2.DescribeSpotInstanceRequestsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeSpotInstanceRequestsPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListSpotInstanceRequest(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreateTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_spot_instance_request",
 				ID:        *r.SpotInstanceRequestId,
 				Profile:   client.Profile,

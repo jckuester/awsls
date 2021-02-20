@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalXssMatchSet(client *Client) ([]Resource, error) {
+func ListWafregionalXssMatchSet(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Wafregionalconn.ListXssMatchSetsRequest(&wafregional.ListXssMatchSetsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListWafregionalXssMatchSet(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.XssMatchSets {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_wafregional_xss_match_set",
 				ID:        *r.XssMatchSetId,
 				Profile:   client.Profile,

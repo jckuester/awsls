@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/rds"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDbSecurityGroup(client *Client) ([]Resource, error) {
+func ListDbSecurityGroup(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Rdsconn.DescribeDBSecurityGroupsRequest(&rds.DescribeDBSecurityGroupsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := rds.NewDescribeDBSecurityGroupsPaginator(req)
 	for p.Next(context.Background()) {
@@ -22,7 +24,7 @@ func ListDbSecurityGroup(client *Client) ([]Resource, error) {
 				continue
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_db_security_group",
 				ID:        *r.DBSecurityGroupName,
 				Profile:   client.Profile,

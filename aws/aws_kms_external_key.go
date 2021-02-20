@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListKmsExternalKey(client *Client) ([]Resource, error) {
+func ListKmsExternalKey(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Kmsconn.ListKeysRequest(&kms.ListKeysInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := kms.NewListKeysPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListKmsExternalKey(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Keys {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_kms_external_key",
 				ID:        *r.KeyId,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/servicediscovery"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListServiceDiscoveryService(client *Client) ([]Resource, error) {
+func ListServiceDiscoveryService(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Servicediscoveryconn.ListServicesRequest(&servicediscovery.ListServicesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := servicediscovery.NewListServicesPaginator(req)
 	for p.Next(context.Background()) {
@@ -20,7 +22,7 @@ func ListServiceDiscoveryService(client *Client) ([]Resource, error) {
 		for _, r := range resp.Services {
 
 			t := *r.CreateDate
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_service_discovery_service",
 				ID:        *r.Id,
 				Profile:   client.Profile,

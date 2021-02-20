@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/iot"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListIotRoleAlias(client *Client) ([]Resource, error) {
+func ListIotRoleAlias(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Iotconn.ListRoleAliasesRequest(&iot.ListRoleAliasesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListIotRoleAlias(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.RoleAliases {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_iot_role_alias",
 				ID:        r,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListNatGateway(client *Client) ([]Resource, error) {
+func ListNatGateway(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeNatGatewaysRequest(&ec2.DescribeNatGatewaysInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeNatGatewaysPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListNatGateway(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreateTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_nat_gateway",
 				ID:        *r.NatGatewayId,
 				Profile:   client.Profile,

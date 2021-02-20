@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/costandusagereportservice"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCurReportDefinition(client *Client) ([]Resource, error) {
+func ListCurReportDefinition(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Costandusagereportserviceconn.DescribeReportDefinitionsRequest(&costandusagereportservice.DescribeReportDefinitionsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := costandusagereportservice.NewDescribeReportDefinitionsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListCurReportDefinition(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ReportDefinitions {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_cur_report_definition",
 				ID:        *r.ReportName,
 				Profile:   client.Profile,

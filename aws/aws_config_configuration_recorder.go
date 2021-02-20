@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/configservice"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListConfigConfigurationRecorder(client *Client) ([]Resource, error) {
+func ListConfigConfigurationRecorder(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Configserviceconn.DescribeConfigurationRecordersRequest(&configservice.DescribeConfigurationRecordersInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListConfigConfigurationRecorder(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ConfigurationRecorders {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_config_configuration_recorder",
 				ID:        *r.Name,
 				Profile:   client.Profile,

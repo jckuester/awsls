@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSsmMaintenanceWindow(client *Client) ([]Resource, error) {
+func ListSsmMaintenanceWindow(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ssmconn.DescribeMaintenanceWindowsRequest(&ssm.DescribeMaintenanceWindowsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListSsmMaintenanceWindow(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.WindowIdentities {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ssm_maintenance_window",
 				ID:        *r.WindowId,
 				Profile:   client.Profile,

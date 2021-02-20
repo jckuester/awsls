@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudformationStackSet(client *Client) ([]Resource, error) {
+func ListCloudformationStackSet(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Cloudformationconn.ListStackSetsRequest(&cloudformation.ListStackSetsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := cloudformation.NewListStackSetsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListCloudformationStackSet(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Summaries {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_cloudformation_stack_set",
 				ID:        *r.StackSetName,
 				Profile:   client.Profile,

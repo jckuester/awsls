@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/route53resolver"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRoute53ResolverEndpoint(client *Client) ([]Resource, error) {
+func ListRoute53ResolverEndpoint(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Route53resolverconn.ListResolverEndpointsRequest(&route53resolver.ListResolverEndpointsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := route53resolver.NewListResolverEndpointsPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListRoute53ResolverEndpoint(client *Client) ([]Resource, error) {
 			if err != nil {
 				return nil, err
 			}
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_route53_resolver_endpoint",
 				ID:        *r.Id,
 				Profile:   client.Profile,

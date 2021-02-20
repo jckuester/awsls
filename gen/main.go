@@ -108,7 +108,7 @@ func main() {
 		}
 	*/
 
-	aws.GenerateClient(outputPathAWS, servicePkgNames)
+	//aws.GenerateClient(outputPathAWS, servicePkgNames)
 
 	generatedServices := aws.GenerateListFunctions(outputPathAWS, services, resourceIDs, resourceTypesWithTags, apis)
 

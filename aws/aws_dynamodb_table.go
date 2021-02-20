@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDynamodbTable(client *Client) ([]Resource, error) {
+func ListDynamodbTable(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Dynamodbconn.ListTablesRequest(&dynamodb.ListTablesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := dynamodb.NewListTablesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListDynamodbTable(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.TableNames {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_dynamodb_table",
 				ID:        r,
 				Profile:   client.Profile,

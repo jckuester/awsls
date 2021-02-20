@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/directconnect"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDxLag(client *Client) ([]Resource, error) {
+func ListDxLag(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Directconnectconn.DescribeLagsRequest(&directconnect.DescribeLagsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListDxLag(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_dx_lag",
 				ID:        *r.LagId,
 				Profile:   client.Profile,

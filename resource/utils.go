@@ -6,13 +6,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/zclconf/go-cty/cty"
-	"github.com/zclconf/go-cty/cty/gocty"
-
 	"github.com/apex/log"
 	"github.com/gobwas/glob"
-	"github.com/jckuester/awsls/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 	"github.com/jckuester/terradozer/pkg/provider"
+	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/gocty"
 )
 
 // IsType returns true if the given string is a Terraform AWS resource type.
@@ -95,7 +94,7 @@ func HasAttributes(attributes []string, terraformType string, provider *provider
 }
 
 // GetAttribute returns any Terraform attribute of a resource by name.
-func GetAttribute(name string, r *aws.Resource) (string, error) {
+func GetAttribute(name string, r *terraform.Resource) (string, error) {
 	if r.UpdatableResource == nil {
 		return "", fmt.Errorf("resource is nil")
 	}

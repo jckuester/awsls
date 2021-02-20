@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/codecommit"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCodecommitRepository(client *Client) ([]Resource, error) {
+func ListCodecommitRepository(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Codecommitconn.ListRepositoriesRequest(&codecommit.ListRepositoriesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := codecommit.NewListRepositoriesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListCodecommitRepository(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Repositories {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_codecommit_repository",
 				ID:        *r.RepositoryName,
 				Profile:   client.Profile,

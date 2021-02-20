@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/mq"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListMqConfiguration(client *Client) ([]Resource, error) {
+func ListMqConfiguration(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Mqconn.ListConfigurationsRequest(&mq.ListConfigurationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListMqConfiguration(client *Client) ([]Resource, error) {
 				tags[k] = v
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_mq_configuration",
 				ID:        *r.Id,
 				Profile:   client.Profile,

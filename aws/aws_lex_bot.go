@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/lexmodelbuildingservice"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLexBot(client *Client) ([]Resource, error) {
+func ListLexBot(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Lexmodelbuildingserviceconn.GetBotsRequest(&lexmodelbuildingservice.GetBotsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := lexmodelbuildingservice.NewGetBotsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListLexBot(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Bots {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_lex_bot",
 				ID:        *r.Name,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListInternetGateway(client *Client) ([]Resource, error) {
+func ListInternetGateway(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeInternetGatewaysRequest(&ec2.DescribeInternetGatewaysInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeInternetGatewaysPaginator(req)
 	for p.Next(context.Background()) {
@@ -26,7 +28,7 @@ func ListInternetGateway(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_internet_gateway",
 				ID:        *r.InternetGatewayId,
 				Profile:   client.Profile,

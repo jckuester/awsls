@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/mediaconvert"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListMediaConvertQueue(client *Client) ([]Resource, error) {
+func ListMediaConvertQueue(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Mediaconvertconn.ListQueuesRequest(&mediaconvert.ListQueuesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := mediaconvert.NewListQueuesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListMediaConvertQueue(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Queues {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_media_convert_queue",
 				ID:        *r.Name,
 				Profile:   client.Profile,

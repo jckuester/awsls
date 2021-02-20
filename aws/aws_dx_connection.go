@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/directconnect"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDxConnection(client *Client) ([]Resource, error) {
+func ListDxConnection(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Directconnectconn.DescribeConnectionsRequest(&directconnect.DescribeConnectionsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListDxConnection(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_dx_connection",
 				ID:        *r.ConnectionId,
 				Profile:   client.Profile,

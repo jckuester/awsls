@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListNetworkInterface(client *Client) ([]Resource, error) {
+func ListNetworkInterface(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeNetworkInterfacesRequest(&ec2.DescribeNetworkInterfacesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeNetworkInterfacesPaginator(req)
 	for p.Next(context.Background()) {
@@ -22,7 +24,7 @@ func ListNetworkInterface(client *Client) ([]Resource, error) {
 				continue
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_network_interface",
 				ID:        *r.NetworkInterfaceId,
 				Profile:   client.Profile,

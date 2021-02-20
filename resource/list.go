@@ -18,19 +18,19 @@ import (
 // UpdatedResources contains resources which Terraform state
 // has been updated. Failed updates are logged in the Errors array.
 type UpdatedResources struct {
-	Resources []awsls.Resource
+	Resources []terraform.Resource
 	Errors    []error
 }
 
 // ListInMultipleAccountsAndRegions lists resources of a given resource type in parallel for multiple accounts and
 // regions and updates the resources' Terraform state.
 func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
-	clients map[aws.ClientKey]awsls.Client, providers map[aws.ClientKey]provider.TerraformProvider) UpdatedResources {
+	clients map[aws.ClientKey]aws.Client, providers map[aws.ClientKey]provider.TerraformProvider) UpdatedResources {
 	var wg sync.WaitGroup
 	sem := internal.NewSemaphore(10)
 
 	result := terraform.ResourcesThreadSafe{
-		Resources: []awsls.Resource{},
+		Resources: []terraform.Resource{},
 	}
 
 	for key, client := range clients {
@@ -43,7 +43,7 @@ func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 
 		wg.Add(1)
 
-		go func(client awsls.Client) {
+		go func(client aws.Client) {
 			defer wg.Done()
 
 			// Acquire a semaphore so that we can limit concurrency
@@ -65,7 +65,7 @@ func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 			if len(hasAttrs) > 0 {
 				// for performance reasons:
 				// only fetch state if some attributes need to be displayed for this resource type
-				updatesResources, errs := terraform.UpdateStates(resources, providers, 10)
+				updatesResources, errs := terraform.UpdateStates(resources, providers, 10, true)
 				resources = updatesResources
 
 				result.Lock()

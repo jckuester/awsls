@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/worklink"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWorklinkFleet(client *Client) ([]Resource, error) {
+func ListWorklinkFleet(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Worklinkconn.ListFleetsRequest(&worklink.ListFleetsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := worklink.NewListFleetsPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListWorklinkFleet(client *Client) ([]Resource, error) {
 				tags[k] = v
 			}
 			t := *r.CreatedTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_worklink_fleet",
 				ID:        *r.FleetArn,
 				Profile:   client.Profile,

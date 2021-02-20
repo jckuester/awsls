@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/kinesisanalytics"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListKinesisAnalyticsApplication(client *Client) ([]Resource, error) {
+func ListKinesisAnalyticsApplication(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Kinesisanalyticsconn.ListApplicationsRequest(&kinesisanalytics.ListApplicationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListKinesisAnalyticsApplication(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ApplicationSummaries {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_kinesis_analytics_application",
 				ID:        *r.ApplicationARN,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/gamelift"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListGameliftAlias(client *Client) ([]Resource, error) {
+func ListGameliftAlias(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Gameliftconn.ListAliasesRequest(&gamelift.ListAliasesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -23,7 +25,7 @@ func ListGameliftAlias(client *Client) ([]Resource, error) {
 		for _, r := range resp.Aliases {
 
 			t := *r.CreationTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_gamelift_alias",
 				ID:        *r.AliasId,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLaunchTemplate(client *Client) ([]Resource, error) {
+func ListLaunchTemplate(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeLaunchTemplatesRequest(&ec2.DescribeLaunchTemplatesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeLaunchTemplatesPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListLaunchTemplate(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreateTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_launch_template",
 				ID:        *r.LaunchTemplateId,
 				Profile:   client.Profile,

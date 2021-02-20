@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/elastictranscoder"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListElastictranscoderPipeline(client *Client) ([]Resource, error) {
+func ListElastictranscoderPipeline(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Elastictranscoderconn.ListPipelinesRequest(&elastictranscoder.ListPipelinesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := elastictranscoder.NewListPipelinesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListElastictranscoderPipeline(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Pipelines {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_elastictranscoder_pipeline",
 				ID:        *r.Id,
 				Profile:   client.Profile,

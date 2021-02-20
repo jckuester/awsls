@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/qldb"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListQldbLedger(client *Client) ([]Resource, error) {
+func ListQldbLedger(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Qldbconn.ListLedgersRequest(&qldb.ListLedgersInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := qldb.NewListLedgersPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListQldbLedger(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Ledgers {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_qldb_ledger",
 				ID:        *r.Name,
 				Profile:   client.Profile,

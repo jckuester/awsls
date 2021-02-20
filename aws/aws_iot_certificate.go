@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/iot"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListIotCertificate(client *Client) ([]Resource, error) {
+func ListIotCertificate(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Iotconn.ListCertificatesRequest(&iot.ListCertificatesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -23,7 +25,7 @@ func ListIotCertificate(client *Client) ([]Resource, error) {
 		for _, r := range resp.Certificates {
 
 			t := *r.CreationDate
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_iot_certificate",
 				ID:        *r.CertificateId,
 				Profile:   client.Profile,

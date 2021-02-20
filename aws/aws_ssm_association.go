@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSsmAssociation(client *Client) ([]Resource, error) {
+func ListSsmAssociation(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ssmconn.ListAssociationsRequest(&ssm.ListAssociationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ssm.NewListAssociationsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListSsmAssociation(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Associations {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ssm_association",
 				ID:        *r.AssociationId,
 				Profile:   client.Profile,

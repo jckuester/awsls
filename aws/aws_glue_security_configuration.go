@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/glue"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListGlueSecurityConfiguration(client *Client) ([]Resource, error) {
+func ListGlueSecurityConfiguration(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Glueconn.GetSecurityConfigurationsRequest(&glue.GetSecurityConfigurationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := glue.NewGetSecurityConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListGlueSecurityConfiguration(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.SecurityConfigurations {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_glue_security_configuration",
 				ID:        *r.Name,
 				Profile:   client.Profile,

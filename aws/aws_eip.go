@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEip(client *Client) ([]Resource, error) {
+func ListEip(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeAddressesRequest(&ec2.DescribeAddressesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListEip(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_eip",
 				ID:        *r.AllocationId,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/route53resolver"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRoute53ResolverRule(client *Client) ([]Resource, error) {
+func ListRoute53ResolverRule(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Route53resolverconn.ListResolverRulesRequest(&route53resolver.ListResolverRulesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := route53resolver.NewListResolverRulesPaginator(req)
 	for p.Next(context.Background()) {
@@ -22,7 +24,7 @@ func ListRoute53ResolverRule(client *Client) ([]Resource, error) {
 				continue
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_route53_resolver_rule",
 				ID:        *r.Id,
 				Profile:   client.Profile,

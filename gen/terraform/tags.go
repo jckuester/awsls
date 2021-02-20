@@ -4,6 +4,7 @@ package terraform
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -13,19 +14,20 @@ import (
 
 	"github.com/apex/log"
 	genutil "github.com/jckuester/awsls/gen/util"
-	"github.com/jckuester/awsls/util"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
 // GenerateResourceTypesWithTagsList generates code of a list of Terraform resource types that support tags
 // and writes the code to directory outputPath.
 func GenerateResourceTypesWithTagsList(resourceTypes []string, outputPath string) ([]string, error) {
-	awsClientKey := util.AWSClientKey{
+	awsClientKey := aws.ClientKey{
 		Profile: os.Getenv("AWS_PROFILE"),
 		Region:  os.Getenv("AWS_DEFAULT_REGION"),
 	}
 
-	providers, err := util.NewProviderPool(
-		[]util.AWSClientKey{awsClientKey}, "3.16.0", "~/.awsls", 10*time.Second)
+	providers, err := terraform.NewProviderPool(context.Background(),
+		[]aws.ClientKey{awsClientKey}, "3.16.0", "~/.awsls", 10*time.Second)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize Terraform AWS provider: %s", err)
 	}

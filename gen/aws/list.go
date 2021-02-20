@@ -261,16 +261,18 @@ var listResourcesOperationTmpl = template.Must(template.New("listResourcesOperat
 	}).Parse(`
 import(
 	"context"
+
+	"github.com/jckuester/awstools-lib/aws"
 	"github.com/aws/aws-sdk-go-v2/service/{{ .API.PackageName }}"
 )
 
 {{ $reqType := printf "%sRequest" .ExportedName -}}
 {{ $pagerType := printf "%sPaginator" .ExportedName -}}
 
-func  {{.OpName}}(client *Client) ([]Resource, error) {
+func  {{.OpName}}(client *aws.Client) ([]terraform.Resource, error) {
     req := client.{{ .API.PackageName | Title }}conn.{{ $reqType }}(&{{ .API.PackageName }}.{{ .InputRef.GoTypeElem }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
 
-	var result []Resource
+	var result []terraform.Resource
 
 	{{ if .Paginator }}
     p := {{ .API.PackageName }}.New{{ $pagerType }}(req)
@@ -288,7 +290,7 @@ func  {{.OpName}}(client *Client) ([]Resource, error) {
 			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
 			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
 			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type: "{{ .TerraformType }}",
 				{{ if ne .OutputFieldType "string" }}ID: *r.{{ .ResourceID }},{{ else }}ID: r,{{ end }}
 				Profile: client.Profile,

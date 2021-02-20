@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/sns"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSnsTopic(client *Client) ([]Resource, error) {
+func ListSnsTopic(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Snsconn.ListTopicsRequest(&sns.ListTopicsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := sns.NewListTopicsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListSnsTopic(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Topics {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_sns_topic",
 				ID:        *r.TopicArn,
 				Profile:   client.Profile,

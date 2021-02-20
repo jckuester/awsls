@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalRule(client *Client) ([]Resource, error) {
+func ListWafregionalRule(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Wafregionalconn.ListRulesRequest(&wafregional.ListRulesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListWafregionalRule(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Rules {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_wafregional_rule",
 				ID:        *r.RuleId,
 				Profile:   client.Profile,

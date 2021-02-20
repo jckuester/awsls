@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSagemakerCodeRepository(client *Client) ([]Resource, error) {
+func ListSagemakerCodeRepository(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Sagemakerconn.ListCodeRepositoriesRequest(&sagemaker.ListCodeRepositoriesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := sagemaker.NewListCodeRepositoriesPaginator(req)
 	for p.Next(context.Background()) {
@@ -20,7 +22,7 @@ func ListSagemakerCodeRepository(client *Client) ([]Resource, error) {
 		for _, r := range resp.CodeRepositorySummaryList {
 
 			t := *r.CreationTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_sagemaker_code_repository",
 				ID:        *r.CodeRepositoryName,
 				Profile:   client.Profile,

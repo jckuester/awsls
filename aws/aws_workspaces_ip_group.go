@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/workspaces"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWorkspacesIpGroup(client *Client) ([]Resource, error) {
+func ListWorkspacesIpGroup(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Workspacesconn.DescribeIpGroupsRequest(&workspaces.DescribeIpGroupsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListWorkspacesIpGroup(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Result {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_workspaces_ip_group",
 				ID:        *r.GroupId,
 				Profile:   client.Profile,

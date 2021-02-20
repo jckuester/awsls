@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/kafka"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListMskConfiguration(client *Client) ([]Resource, error) {
+func ListMskConfiguration(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Kafkaconn.ListConfigurationsRequest(&kafka.ListConfigurationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := kafka.NewListConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
@@ -20,7 +22,7 @@ func ListMskConfiguration(client *Client) ([]Resource, error) {
 		for _, r := range resp.Configurations {
 
 			t := *r.CreationTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_msk_configuration",
 				ID:        *r.Arn,
 				Profile:   client.Profile,

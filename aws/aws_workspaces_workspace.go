@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/workspaces"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWorkspacesWorkspace(client *Client) ([]Resource, error) {
+func ListWorkspacesWorkspace(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Workspacesconn.DescribeWorkspacesRequest(&workspaces.DescribeWorkspacesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := workspaces.NewDescribeWorkspacesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListWorkspacesWorkspace(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Workspaces {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_workspaces_workspace",
 				ID:        *r.WorkspaceId,
 				Profile:   client.Profile,

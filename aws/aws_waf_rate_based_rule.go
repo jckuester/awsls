@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/waf"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafRateBasedRule(client *Client) ([]Resource, error) {
+func ListWafRateBasedRule(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Wafconn.ListRateBasedRulesRequest(&waf.ListRateBasedRulesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListWafRateBasedRule(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Rules {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_waf_rate_based_rule",
 				ID:        *r.RuleId,
 				Profile:   client.Profile,

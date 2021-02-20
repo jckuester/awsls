@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLambdaEventSourceMapping(client *Client) ([]Resource, error) {
+func ListLambdaEventSourceMapping(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Lambdaconn.ListEventSourceMappingsRequest(&lambda.ListEventSourceMappingsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := lambda.NewListEventSourceMappingsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListLambdaEventSourceMapping(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.EventSourceMappings {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_lambda_event_source_mapping",
 				ID:        *r.UUID,
 				Profile:   client.Profile,

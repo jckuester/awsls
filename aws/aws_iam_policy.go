@@ -6,14 +6,16 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListIamPolicy(client *Client) ([]Resource, error) {
+func ListIamPolicy(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Iamconn.ListPoliciesRequest(&iam.ListPoliciesInput{
 		Scope: "Local",
 	})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := iam.NewListPoliciesPaginator(req)
 	for p.Next(context.Background()) {
@@ -22,7 +24,7 @@ func ListIamPolicy(client *Client) ([]Resource, error) {
 		for _, r := range resp.Policies {
 
 			t := *r.CreateDate
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_iam_policy",
 				ID:        *r.Arn,
 				Profile:   client.Profile,

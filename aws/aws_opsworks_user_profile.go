@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/opsworks"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListOpsworksUserProfile(client *Client) ([]Resource, error) {
+func ListOpsworksUserProfile(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Opsworksconn.DescribeUserProfilesRequest(&opsworks.DescribeUserProfilesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListOpsworksUserProfile(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.UserProfiles {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_opsworks_user_profile",
 				ID:        *r.IamUserArn,
 				Profile:   client.Profile,

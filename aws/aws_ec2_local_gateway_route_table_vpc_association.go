@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2LocalGatewayRouteTableVpcAssociation(client *Client) ([]Resource, error) {
+func ListEc2LocalGatewayRouteTableVpcAssociation(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeLocalGatewayRouteTableVpcAssociationsRequest(&ec2.DescribeLocalGatewayRouteTableVpcAssociationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeLocalGatewayRouteTableVpcAssociationsPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListEc2LocalGatewayRouteTableVpcAssociation(client *Client) ([]Resource, er
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_local_gateway_route_table_vpc_association",
 				ID:        *r.LocalGatewayRouteTableVpcAssociationId,
 				Profile:   client.Profile,

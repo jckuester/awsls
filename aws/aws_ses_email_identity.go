@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ses"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSesEmailIdentity(client *Client) ([]Resource, error) {
+func ListSesEmailIdentity(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Sesconn.ListIdentitiesRequest(&ses.ListIdentitiesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ses.NewListIdentitiesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListSesEmailIdentity(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Identities {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ses_email_identity",
 				ID:        r,
 				Profile:   client.Profile,

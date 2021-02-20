@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEcsCluster(client *Client) ([]Resource, error) {
+func ListEcsCluster(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ecsconn.ListClustersRequest(&ecs.ListClustersInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ecs.NewListClustersPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListEcsCluster(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ClusterArns {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ecs_cluster",
 				ID:        r,
 				Profile:   client.Profile,

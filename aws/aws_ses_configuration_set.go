@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ses"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSesConfigurationSet(client *Client) ([]Resource, error) {
+func ListSesConfigurationSet(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Sesconn.ListConfigurationSetsRequest(&ses.ListConfigurationSetsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListSesConfigurationSet(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ConfigurationSets {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ses_configuration_set",
 				ID:        *r.Name,
 				Profile:   client.Profile,

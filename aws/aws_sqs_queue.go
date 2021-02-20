@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSqsQueue(client *Client) ([]Resource, error) {
+func ListSqsQueue(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Sqsconn.ListQueuesRequest(&sqs.ListQueuesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := sqs.NewListQueuesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListSqsQueue(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.QueueUrls {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_sqs_queue",
 				ID:        r,
 				Profile:   client.Profile,

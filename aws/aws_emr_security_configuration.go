@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/emr"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEmrSecurityConfiguration(client *Client) ([]Resource, error) {
+func ListEmrSecurityConfiguration(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Emrconn.ListSecurityConfigurationsRequest(&emr.ListSecurityConfigurationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := emr.NewListSecurityConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListEmrSecurityConfiguration(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.SecurityConfigurations {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_emr_security_configuration",
 				ID:        *r.Name,
 				Profile:   client.Profile,

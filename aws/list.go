@@ -4,23 +4,12 @@ package aws
 
 import (
 	"fmt"
-	"time"
 
-	terradozer "github.com/jckuester/terradozer/pkg/resource"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-type Resource struct {
-	Type      string
-	ID        string
-	Region    string
-	Profile   string
-	AccountID string
-	Tags      map[string]string
-	CreatedAt *time.Time
-	terradozer.UpdatableResource
-}
-
-func ListResourcesByType(client *Client, resourceType string) ([]Resource, error) {
+func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.Resource, error) {
 	switch resourceType {
 	case "aws_accessanalyzer_analyzer":
 		return ListAccessanalyzerAnalyzer(client)

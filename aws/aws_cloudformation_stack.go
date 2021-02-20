@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudformationStack(client *Client) ([]Resource, error) {
+func ListCloudformationStack(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Cloudformationconn.DescribeStacksRequest(&cloudformation.DescribeStacksInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := cloudformation.NewDescribeStacksPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListCloudformationStack(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreationTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_cloudformation_stack",
 				ID:        *r.StackId,
 				Profile:   client.Profile,

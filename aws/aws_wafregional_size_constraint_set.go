@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalSizeConstraintSet(client *Client) ([]Resource, error) {
+func ListWafregionalSizeConstraintSet(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Wafregionalconn.ListSizeConstraintSetsRequest(&wafregional.ListSizeConstraintSetsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListWafregionalSizeConstraintSet(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.SizeConstraintSets {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_wafregional_size_constraint_set",
 				ID:        *r.SizeConstraintSetId,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/databasemigrationservice"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDmsCertificate(client *Client) ([]Resource, error) {
+func ListDmsCertificate(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Databasemigrationserviceconn.DescribeCertificatesRequest(&databasemigrationservice.DescribeCertificatesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := databasemigrationservice.NewDescribeCertificatesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListDmsCertificate(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Certificates {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_dms_certificate",
 				ID:        *r.CertificateIdentifier,
 				Profile:   client.Profile,

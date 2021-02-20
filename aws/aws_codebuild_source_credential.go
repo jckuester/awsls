@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/codebuild"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCodebuildSourceCredential(client *Client) ([]Resource, error) {
+func ListCodebuildSourceCredential(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Codebuildconn.ListSourceCredentialsRequest(&codebuild.ListSourceCredentialsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListCodebuildSourceCredential(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.SourceCredentialsInfos {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_codebuild_source_credential",
 				ID:        *r.Arn,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLambdaFunction(client *Client) ([]Resource, error) {
+func ListLambdaFunction(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Lambdaconn.ListFunctionsRequest(&lambda.ListFunctionsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := lambda.NewListFunctionsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListLambdaFunction(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Functions {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_lambda_function",
 				ID:        *r.FunctionName,
 				Profile:   client.Profile,

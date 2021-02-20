@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListIamRole(client *Client) ([]Resource, error) {
+func ListIamRole(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Iamconn.ListRolesRequest(&iam.ListRolesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := iam.NewListRolesPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListIamRole(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreateDate
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_iam_role",
 				ID:        *r.RoleName,
 				Profile:   client.Profile,

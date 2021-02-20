@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/imagebuilder"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListImagebuilderInfrastructureConfiguration(client *Client) ([]Resource, error) {
+func ListImagebuilderInfrastructureConfiguration(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Imagebuilderconn.ListInfrastructureConfigurationsRequest(&imagebuilder.ListInfrastructureConfigurationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := imagebuilder.NewListInfrastructureConfigurationsPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListImagebuilderInfrastructureConfiguration(client *Client) ([]Resource, er
 				tags[k] = v
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_infrastructure_configuration",
 				ID:        *r.Arn,
 				Profile:   client.Profile,

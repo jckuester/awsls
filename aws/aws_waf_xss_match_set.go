@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/waf"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafXssMatchSet(client *Client) ([]Resource, error) {
+func ListWafXssMatchSet(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Wafconn.ListXssMatchSetsRequest(&waf.ListXssMatchSetsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListWafXssMatchSet(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.XssMatchSets {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_waf_xss_match_set",
 				ID:        *r.XssMatchSetId,
 				Profile:   client.Profile,

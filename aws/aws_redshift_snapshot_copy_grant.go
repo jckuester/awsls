@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRedshiftSnapshotCopyGrant(client *Client) ([]Resource, error) {
+func ListRedshiftSnapshotCopyGrant(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Redshiftconn.DescribeSnapshotCopyGrantsRequest(&redshift.DescribeSnapshotCopyGrantsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListRedshiftSnapshotCopyGrant(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_snapshot_copy_grant",
 				ID:        *r.SnapshotCopyGrantName,
 				Profile:   client.Profile,

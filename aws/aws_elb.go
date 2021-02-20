@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancing"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListElb(client *Client) ([]Resource, error) {
+func ListElb(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Elasticloadbalancingconn.DescribeLoadBalancersRequest(&elasticloadbalancing.DescribeLoadBalancersInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := elasticloadbalancing.NewDescribeLoadBalancersPaginator(req)
 	for p.Next(context.Background()) {
@@ -20,7 +22,7 @@ func ListElb(client *Client) ([]Resource, error) {
 		for _, r := range resp.LoadBalancerDescriptions {
 
 			t := *r.CreatedTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_elb",
 				ID:        *r.LoadBalancerName,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/waf"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafRegexPatternSet(client *Client) ([]Resource, error) {
+func ListWafRegexPatternSet(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Wafconn.ListRegexPatternSetsRequest(&waf.ListRegexPatternSetsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListWafRegexPatternSet(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.RegexPatternSets {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_waf_regex_pattern_set",
 				ID:        *r.RegexPatternSetId,
 				Profile:   client.Profile,

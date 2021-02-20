@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListApiGatewayApiKey(client *Client) ([]Resource, error) {
+func ListApiGatewayApiKey(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Apigatewayconn.GetApiKeysRequest(&apigateway.GetApiKeysInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := apigateway.NewGetApiKeysPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListApiGatewayApiKey(client *Client) ([]Resource, error) {
 				tags[k] = v
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_api_gateway_api_key",
 				ID:        *r.Id,
 				Profile:   client.Profile,

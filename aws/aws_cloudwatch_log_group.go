@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudwatchLogGroup(client *Client) ([]Resource, error) {
+func ListCloudwatchLogGroup(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Cloudwatchlogsconn.DescribeLogGroupsRequest(&cloudwatchlogs.DescribeLogGroupsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := cloudwatchlogs.NewDescribeLogGroupsPaginator(req)
 	for p.Next(context.Background()) {
@@ -21,7 +23,7 @@ func ListCloudwatchLogGroup(client *Client) ([]Resource, error) {
 		for _, r := range resp.LogGroups {
 
 			t := time.Unix(0, *r.CreationTime*1000000).UTC()
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_cloudwatch_log_group",
 				ID:        *r.LogGroupName,
 				Profile:   client.Profile,

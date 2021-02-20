@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/sfn"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSfnActivity(client *Client) ([]Resource, error) {
+func ListSfnActivity(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Sfnconn.ListActivitiesRequest(&sfn.ListActivitiesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := sfn.NewListActivitiesPaginator(req)
 	for p.Next(context.Background()) {
@@ -20,7 +22,7 @@ func ListSfnActivity(client *Client) ([]Resource, error) {
 		for _, r := range resp.Activities {
 
 			t := *r.CreationDate
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_sfn_activity",
 				ID:        *r.ActivityArn,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2TransitGateway(client *Client) ([]Resource, error) {
+func ListEc2TransitGateway(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeTransitGatewaysRequest(&ec2.DescribeTransitGatewaysInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeTransitGatewaysPaginator(req)
 	for p.Next(context.Background()) {
@@ -26,7 +28,7 @@ func ListEc2TransitGateway(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreationTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_transit_gateway",
 				ID:        *r.TransitGatewayId,
 				Profile:   client.Profile,

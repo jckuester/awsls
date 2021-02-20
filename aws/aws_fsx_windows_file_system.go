@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/fsx"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListFsxWindowsFileSystem(client *Client) ([]Resource, error) {
+func ListFsxWindowsFileSystem(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Fsxconn.DescribeFileSystemsRequest(&fsx.DescribeFileSystemsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := fsx.NewDescribeFileSystemsPaginator(req)
 	for p.Next(context.Background()) {
@@ -26,7 +28,7 @@ func ListFsxWindowsFileSystem(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreationTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_fsx_windows_file_system",
 				ID:        *r.FileSystemId,
 				Profile:   client.Profile,

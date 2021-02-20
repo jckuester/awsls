@@ -7,10 +7,10 @@ import (
 	"text/tabwriter"
 
 	"github.com/apex/log"
-	awsls "github.com/jckuester/awsls/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func PrintResources(resources []awsls.Resource, hasAttrs map[string]bool, attributes []string) {
+func PrintResources(resources []terraform.Resource, hasAttrs map[string]bool, attributes []string) {
 	const padding = 3
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.TabIndent)
 

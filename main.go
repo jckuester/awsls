@@ -15,9 +15,8 @@ import (
 	"github.com/apex/log/handlers/cli"
 	aws_ssmhelpers "github.com/disneystreaming/go-ssmhelpers/aws"
 	"github.com/fatih/color"
-	awsls "github.com/jckuester/awsls/aws"
 	"github.com/jckuester/awsls/internal"
-	resource "github.com/jckuester/awsls/resource"
+	"github.com/jckuester/awsls/resource"
 	"github.com/jckuester/awstools-lib/aws"
 	"github.com/jckuester/awstools-lib/terraform"
 	flag "github.com/spf13/pflag"
@@ -187,7 +186,7 @@ func mainExitCode() int {
 			return 1
 		}
 
-		var resources []awsls.Resource
+		var resources []terraform.Resource
 
 		resourcesCh := make(chan resource.UpdatedResources, 1)
 		go func() { resourcesCh <- resource.ListInMultipleAccountsAndRegions(rType, hasAttrs, clients, providers) }()

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/databasemigrationservice"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDmsEndpoint(client *Client) ([]Resource, error) {
+func ListDmsEndpoint(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Databasemigrationserviceconn.DescribeEndpointsRequest(&databasemigrationservice.DescribeEndpointsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := databasemigrationservice.NewDescribeEndpointsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListDmsEndpoint(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Endpoints {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_dms_endpoint",
 				ID:        *r.EndpointIdentifier,
 				Profile:   client.Profile,

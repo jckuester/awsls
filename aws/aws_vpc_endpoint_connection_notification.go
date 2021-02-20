@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListVpcEndpointConnectionNotification(client *Client) ([]Resource, error) {
+func ListVpcEndpointConnectionNotification(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeVpcEndpointConnectionNotificationsRequest(&ec2.DescribeVpcEndpointConnectionNotificationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeVpcEndpointConnectionNotificationsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListVpcEndpointConnectionNotification(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ConnectionNotificationSet {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_vpc_endpoint_connection_notification",
 				ID:        *r.ConnectionNotificationId,
 				Profile:   client.Profile,

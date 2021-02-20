@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ecr"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEcrRepository(client *Client) ([]Resource, error) {
+func ListEcrRepository(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ecrconn.DescribeRepositoriesRequest(&ecr.DescribeRepositoriesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ecr.NewDescribeRepositoriesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListEcrRepository(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Repositories {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ecr_repository",
 				ID:        *r.RepositoryName,
 				Profile:   client.Profile,

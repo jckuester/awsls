@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/globalaccelerator"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListGlobalacceleratorAccelerator(client *Client) ([]Resource, error) {
+func ListGlobalacceleratorAccelerator(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Globalacceleratorconn.ListAcceleratorsRequest(&globalaccelerator.ListAcceleratorsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -23,7 +25,7 @@ func ListGlobalacceleratorAccelerator(client *Client) ([]Resource, error) {
 		for _, r := range resp.Accelerators {
 
 			t := *r.CreatedTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_globalaccelerator_accelerator",
 				ID:        *r.AcceleratorArn,
 				Profile:   client.Profile,

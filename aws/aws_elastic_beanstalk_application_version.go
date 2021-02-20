@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/elasticbeanstalk"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListElasticBeanstalkApplicationVersion(client *Client) ([]Resource, error) {
+func ListElasticBeanstalkApplicationVersion(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Elasticbeanstalkconn.DescribeApplicationVersionsRequest(&elasticbeanstalk.DescribeApplicationVersionsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListElasticBeanstalkApplicationVersion(client *Client) ([]Resource, error) 
 
 		for _, r := range resp.ApplicationVersions {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_elastic_beanstalk_application_version",
 				ID:        *r.ApplicationName,
 				Profile:   client.Profile,

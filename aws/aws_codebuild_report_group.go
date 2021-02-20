@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/codebuild"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCodebuildReportGroup(client *Client) ([]Resource, error) {
+func ListCodebuildReportGroup(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Codebuildconn.ListReportGroupsRequest(&codebuild.ListReportGroupsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := codebuild.NewListReportGroupsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListCodebuildReportGroup(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ReportGroups {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_codebuild_report_group",
 				ID:        r,
 				Profile:   client.Profile,

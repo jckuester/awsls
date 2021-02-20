@@ -7,14 +7,16 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAmi(client *Client) ([]Resource, error) {
+func ListAmi(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeImagesRequest(&ec2.DescribeImagesInput{
 		Owners: []string{"self"},
 	})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -35,7 +37,7 @@ func ListAmi(client *Client) ([]Resource, error) {
 			if err != nil {
 				return nil, err
 			}
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ami",
 				ID:        *r.ImageId,
 				Profile:   client.Profile,

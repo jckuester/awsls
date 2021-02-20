@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRouteTable(client *Client) ([]Resource, error) {
+func ListRouteTable(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeRouteTablesRequest(&ec2.DescribeRouteTablesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeRouteTablesPaginator(req)
 	for p.Next(context.Background()) {
@@ -26,7 +28,7 @@ func ListRouteTable(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_route_table",
 				ID:        *r.RouteTableId,
 				Profile:   client.Profile,

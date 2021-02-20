@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/securityhub"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSecurityhubActionTarget(client *Client) ([]Resource, error) {
+func ListSecurityhubActionTarget(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Securityhubconn.DescribeActionTargetsRequest(&securityhub.DescribeActionTargetsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := securityhub.NewDescribeActionTargetsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListSecurityhubActionTarget(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ActionTargets {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_securityhub_action_target",
 				ID:        *r.ActionTargetArn,
 				Profile:   client.Profile,

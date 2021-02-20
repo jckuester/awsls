@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/configservice"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListConfigDeliveryChannel(client *Client) ([]Resource, error) {
+func ListConfigDeliveryChannel(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Configserviceconn.DescribeDeliveryChannelsRequest(&configservice.DescribeDeliveryChannelsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListConfigDeliveryChannel(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.DeliveryChannels {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_config_delivery_channel",
 				ID:        *r.Name,
 				Profile:   client.Profile,

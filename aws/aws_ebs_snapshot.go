@@ -6,14 +6,16 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEbsSnapshot(client *Client) ([]Resource, error) {
+func ListEbsSnapshot(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeSnapshotsRequest(&ec2.DescribeSnapshotsInput{
 		OwnerIds: []string{"self"},
 	})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeSnapshotsPaginator(req)
 	for p.Next(context.Background()) {
@@ -28,7 +30,7 @@ func ListEbsSnapshot(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.StartTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ebs_snapshot",
 				ID:        *r.SnapshotId,
 				Profile:   client.Profile,

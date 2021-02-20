@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/apigatewayv2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListApigatewayv2DomainName(client *Client) ([]Resource, error) {
+func ListApigatewayv2DomainName(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Apigatewayv2conn.GetDomainNamesRequest(&apigatewayv2.GetDomainNamesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListApigatewayv2DomainName(client *Client) ([]Resource, error) {
 				tags[k] = v
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_apigatewayv2_domain_name",
 				ID:        *r.DomainName,
 				Profile:   client.Profile,

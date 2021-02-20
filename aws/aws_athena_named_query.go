@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/athena"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAthenaNamedQuery(client *Client) ([]Resource, error) {
+func ListAthenaNamedQuery(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Athenaconn.ListNamedQueriesRequest(&athena.ListNamedQueriesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := athena.NewListNamedQueriesPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListAthenaNamedQuery(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.NamedQueryIds {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_athena_named_query",
 				ID:        r,
 				Profile:   client.Profile,

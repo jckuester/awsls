@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/efs"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEfsFileSystem(client *Client) ([]Resource, error) {
+func ListEfsFileSystem(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Efsconn.DescribeFileSystemsRequest(&efs.DescribeFileSystemsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := efs.NewDescribeFileSystemsPaginator(req)
 	for p.Next(context.Background()) {
@@ -26,7 +28,7 @@ func ListEfsFileSystem(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreationTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_efs_file_system",
 				ID:        *r.FileSystemId,
 				Profile:   client.Profile,

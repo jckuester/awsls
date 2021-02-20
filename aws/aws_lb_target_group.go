@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLbTargetGroup(client *Client) ([]Resource, error) {
+func ListLbTargetGroup(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Elasticloadbalancingv2conn.DescribeTargetGroupsRequest(&elasticloadbalancingv2.DescribeTargetGroupsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := elasticloadbalancingv2.NewDescribeTargetGroupsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListLbTargetGroup(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.TargetGroups {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_lb_target_group",
 				ID:        *r.TargetGroupArn,
 				Profile:   client.Profile,

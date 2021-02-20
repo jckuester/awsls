@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/dax"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDaxParameterGroup(client *Client) ([]Resource, error) {
+func ListDaxParameterGroup(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Daxconn.DescribeParameterGroupsRequest(&dax.DescribeParameterGroupsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListDaxParameterGroup(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.ParameterGroups {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_dax_parameter_group",
 				ID:        *r.ParameterGroupName,
 				Profile:   client.Profile,

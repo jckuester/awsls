@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRedshiftEventSubscription(client *Client) ([]Resource, error) {
+func ListRedshiftEventSubscription(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Redshiftconn.DescribeEventSubscriptionsRequest(&redshift.DescribeEventSubscriptionsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := redshift.NewDescribeEventSubscriptionsPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListRedshiftEventSubscription(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_event_subscription",
 				ID:        *r.CustSubscriptionId,
 				Profile:   client.Profile,

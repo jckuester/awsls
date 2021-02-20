@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudtrail"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudtrail(client *Client) ([]Resource, error) {
+func ListCloudtrail(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Cloudtrailconn.DescribeTrailsRequest(&cloudtrail.DescribeTrailsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -22,7 +24,7 @@ func ListCloudtrail(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.TrailList {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_cloudtrail",
 				ID:        *r.Name,
 				Profile:   client.Profile,

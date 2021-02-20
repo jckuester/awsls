@@ -8,12 +8,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListInstance(client *Client) ([]Resource, error) {
+func ListInstance(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeInstancesRequest(&ec2.DescribeInstancesInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeInstancesPaginator(req)
 	for p.Next(context.Background()) {
@@ -31,7 +33,7 @@ func ListInstance(client *Client) ([]Resource, error) {
 				}
 
 				t := *r.LaunchTime
-				result = append(result, Resource{
+				result = append(result, terraform.Resource{
 					Type:      "aws_instance",
 					ID:        *r.InstanceId,
 					Region:    client.Region,

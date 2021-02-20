@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/backup"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListBackupPlan(client *Client) ([]Resource, error) {
+func ListBackupPlan(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Backupconn.ListBackupPlansRequest(&backup.ListBackupPlansInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := backup.NewListBackupPlansPaginator(req)
 	for p.Next(context.Background()) {
@@ -20,7 +22,7 @@ func ListBackupPlan(client *Client) ([]Resource, error) {
 		for _, r := range resp.BackupPlansList {
 
 			t := *r.CreationDate
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_backup_plan",
 				ID:        *r.BackupPlanId,
 				Profile:   client.Profile,

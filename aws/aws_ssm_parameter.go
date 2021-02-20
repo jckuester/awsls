@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSsmParameter(client *Client) ([]Resource, error) {
+func ListSsmParameter(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ssmconn.DescribeParametersRequest(&ssm.DescribeParametersInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ssm.NewDescribeParametersPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListSsmParameter(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.Parameters {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ssm_parameter",
 				ID:        *r.Name,
 				Profile:   client.Profile,

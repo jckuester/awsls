@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudwatchLogDestination(client *Client) ([]Resource, error) {
+func ListCloudwatchLogDestination(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Cloudwatchlogsconn.DescribeDestinationsRequest(&cloudwatchlogs.DescribeDestinationsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := cloudwatchlogs.NewDescribeDestinationsPaginator(req)
 	for p.Next(context.Background()) {
@@ -21,7 +23,7 @@ func ListCloudwatchLogDestination(client *Client) ([]Resource, error) {
 		for _, r := range resp.Destinations {
 
 			t := time.Unix(0, *r.CreationTime*1000000).UTC()
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_cloudwatch_log_destination",
 				ID:        *r.DestinationName,
 				Profile:   client.Profile,

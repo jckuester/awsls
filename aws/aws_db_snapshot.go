@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/rds"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDbSnapshot(client *Client) ([]Resource, error) {
+func ListDbSnapshot(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Rdsconn.DescribeDBSnapshotsRequest(&rds.DescribeDBSnapshotsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := rds.NewDescribeDBSnapshotsPaginator(req)
 	for p.Next(context.Background()) {
@@ -20,7 +22,7 @@ func ListDbSnapshot(client *Client) ([]Resource, error) {
 		for _, r := range resp.DBSnapshots {
 
 			t := *r.InstanceCreateTime
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_db_snapshot",
 				ID:        *r.DBSnapshotIdentifier,
 				Profile:   client.Profile,

@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListVpcEndpoint(client *Client) ([]Resource, error) {
+func ListVpcEndpoint(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeVpcEndpointsRequest(&ec2.DescribeVpcEndpointsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeVpcEndpointsPaginator(req)
 	for p.Next(context.Background()) {
@@ -26,7 +28,7 @@ func ListVpcEndpoint(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreationTimestamp
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_vpc_endpoint",
 				ID:        *r.VpcEndpointId,
 				Profile:   client.Profile,

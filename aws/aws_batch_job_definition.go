@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/batch"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListBatchJobDefinition(client *Client) ([]Resource, error) {
+func ListBatchJobDefinition(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Batchconn.DescribeJobDefinitionsRequest(&batch.DescribeJobDefinitionsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := batch.NewDescribeJobDefinitionsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListBatchJobDefinition(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.JobDefinitions {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_batch_job_definition",
 				ID:        *r.JobDefinitionArn,
 				Profile:   client.Profile,

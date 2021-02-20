@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/glue"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListGlueDevEndpoint(client *Client) ([]Resource, error) {
+func ListGlueDevEndpoint(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Glueconn.GetDevEndpointsRequest(&glue.GetDevEndpointsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := glue.NewGetDevEndpointsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListGlueDevEndpoint(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.DevEndpoints {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_glue_dev_endpoint",
 				ID:        *r.EndpointName,
 				Profile:   client.Profile,

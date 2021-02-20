@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListPlacementGroup(client *Client) ([]Resource, error) {
+func ListPlacementGroup(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribePlacementGroupsRequest(&ec2.DescribePlacementGroupsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListPlacementGroup(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_placement_group",
 				ID:        *r.GroupName,
 				Profile:   client.Profile,

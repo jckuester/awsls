@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/rds"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDbParameterGroup(client *Client) ([]Resource, error) {
+func ListDbParameterGroup(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Rdsconn.DescribeDBParameterGroupsRequest(&rds.DescribeDBParameterGroupsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := rds.NewDescribeDBParameterGroupsPaginator(req)
 	for p.Next(context.Background()) {
@@ -19,7 +21,7 @@ func ListDbParameterGroup(client *Client) ([]Resource, error) {
 
 		for _, r := range resp.DBParameterGroups {
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_db_parameter_group",
 				ID:        *r.DBParameterGroupName,
 				Profile:   client.Profile,

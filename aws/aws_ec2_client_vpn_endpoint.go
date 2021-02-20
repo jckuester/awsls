@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2ClientVpnEndpoint(client *Client) ([]Resource, error) {
+func ListEc2ClientVpnEndpoint(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Ec2conn.DescribeClientVpnEndpointsRequest(&ec2.DescribeClientVpnEndpointsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := ec2.NewDescribeClientVpnEndpointsPaginator(req)
 	for p.Next(context.Background()) {
@@ -28,7 +30,7 @@ func ListEc2ClientVpnEndpoint(client *Client) ([]Resource, error) {
 			if err != nil {
 				return nil, err
 			}
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_client_vpn_endpoint",
 				ID:        *r.ClientVpnEndpointId,
 				Profile:   client.Profile,

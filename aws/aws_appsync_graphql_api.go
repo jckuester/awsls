@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/appsync"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAppsyncGraphqlApi(client *Client) ([]Resource, error) {
+func ListAppsyncGraphqlApi(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Appsyncconn.ListGraphqlApisRequest(&appsync.ListGraphqlApisInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	resp, err := req.Send(context.Background())
 	if err != nil {
@@ -27,7 +29,7 @@ func ListAppsyncGraphqlApi(client *Client) ([]Resource, error) {
 				tags[k] = v
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_appsync_graphql_api",
 				ID:        *r.ApiId,
 				Profile:   client.Profile,

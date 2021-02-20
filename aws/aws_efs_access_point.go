@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/efs"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEfsAccessPoint(client *Client) ([]Resource, error) {
+func ListEfsAccessPoint(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Efsconn.DescribeAccessPointsRequest(&efs.DescribeAccessPointsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := efs.NewDescribeAccessPointsPaginator(req)
 	for p.Next(context.Background()) {
@@ -26,7 +28,7 @@ func ListEfsAccessPoint(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_efs_access_point",
 				ID:        *r.AccessPointId,
 				Profile:   client.Profile,

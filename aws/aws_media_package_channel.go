@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/mediapackage"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListMediaPackageChannel(client *Client) ([]Resource, error) {
+func ListMediaPackageChannel(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Mediapackageconn.ListChannelsRequest(&mediapackage.ListChannelsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := mediapackage.NewListChannelsPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListMediaPackageChannel(client *Client) ([]Resource, error) {
 				tags[k] = v
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_media_package_channel",
 				ID:        *r.Id,
 				Profile:   client.Profile,

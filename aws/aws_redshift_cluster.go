@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRedshiftCluster(client *Client) ([]Resource, error) {
+func ListRedshiftCluster(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Redshiftconn.DescribeClustersRequest(&redshift.DescribeClustersInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := redshift.NewDescribeClustersPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListRedshiftCluster(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_cluster",
 				ID:        *r.ClusterIdentifier,
 				Profile:   client.Profile,

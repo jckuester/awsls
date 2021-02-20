@@ -6,12 +6,14 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+	"github.com/jckuester/awstools-lib/aws"
+	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSecretsmanagerSecret(client *Client) ([]Resource, error) {
+func ListSecretsmanagerSecret(client *aws.Client) ([]terraform.Resource, error) {
 	req := client.Secretsmanagerconn.ListSecretsRequest(&secretsmanager.ListSecretsInput{})
 
-	var result []Resource
+	var result []terraform.Resource
 
 	p := secretsmanager.NewListSecretsPaginator(req)
 	for p.Next(context.Background()) {
@@ -24,7 +26,7 @@ func ListSecretsmanagerSecret(client *Client) ([]Resource, error) {
 				tags[*t.Key] = *t.Value
 			}
 
-			result = append(result, Resource{
+			result = append(result, terraform.Resource{
 				Type:      "aws_secretsmanager_secret",
 				ID:        *r.ARN,
 				Profile:   client.Profile,
