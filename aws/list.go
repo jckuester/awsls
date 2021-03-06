@@ -91,12 +91,16 @@ func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.R
 		return ListCodedeployDeploymentConfig(client)
 	case "aws_codepipeline_webhook":
 		return ListCodepipelineWebhook(client)
+	case "aws_codestarconnections_connection":
+		return ListCodestarconnectionsConnection(client)
 	case "aws_codestarnotifications_notification_rule":
 		return ListCodestarnotificationsNotificationRule(client)
 	case "aws_config_config_rule":
 		return ListConfigConfigRule(client)
 	case "aws_config_configuration_recorder":
 		return ListConfigConfigurationRecorder(client)
+	case "aws_config_conformance_pack":
+		return ListConfigConformancePack(client)
 	case "aws_config_delivery_channel":
 		return ListConfigDeliveryChannel(client)
 	case "aws_cur_report_definition":
@@ -167,6 +171,8 @@ func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.R
 		return ListEc2Fleet(client)
 	case "aws_ec2_local_gateway_route_table_vpc_association":
 		return ListEc2LocalGatewayRouteTableVpcAssociation(client)
+	case "aws_ec2_managed_prefix_list":
+		return ListEc2ManagedPrefixList(client)
 	case "aws_ec2_traffic_mirror_filter":
 		return ListEc2TrafficMirrorFilter(client)
 	case "aws_ec2_traffic_mirror_session":
@@ -203,6 +209,8 @@ func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.R
 		return ListElasticBeanstalkApplicationVersion(client)
 	case "aws_elastic_beanstalk_environment":
 		return ListElasticBeanstalkEnvironment(client)
+	case "aws_elasticache_global_replication_group":
+		return ListElasticacheGlobalReplicationGroup(client)
 	case "aws_elasticache_replication_group":
 		return ListElasticacheReplicationGroup(client)
 	case "aws_elastictranscoder_pipeline":
@@ -213,6 +221,8 @@ func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.R
 		return ListElb(client)
 	case "aws_emr_security_configuration":
 		return ListEmrSecurityConfiguration(client)
+	case "aws_fms_policy":
+		return ListFmsPolicy(client)
 	case "aws_fsx_lustre_file_system":
 		return ListFsxLustreFileSystem(client)
 	case "aws_fsx_windows_file_system":
@@ -265,6 +275,12 @@ func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.R
 		return ListImagebuilderComponent(client)
 	case "aws_imagebuilder_distribution_configuration":
 		return ListImagebuilderDistributionConfiguration(client)
+	case "aws_imagebuilder_image":
+		return ListImagebuilderImage(client)
+	case "aws_imagebuilder_image_pipeline":
+		return ListImagebuilderImagePipeline(client)
+	case "aws_imagebuilder_image_recipe":
+		return ListImagebuilderImageRecipe(client)
 	case "aws_imagebuilder_infrastructure_configuration":
 		return ListImagebuilderInfrastructureConfiguration(client)
 	case "aws_instance":
@@ -425,6 +441,8 @@ func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.R
 		return ListSfnActivity(client)
 	case "aws_sfn_state_machine":
 		return ListSfnStateMachine(client)
+	case "aws_signer_signing_profile":
+		return ListSignerSigningProfile(client)
 	case "aws_simpledb_domain":
 		return ListSimpledbDomain(client)
 	case "aws_sns_platform_application":
@@ -459,6 +477,8 @@ func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.R
 		return ListStoragegatewayGateway(client)
 	case "aws_subnet":
 		return ListSubnet(client)
+	case "aws_synthetics_canary":
+		return ListSyntheticsCanary(client)
 	case "aws_transfer_server":
 		return ListTransferServer(client)
 	case "aws_vpc":
