@@ -7,7 +7,7 @@ A list command for AWS resources.
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
 awsls supports listing of [over 250 types of resources](#supported-resources)
-across 91 different AWS services. The goal is to code-generate a list function for
+across 95 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -96,7 +96,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 261 resource types across 91 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 271 resource types across 95 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -165,16 +165,19 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_codedeploy_deployment_config |  |  |
 | **codepipeline** |
 | aws_codepipeline_webhook |  x  |  |
+| **codestarconnections** |
+| aws_codestarconnections_connection |  x  |  |
 | **codestarnotifications** |
 | aws_codestarnotifications_notification_rule |  x  |  |
 | **configservice** |
 | aws_config_config_rule |  x  |  |
 | aws_config_configuration_recorder |  |  |
+| aws_config_conformance_pack |  |  |
 | aws_config_delivery_channel |  |  |
 | **costandusagereportservice** |
 | aws_cur_report_definition |  |  |
 | **databasemigrationservice** |
-| aws_dms_certificate |  |  |
+| aws_dms_certificate |  x  |  |
 | aws_dms_endpoint |  x  |  |
 | aws_dms_replication_subnet_group |  x  |  |
 | aws_dms_replication_task |  x  |  |
@@ -208,6 +211,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_ec2_client_vpn_endpoint |  x  |  x  |
 | aws_ec2_fleet |  x  |  x  |
 | aws_ec2_local_gateway_route_table_vpc_association |  x  |  |
+| aws_ec2_managed_prefix_list |  x  |  | x |
 | aws_ec2_traffic_mirror_filter |  x  |  |
 | aws_ec2_traffic_mirror_session |  x  |  | x |
 | aws_ec2_traffic_mirror_target |  x  |  | x |
@@ -247,6 +251,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **eks** |
 | aws_eks_cluster |  x  |  |
 | **elasticache** |
+| aws_elasticache_global_replication_group |  |  |
 | aws_elasticache_replication_group |  x  |  |
 | **elasticbeanstalk** |
 | aws_elastic_beanstalk_application |  x  |  |
@@ -265,6 +270,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_emr_security_configuration |  |  |
 | **firehose** |
 | aws_kinesis_firehose_delivery_stream |  x  |  |
+| **fms** |
+| aws_fms_policy |  |  |
 | **fsx** |
 | aws_fsx_lustre_file_system |  x  |  x  | x |
 | aws_fsx_windows_file_system |  x  |  x  | x |
@@ -298,6 +305,9 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **imagebuilder** |
 | aws_imagebuilder_component |  x  |  |
 | aws_imagebuilder_distribution_configuration |  x  |  |
+| aws_imagebuilder_image |  x  |  |
+| aws_imagebuilder_image_pipeline |  x  |  |
+| aws_imagebuilder_image_recipe |  x  |  |
 | aws_imagebuilder_infrastructure_configuration |  x  |  |
 | **iot** |
 | aws_iot_certificate |  |  x  |
@@ -400,6 +410,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **sfn** |
 | aws_sfn_activity |  x  |  x  |
 | aws_sfn_state_machine |  x  |  x  |
+| **signer** |
+| aws_signer_signing_profile |  x  |  |
 | **simpledb** |
 | aws_simpledb_domain |  |  |
 | **sns** |
@@ -419,6 +431,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_ssm_resource_data_sync |  |  |
 | **storagegateway** |
 | aws_storagegateway_gateway |  x  |  |
+| **synthetics** |
+| aws_synthetics_canary |  x  |  |
 | **transfer** |
 | aws_transfer_server |  x  |  |
 | **waf** |

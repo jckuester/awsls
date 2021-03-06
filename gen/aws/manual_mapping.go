@@ -89,6 +89,7 @@ var ManualMatchedOutputFields = map[string]string{
 }
 
 var ManualMatchedResourceID = map[string]string{
+	"aws_ami":                                       "ImageId",
 	"aws_autoscaling_group":                         "AutoScalingGroupName",
 	"aws_launch_configuration":                      "LaunchConfigurationName",
 	"aws_s3_bucket":                                 "Name",
@@ -103,6 +104,9 @@ var ManualMatchedResourceID = map[string]string{
 	"aws_imagebuilder_component":                    "Arn",
 	"aws_imagebuilder_distribution_configuration":   "Arn",
 	"aws_imagebuilder_infrastructure_configuration": "Arn",
+	"aws_imagebuilder_image":                        "Arn",
+	"aws_imagebuilder_image_pipeline":               "Arn",
+	"aws_imagebuilder_image_recipe":                 "Arn",
 	"aws_workspaces_directory":                      "DirectoryId",
 	"aws_rds_cluster":                               "DBClusterIdentifier",
 	"aws_rds_cluster_endpoint":                      "DBClusterEndpointIdentifier",
