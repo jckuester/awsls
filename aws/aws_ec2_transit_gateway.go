@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2TransitGateway(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeTransitGatewaysRequest(&ec2.DescribeTransitGatewaysInput{})
-
+func ListEc2TransitGateway(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeTransitGatewaysPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeTransitGatewaysPaginator(client.Ec2conn, &ec2.DescribeTransitGatewaysInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.TransitGateways {
 			if *r.OwnerId != client.AccountID {
@@ -38,10 +39,6 @@ func ListEc2TransitGateway(client *aws.Client) ([]terraform.Resource, error) {
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

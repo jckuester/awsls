@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListIamServerCertificate(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Iamconn.ListServerCertificatesRequest(&iam.ListServerCertificatesInput{})
-
+func ListIamServerCertificate(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := iam.NewListServerCertificatesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := iam.NewListServerCertificatesPaginator(client.Iamconn, &iam.ListServerCertificatesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ServerCertificateMetadataList {
 
@@ -29,10 +30,6 @@ func ListIamServerCertificate(client *aws.Client) ([]terraform.Resource, error) 
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

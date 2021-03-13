@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDxPublicVirtualInterface(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Directconnectconn.DescribeVirtualInterfacesRequest(&directconnect.DescribeVirtualInterfacesInput{})
-
+func ListDxPublicVirtualInterface(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Directconnectconn.DescribeVirtualInterfaces(ctx, &directconnect.DescribeVirtualInterfacesInput{})
 	if err != nil {
 		return nil, err
 	}

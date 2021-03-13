@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDbEventSubscription(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Rdsconn.DescribeEventSubscriptionsRequest(&rds.DescribeEventSubscriptionsInput{})
-
+func ListDbEventSubscription(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := rds.NewDescribeEventSubscriptionsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := rds.NewDescribeEventSubscriptionsPaginator(client.Rdsconn, &rds.DescribeEventSubscriptionsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.EventSubscriptionsList {
 
@@ -29,10 +30,6 @@ func ListDbEventSubscription(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

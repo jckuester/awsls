@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListElasticBeanstalkEnvironment(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Elasticbeanstalkconn.DescribeEnvironmentsRequest(&elasticbeanstalk.DescribeEnvironmentsInput{})
-
+func ListElasticBeanstalkEnvironment(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Elasticbeanstalkconn.DescribeEnvironments(ctx, &elasticbeanstalk.DescribeEnvironmentsInput{})
 	if err != nil {
 		return nil, err
 	}

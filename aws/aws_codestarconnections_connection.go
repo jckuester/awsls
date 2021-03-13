@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCodestarconnectionsConnection(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Codestarconnectionsconn.ListConnectionsRequest(&codestarconnections.ListConnectionsInput{})
-
+func ListCodestarconnectionsConnection(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := codestarconnections.NewListConnectionsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := codestarconnections.NewListConnectionsPaginator(client.Codestarconnectionsconn, &codestarconnections.ListConnectionsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Connections {
 
@@ -29,10 +30,6 @@ func ListCodestarconnectionsConnection(client *aws.Client) ([]terraform.Resource
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

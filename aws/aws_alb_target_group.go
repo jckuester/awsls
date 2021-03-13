@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAlbTargetGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Elasticloadbalancingv2conn.DescribeTargetGroupsRequest(&elasticloadbalancingv2.DescribeTargetGroupsInput{})
-
+func ListAlbTargetGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := elasticloadbalancingv2.NewDescribeTargetGroupsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := elasticloadbalancingv2.NewDescribeTargetGroupsPaginator(client.Elasticloadbalancingv2conn, &elasticloadbalancingv2.DescribeTargetGroupsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.TargetGroups {
 
@@ -29,10 +30,6 @@ func ListAlbTargetGroup(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

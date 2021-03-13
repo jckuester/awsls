@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSsmDocument(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ssmconn.ListDocumentsRequest(&ssm.ListDocumentsInput{})
-
+func ListSsmDocument(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ssm.NewListDocumentsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ssm.NewListDocumentsPaginator(client.Ssmconn, &ssm.ListDocumentsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.DocumentIdentifiers {
 
@@ -35,10 +36,6 @@ func ListSsmDocument(client *aws.Client) ([]terraform.Resource, error) {
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

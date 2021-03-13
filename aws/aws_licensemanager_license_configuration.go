@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLicensemanagerLicenseConfiguration(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Licensemanagerconn.ListLicenseConfigurationsRequest(&licensemanager.ListLicenseConfigurationsInput{})
-
+func ListLicensemanagerLicenseConfiguration(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Licensemanagerconn.ListLicenseConfigurations(ctx, &licensemanager.ListLicenseConfigurationsInput{})
 	if err != nil {
 		return nil, err
 	}

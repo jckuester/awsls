@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListS3Bucket(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.S3conn.ListBucketsRequest(&s3.ListBucketsInput{})
-
+func ListS3Bucket(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.S3conn.ListBuckets(ctx, &s3.ListBucketsInput{})
 	if err != nil {
 		return nil, err
 	}

@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudhsmV2Cluster(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Cloudhsmv2conn.DescribeClustersRequest(&cloudhsmv2.DescribeClustersInput{})
-
+func ListCloudhsmV2Cluster(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := cloudhsmv2.NewDescribeClustersPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := cloudhsmv2.NewDescribeClustersPaginator(client.Cloudhsmv2conn, &cloudhsmv2.DescribeClustersInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Clusters {
 
@@ -29,10 +30,6 @@ func ListCloudhsmV2Cluster(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

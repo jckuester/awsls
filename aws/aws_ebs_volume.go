@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEbsVolume(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeVolumesRequest(&ec2.DescribeVolumesInput{})
-
+func ListEbsVolume(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeVolumesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeVolumesPaginator(client.Ec2conn, &ec2.DescribeVolumesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Volumes {
 
@@ -36,10 +37,6 @@ func ListEbsVolume(client *aws.Client) ([]terraform.Resource, error) {
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

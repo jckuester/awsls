@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSecurityGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeSecurityGroupsRequest(&ec2.DescribeSecurityGroupsInput{})
-
+func ListSecurityGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeSecurityGroupsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeSecurityGroupsPaginator(client.Ec2conn, &ec2.DescribeSecurityGroupsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.SecurityGroups {
 			if *r.OwnerId != client.AccountID {
@@ -37,10 +38,6 @@ func ListSecurityGroup(client *aws.Client) ([]terraform.Resource, error) {
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

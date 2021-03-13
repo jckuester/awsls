@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRedshiftSnapshotSchedule(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Redshiftconn.DescribeSnapshotSchedulesRequest(&redshift.DescribeSnapshotSchedulesInput{})
-
+func ListRedshiftSnapshotSchedule(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.SnapshotSchedules) > 0 {
+	p := redshift.NewDescribeSnapshotSchedulesPaginator(client.Redshiftconn, &redshift.DescribeSnapshotSchedulesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.SnapshotSchedules {
 

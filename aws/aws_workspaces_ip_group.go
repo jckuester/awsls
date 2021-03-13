@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWorkspacesIpGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Workspacesconn.DescribeIpGroupsRequest(&workspaces.DescribeIpGroupsInput{})
-
+func ListWorkspacesIpGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Workspacesconn.DescribeIpGroups(ctx, &workspaces.DescribeIpGroupsInput{})
 	if err != nil {
 		return nil, err
 	}

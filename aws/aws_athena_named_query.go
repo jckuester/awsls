@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAthenaNamedQuery(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Athenaconn.ListNamedQueriesRequest(&athena.ListNamedQueriesInput{})
-
+func ListAthenaNamedQuery(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := athena.NewListNamedQueriesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := athena.NewListNamedQueriesPaginator(client.Athenaconn, &athena.ListNamedQueriesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.NamedQueryIds {
 
@@ -29,10 +30,6 @@ func ListAthenaNamedQuery(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

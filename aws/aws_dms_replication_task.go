@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDmsReplicationTask(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Databasemigrationserviceconn.DescribeReplicationTasksRequest(&databasemigrationservice.DescribeReplicationTasksInput{})
-
+func ListDmsReplicationTask(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := databasemigrationservice.NewDescribeReplicationTasksPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := databasemigrationservice.NewDescribeReplicationTasksPaginator(client.Databasemigrationserviceconn, &databasemigrationservice.DescribeReplicationTasksInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ReplicationTasks {
 
@@ -29,10 +30,6 @@ func ListDmsReplicationTask(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

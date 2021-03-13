@@ -10,16 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEbsSnapshot(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeSnapshotsRequest(&ec2.DescribeSnapshotsInput{
-		OwnerIds: []string{"self"},
-	})
-
+func ListEbsSnapshot(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeSnapshotsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeSnapshotsPaginator(client.Ec2conn, &ec2.DescribeSnapshotsInput{
+		OwnerIds: []string{"self"},
+	})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Snapshots {
 			if *r.OwnerId != client.AccountID {
@@ -40,10 +41,6 @@ func ListEbsSnapshot(client *aws.Client) ([]terraform.Resource, error) {
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

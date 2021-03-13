@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAutoscalingGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Autoscalingconn.DescribeAutoScalingGroupsRequest(&autoscaling.DescribeAutoScalingGroupsInput{})
-
+func ListAutoscalingGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := autoscaling.NewDescribeAutoScalingGroupsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := autoscaling.NewDescribeAutoScalingGroupsPaginator(client.Autoscalingconn, &autoscaling.DescribeAutoScalingGroupsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.AutoScalingGroups {
 
@@ -36,10 +37,6 @@ func ListAutoscalingGroup(client *aws.Client) ([]terraform.Resource, error) {
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

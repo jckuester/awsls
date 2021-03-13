@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListMediaPackageChannel(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Mediapackageconn.ListChannelsRequest(&mediapackage.ListChannelsInput{})
-
+func ListMediaPackageChannel(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := mediapackage.NewListChannelsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := mediapackage.NewListChannelsPaginator(client.Mediapackageconn, &mediapackage.ListChannelsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Channels {
 
@@ -35,10 +36,6 @@ func ListMediaPackageChannel(client *aws.Client) ([]terraform.Resource, error) {
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

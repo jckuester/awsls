@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListServiceDiscoveryService(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Servicediscoveryconn.ListServicesRequest(&servicediscovery.ListServicesInput{})
-
+func ListServiceDiscoveryService(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := servicediscovery.NewListServicesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := servicediscovery.NewListServicesPaginator(client.Servicediscoveryconn, &servicediscovery.ListServicesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Services {
 
@@ -32,10 +33,6 @@ func ListServiceDiscoveryService(client *aws.Client) ([]terraform.Resource, erro
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDynamodbGlobalTable(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Dynamodbconn.ListGlobalTablesRequest(&dynamodb.ListGlobalTablesInput{})
-
+func ListDynamodbGlobalTable(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Dynamodbconn.ListGlobalTables(ctx, &dynamodb.ListGlobalTablesInput{})
 	if err != nil {
 		return nil, err
 	}

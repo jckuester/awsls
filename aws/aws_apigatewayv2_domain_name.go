@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListApigatewayv2DomainName(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Apigatewayv2conn.GetDomainNamesRequest(&apigatewayv2.GetDomainNamesInput{})
-
+func ListApigatewayv2DomainName(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Apigatewayv2conn.GetDomainNames(ctx, &apigatewayv2.GetDomainNamesInput{})
 	if err != nil {
 		return nil, err
 	}

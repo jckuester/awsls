@@ -12,16 +12,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListInstance(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeInstancesRequest(&ec2.DescribeInstancesInput{})
-
+func ListInstance(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeInstancesPaginator(req)
-	for p.Next(context.Background()) {
-		page := p.CurrentPage()
+	p := ec2.NewDescribeInstancesPaginator(client.Ec2conn, &ec2.DescribeInstancesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
-		for _, reservations := range page.Reservations {
+		for _, reservations := range resp.Reservations {
 			if *reservations.OwnerId != client.AccountID {
 				continue
 			}
@@ -44,10 +45,6 @@ func ListInstance(client *aws.Client) ([]terraform.Resource, error) {
 				})
 			}
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

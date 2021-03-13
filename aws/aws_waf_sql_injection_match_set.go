@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafSqlInjectionMatchSet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafconn.ListSqlInjectionMatchSetsRequest(&waf.ListSqlInjectionMatchSetsInput{})
-
+func ListWafSqlInjectionMatchSet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafconn.ListSqlInjectionMatchSets(ctx, &waf.ListSqlInjectionMatchSetsInput{})
 	if err != nil {
 		return nil, err
 	}

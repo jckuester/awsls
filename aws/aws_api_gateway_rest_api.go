@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListApiGatewayRestApi(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Apigatewayconn.GetRestApisRequest(&apigateway.GetRestApisInput{})
-
+func ListApiGatewayRestApi(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := apigateway.NewGetRestApisPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := apigateway.NewGetRestApisPaginator(client.Apigatewayconn, &apigateway.GetRestApisInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Items {
 
@@ -35,10 +36,6 @@ func ListApiGatewayRestApi(client *aws.Client) ([]terraform.Resource, error) {
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

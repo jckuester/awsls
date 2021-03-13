@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListVpcEndpoint(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeVpcEndpointsRequest(&ec2.DescribeVpcEndpointsInput{})
-
+func ListVpcEndpoint(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeVpcEndpointsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeVpcEndpointsPaginator(client.Ec2conn, &ec2.DescribeVpcEndpointsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.VpcEndpoints {
 			if *r.OwnerId != client.AccountID {
@@ -38,10 +39,6 @@ func ListVpcEndpoint(client *aws.Client) ([]terraform.Resource, error) {
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRedshiftSubnetGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Redshiftconn.DescribeClusterSubnetGroupsRequest(&redshift.DescribeClusterSubnetGroupsInput{})
-
+func ListRedshiftSubnetGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := redshift.NewDescribeClusterSubnetGroupsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := redshift.NewDescribeClusterSubnetGroupsPaginator(client.Redshiftconn, &redshift.DescribeClusterSubnetGroupsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ClusterSubnetGroups {
 
@@ -35,10 +36,6 @@ func ListRedshiftSubnetGroup(client *aws.Client) ([]terraform.Resource, error) {
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

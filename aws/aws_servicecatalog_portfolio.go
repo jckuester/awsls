@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListServicecatalogPortfolio(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Servicecatalogconn.ListPortfoliosRequest(&servicecatalog.ListPortfoliosInput{})
-
+func ListServicecatalogPortfolio(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := servicecatalog.NewListPortfoliosPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := servicecatalog.NewListPortfoliosPaginator(client.Servicecatalogconn, &servicecatalog.ListPortfoliosInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.PortfolioDetails {
 
@@ -32,10 +33,6 @@ func ListServicecatalogPortfolio(client *aws.Client) ([]terraform.Resource, erro
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

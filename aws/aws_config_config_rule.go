@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListConfigConfigRule(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Configserviceconn.DescribeConfigRulesRequest(&configservice.DescribeConfigRulesInput{})
-
+func ListConfigConfigRule(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Configserviceconn.DescribeConfigRules(ctx, &configservice.DescribeConfigRulesInput{})
 	if err != nil {
 		return nil, err
 	}

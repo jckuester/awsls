@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafRule(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafconn.ListRulesRequest(&waf.ListRulesInput{})
-
+func ListWafRule(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafconn.ListRules(ctx, &waf.ListRulesInput{})
 	if err != nil {
 		return nil, err
 	}

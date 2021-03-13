@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafv2WebAclLoggingConfiguration(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafv2conn.ListLoggingConfigurationsRequest(&wafv2.ListLoggingConfigurationsInput{})
-
+func ListWafv2WebAclLoggingConfiguration(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafv2conn.ListLoggingConfigurations(ctx, &wafv2.ListLoggingConfigurationsInput{})
 	if err != nil {
 		return nil, err
 	}

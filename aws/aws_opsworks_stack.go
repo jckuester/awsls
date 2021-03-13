@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListOpsworksStack(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Opsworksconn.DescribeStacksRequest(&opsworks.DescribeStacksInput{})
-
+func ListOpsworksStack(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Opsworksconn.DescribeStacks(ctx, &opsworks.DescribeStacksInput{})
 	if err != nil {
 		return nil, err
 	}

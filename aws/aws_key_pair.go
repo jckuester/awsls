@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListKeyPair(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeKeyPairsRequest(&ec2.DescribeKeyPairsInput{})
-
+func ListKeyPair(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Ec2conn.DescribeKeyPairs(ctx, &ec2.DescribeKeyPairsInput{})
 	if err != nil {
 		return nil, err
 	}

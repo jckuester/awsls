@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListKinesisFirehoseDeliveryStream(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Firehoseconn.ListDeliveryStreamsRequest(&firehose.ListDeliveryStreamsInput{})
-
+func ListKinesisFirehoseDeliveryStream(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Firehoseconn.ListDeliveryStreams(ctx, &firehose.ListDeliveryStreamsInput{})
 	if err != nil {
 		return nil, err
 	}

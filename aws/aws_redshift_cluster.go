@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRedshiftCluster(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Redshiftconn.DescribeClustersRequest(&redshift.DescribeClustersInput{})
-
+func ListRedshiftCluster(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := redshift.NewDescribeClustersPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := redshift.NewDescribeClustersPaginator(client.Redshiftconn, &redshift.DescribeClustersInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Clusters {
 
@@ -35,10 +36,6 @@ func ListRedshiftCluster(client *aws.Client) ([]terraform.Resource, error) {
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

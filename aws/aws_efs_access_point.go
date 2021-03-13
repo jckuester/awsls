@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEfsAccessPoint(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Efsconn.DescribeAccessPointsRequest(&efs.DescribeAccessPointsInput{})
-
+func ListEfsAccessPoint(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := efs.NewDescribeAccessPointsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := efs.NewDescribeAccessPointsPaginator(client.Efsconn, &efs.DescribeAccessPointsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.AccessPoints {
 			if *r.OwnerId != client.AccountID {
@@ -37,10 +38,6 @@ func ListEfsAccessPoint(client *aws.Client) ([]terraform.Resource, error) {
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafRegexMatchSet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafconn.ListRegexMatchSetsRequest(&waf.ListRegexMatchSetsInput{})
-
+func ListWafRegexMatchSet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafconn.ListRegexMatchSets(ctx, &waf.ListRegexMatchSetsInput{})
 	if err != nil {
 		return nil, err
 	}

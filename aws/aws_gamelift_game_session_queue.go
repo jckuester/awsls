@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListGameliftGameSessionQueue(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Gameliftconn.DescribeGameSessionQueuesRequest(&gamelift.DescribeGameSessionQueuesInput{})
-
+func ListGameliftGameSessionQueue(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.GameSessionQueues) > 0 {
+	p := gamelift.NewDescribeGameSessionQueuesPaginator(client.Gameliftconn, &gamelift.DescribeGameSessionQueuesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.GameSessionQueues {
 

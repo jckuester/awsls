@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2TrafficMirrorSession(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeTrafficMirrorSessionsRequest(&ec2.DescribeTrafficMirrorSessionsInput{})
-
+func ListEc2TrafficMirrorSession(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeTrafficMirrorSessionsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeTrafficMirrorSessionsPaginator(client.Ec2conn, &ec2.DescribeTrafficMirrorSessionsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.TrafficMirrorSessions {
 			if *r.OwnerId != client.AccountID {
@@ -37,10 +38,6 @@ func ListEc2TrafficMirrorSession(client *aws.Client) ([]terraform.Resource, erro
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

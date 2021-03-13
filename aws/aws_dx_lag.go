@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDxLag(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Directconnectconn.DescribeLagsRequest(&directconnect.DescribeLagsInput{})
-
+func ListDxLag(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Directconnectconn.DescribeLags(ctx, &directconnect.DescribeLagsInput{})
 	if err != nil {
 		return nil, err
 	}

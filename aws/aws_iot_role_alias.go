@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListIotRoleAlias(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Iotconn.ListRoleAliasesRequest(&iot.ListRoleAliasesInput{})
-
+func ListIotRoleAlias(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.RoleAliases) > 0 {
+	p := iot.NewListRoleAliasesPaginator(client.Iotconn, &iot.ListRoleAliasesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.RoleAliases {
 

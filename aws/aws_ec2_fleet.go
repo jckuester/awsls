@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2Fleet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeFleetsRequest(&ec2.DescribeFleetsInput{})
-
+func ListEc2Fleet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeFleetsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeFleetsPaginator(client.Ec2conn, &ec2.DescribeFleetsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Fleets {
 
@@ -36,10 +37,6 @@ func ListEc2Fleet(client *aws.Client) ([]terraform.Resource, error) {
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

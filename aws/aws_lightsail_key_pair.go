@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLightsailKeyPair(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Lightsailconn.GetKeyPairsRequest(&lightsail.GetKeyPairsInput{})
-
+func ListLightsailKeyPair(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Lightsailconn.GetKeyPairs(ctx, &lightsail.GetKeyPairsInput{})
 	if err != nil {
 		return nil, err
 	}

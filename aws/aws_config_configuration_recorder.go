@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListConfigConfigurationRecorder(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Configserviceconn.DescribeConfigurationRecordersRequest(&configservice.DescribeConfigurationRecordersInput{})
-
+func ListConfigConfigurationRecorder(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Configserviceconn.DescribeConfigurationRecorders(ctx, &configservice.DescribeConfigurationRecordersInput{})
 	if err != nil {
 		return nil, err
 	}

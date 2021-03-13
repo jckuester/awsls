@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListVpnGateway(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeVpnGatewaysRequest(&ec2.DescribeVpnGatewaysInput{})
-
+func ListVpnGateway(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Ec2conn.DescribeVpnGateways(ctx, &ec2.DescribeVpnGatewaysInput{})
 	if err != nil {
 		return nil, err
 	}

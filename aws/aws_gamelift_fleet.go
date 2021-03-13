@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListGameliftFleet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Gameliftconn.ListFleetsRequest(&gamelift.ListFleetsInput{})
-
+func ListGameliftFleet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.FleetIds) > 0 {
+	p := gamelift.NewListFleetsPaginator(client.Gameliftconn, &gamelift.ListFleetsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.FleetIds {
 

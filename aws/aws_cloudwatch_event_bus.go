@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudwatchEventBus(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Cloudwatcheventsconn.ListEventBusesRequest(&cloudwatchevents.ListEventBusesInput{})
-
+func ListCloudwatchEventBus(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Cloudwatcheventsconn.ListEventBuses(ctx, &cloudwatchevents.ListEventBusesInput{})
 	if err != nil {
 		return nil, err
 	}

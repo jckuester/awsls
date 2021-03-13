@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListElasticBeanstalkApplication(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Elasticbeanstalkconn.DescribeApplicationsRequest(&elasticbeanstalk.DescribeApplicationsInput{})
-
+func ListElasticBeanstalkApplication(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Elasticbeanstalkconn.DescribeApplications(ctx, &elasticbeanstalk.DescribeApplicationsInput{})
 	if err != nil {
 		return nil, err
 	}

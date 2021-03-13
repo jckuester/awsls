@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListApiGatewayUsagePlan(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Apigatewayconn.GetUsagePlansRequest(&apigateway.GetUsagePlansInput{})
-
+func ListApiGatewayUsagePlan(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := apigateway.NewGetUsagePlansPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := apigateway.NewGetUsagePlansPaginator(client.Apigatewayconn, &apigateway.GetUsagePlansInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Items {
 
@@ -35,10 +36,6 @@ func ListApiGatewayUsagePlan(client *aws.Client) ([]terraform.Resource, error) {
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

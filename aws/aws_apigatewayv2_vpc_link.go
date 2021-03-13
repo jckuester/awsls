@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListApigatewayv2VpcLink(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Apigatewayv2conn.GetVpcLinksRequest(&apigatewayv2.GetVpcLinksInput{})
-
+func ListApigatewayv2VpcLink(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Apigatewayv2conn.GetVpcLinks(ctx, &apigatewayv2.GetVpcLinksInput{})
 	if err != nil {
 		return nil, err
 	}

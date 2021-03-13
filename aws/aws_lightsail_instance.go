@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLightsailInstance(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Lightsailconn.GetInstancesRequest(&lightsail.GetInstancesInput{})
-
+func ListLightsailInstance(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Lightsailconn.GetInstances(ctx, &lightsail.GetInstancesInput{})
 	if err != nil {
 		return nil, err
 	}

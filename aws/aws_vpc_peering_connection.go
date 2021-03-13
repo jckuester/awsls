@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListVpcPeeringConnection(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeVpcPeeringConnectionsRequest(&ec2.DescribeVpcPeeringConnectionsInput{})
-
+func ListVpcPeeringConnection(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeVpcPeeringConnectionsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeVpcPeeringConnectionsPaginator(client.Ec2conn, &ec2.DescribeVpcPeeringConnectionsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.VpcPeeringConnections {
 
@@ -35,10 +36,6 @@ func ListVpcPeeringConnection(client *aws.Client) ([]terraform.Resource, error) 
 				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

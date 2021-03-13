@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListVpcEndpointService(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeVpcEndpointServicesRequest(&ec2.DescribeVpcEndpointServicesInput{})
-
+func ListVpcEndpointService(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Ec2conn.DescribeVpcEndpointServices(ctx, &ec2.DescribeVpcEndpointServicesInput{})
 	if err != nil {
 		return nil, err
 	}

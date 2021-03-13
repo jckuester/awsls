@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEcsTaskDefinition(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ecsconn.ListTaskDefinitionsRequest(&ecs.ListTaskDefinitionsInput{})
-
+func ListEcsTaskDefinition(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ecs.NewListTaskDefinitionsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ecs.NewListTaskDefinitionsPaginator(client.Ecsconn, &ecs.ListTaskDefinitionsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.TaskDefinitionArns {
 
@@ -29,10 +30,6 @@ func ListEcsTaskDefinition(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

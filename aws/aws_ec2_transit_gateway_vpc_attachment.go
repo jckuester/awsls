@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2TransitGatewayVpcAttachment(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeTransitGatewayVpcAttachmentsRequest(&ec2.DescribeTransitGatewayVpcAttachmentsInput{})
-
+func ListEc2TransitGatewayVpcAttachment(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeTransitGatewayVpcAttachmentsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeTransitGatewayVpcAttachmentsPaginator(client.Ec2conn, &ec2.DescribeTransitGatewayVpcAttachmentsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.TransitGatewayVpcAttachments {
 
@@ -36,10 +37,6 @@ func ListEc2TransitGatewayVpcAttachment(client *aws.Client) ([]terraform.Resourc
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

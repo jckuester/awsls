@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCodebuildSourceCredential(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Codebuildconn.ListSourceCredentialsRequest(&codebuild.ListSourceCredentialsInput{})
-
+func ListCodebuildSourceCredential(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Codebuildconn.ListSourceCredentials(ctx, &codebuild.ListSourceCredentialsInput{})
 	if err != nil {
 		return nil, err
 	}

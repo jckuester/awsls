@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudwatchLogResourcePolicy(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Cloudwatchlogsconn.DescribeResourcePoliciesRequest(&cloudwatchlogs.DescribeResourcePoliciesInput{})
-
+func ListCloudwatchLogResourcePolicy(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Cloudwatchlogsconn.DescribeResourcePolicies(ctx, &cloudwatchlogs.DescribeResourcePoliciesInput{})
 	if err != nil {
 		return nil, err
 	}

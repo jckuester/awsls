@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCodedeployDeploymentConfig(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Codedeployconn.ListDeploymentConfigsRequest(&codedeploy.ListDeploymentConfigsInput{})
-
+func ListCodedeployDeploymentConfig(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := codedeploy.NewListDeploymentConfigsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := codedeploy.NewListDeploymentConfigsPaginator(client.Codedeployconn, &codedeploy.ListDeploymentConfigsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.DeploymentConfigsList {
 
@@ -29,10 +30,6 @@ func ListCodedeployDeploymentConfig(client *aws.Client) ([]terraform.Resource, e
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

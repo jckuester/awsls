@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEip(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeAddressesRequest(&ec2.DescribeAddressesInput{})
-
+func ListEip(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Ec2conn.DescribeAddresses(ctx, &ec2.DescribeAddressesInput{})
 	if err != nil {
 		return nil, err
 	}

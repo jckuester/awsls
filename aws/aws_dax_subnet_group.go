@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDaxSubnetGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Daxconn.DescribeSubnetGroupsRequest(&dax.DescribeSubnetGroupsInput{})
-
+func ListDaxSubnetGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Daxconn.DescribeSubnetGroups(ctx, &dax.DescribeSubnetGroupsInput{})
 	if err != nil {
 		return nil, err
 	}

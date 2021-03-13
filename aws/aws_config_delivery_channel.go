@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListConfigDeliveryChannel(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Configserviceconn.DescribeDeliveryChannelsRequest(&configservice.DescribeDeliveryChannelsInput{})
-
+func ListConfigDeliveryChannel(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Configserviceconn.DescribeDeliveryChannels(ctx, &configservice.DescribeDeliveryChannelsInput{})
 	if err != nil {
 		return nil, err
 	}

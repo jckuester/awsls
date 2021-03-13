@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSesConfigurationSet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Sesconn.ListConfigurationSetsRequest(&ses.ListConfigurationSetsInput{})
-
+func ListSesConfigurationSet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Sesconn.ListConfigurationSets(ctx, &ses.ListConfigurationSetsInput{})
 	if err != nil {
 		return nil, err
 	}

@@ -11,14 +11,12 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAmi(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeImagesRequest(&ec2.DescribeImagesInput{
-		Owners: []string{"self"},
-	})
-
+func ListAmi(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Ec2conn.DescribeImages(ctx, &ec2.DescribeImagesInput{
+		Owners: []string{"self"},
+	})
 	if err != nil {
 		return nil, err
 	}

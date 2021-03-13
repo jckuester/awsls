@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListPlacementGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribePlacementGroupsRequest(&ec2.DescribePlacementGroupsInput{})
-
+func ListPlacementGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Ec2conn.DescribePlacementGroups(ctx, &ec2.DescribePlacementGroupsInput{})
 	if err != nil {
 		return nil, err
 	}

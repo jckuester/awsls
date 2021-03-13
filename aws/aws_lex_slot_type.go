@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLexSlotType(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Lexmodelbuildingserviceconn.GetSlotTypesRequest(&lexmodelbuildingservice.GetSlotTypesInput{})
-
+func ListLexSlotType(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := lexmodelbuildingservice.NewGetSlotTypesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := lexmodelbuildingservice.NewGetSlotTypesPaginator(client.Lexmodelbuildingserviceconn, &lexmodelbuildingservice.GetSlotTypesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.SlotTypes {
 
@@ -29,10 +30,6 @@ func ListLexSlotType(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil
