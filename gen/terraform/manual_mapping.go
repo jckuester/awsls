@@ -5,15 +5,15 @@ package terraform
 // ManualResourceServiceMap manually matches some resources to its AWS service since the
 // service couldn't be automatically discovered.
 var ManualResourceServiceMap = map[string]string{
-	"aws_alb":                                 "elasticloadbalancingv2",
+	"aws_alb":                                 "elbv2",
 	"aws_autoscaling_group":                   "autoscaling",
 	"aws_efs_mount_target":                    "efs",
 	"aws_elastic_beanstalk_environment":       "elasticbeanstalk",
-	"aws_elb":                                 "elasticloadbalancing",
+	"aws_elb":                                 "elb",
 	"aws_iam_server_certificate":              "iam",
 	"aws_lambda_event_source_mapping":         "lambda",
 	"aws_launch_configuration":                "autoscaling",
-	"aws_lb":                                  "elasticloadbalancingv2",
+	"aws_lb":                                  "elbv2",
 	"aws_s3_bucket":                           "s3",
 	"aws_s3_bucket_object":                    "s3",
 	"aws_s3_bucket_public_access_block":       "s3",
@@ -29,11 +29,4 @@ var ManualResourceServiceMap = map[string]string{
 	"aws_wafregional_sql_injection_match_set": "wafregional",
 	"aws_wafregional_web_acl":                 "wafregional",
 	"aws_wafregional_xss_match_set":           "wafregional",
-}
-
-// AWSServicesV1toV2 is a mapping from service names in AWS API v1 (used by Terraform)
-// that have different names in v2 (used by this project in the generated code).
-var AWSServicesV1toV2 = map[string]string{
-	"elb":   "elasticloadbalancing",
-	"elbv2": "elasticloadbalancingv2",
 }

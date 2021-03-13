@@ -38,6 +38,7 @@ func listByTypeGoCode(rTypes []aws.ResourceType) string {
 }
 
 var listByTypeTmpl = template.Must(template.New("listByType").Parse(`import(
+"context"
 "fmt"
 "time"
 
@@ -45,10 +46,10 @@ var listByTypeTmpl = template.Must(template.New("listByType").Parse(`import(
 "github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListResourcesByType(client *aws.Client, resourceType string) ([]terraform.Resource, error) {
+func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType string) ([]terraform.Resource, error) {
 	switch resourceType {
 	{{ range . }}case "{{ .Name }}":
-	return {{ .ListFunctionName }}(client)
+	return {{ .ListFunctionName }}(ctx, client)
 	{{ end }}default:
 		return nil, fmt.Errorf("resource type is not (yet) supported: %s", resourceType)
 	}

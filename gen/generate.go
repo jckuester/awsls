@@ -16,13 +16,14 @@ import (
 	"github.com/apex/log/handlers/cli"
 	"github.com/jckuester/awsls/gen/aws"
 	"github.com/jckuester/awsls/gen/terraform"
+	"github.com/jckuester/awsls/gen/util"
 )
 
 const (
 	outputPathAWS                = "../aws"
 	outputPathResource           = "../resource"
 	terraformAwsProviderRepoPath = "/home/jan/git/github.com/terraform-provider-aws"
-	awsSdkGoRepoPath             = "/home/jan/git/github.com/aws-sdk-go-v2"
+	awsSdkGoRepoPath             = "/home/jan/git/github.com/aws-sdk-go"
 )
 
 func main() {
@@ -94,23 +95,27 @@ func main() {
 	}
 
 	services := aws.ResourceTypesForAWSServices(resourceServices)
+
+	var serviceNamesUsedByTerraform []string
+	for _, s := range services {
+		serviceNamesUsedByTerraform = append(serviceNamesUsedByTerraform, s.Name)
+	}
+
 	servicePkgNames := aws.ServicePkgNames(apis)
 
 	log.Infof("AWS generatedServices covered by Terraform: %d/%d", len(services), len(servicePkgNames))
 
-	/*
-		log.Debugf("AWS generatedServices not covered:")
-		diff := util.Difference(servicePkgNames, services)
-		for _, d := range diff {
-			log.Debugf("\t%s", d)
-		}
+	log.Debugf("AWS generatedServices not covered by Terraform:")
+	diff := util.Difference(servicePkgNames, serviceNamesUsedByTerraform)
+	for _, d := range diff {
+		log.Debugf("\t%s", d)
+	}
 
-		log.Warn("AWS generatedServices used by Terraform that are named differently in AWS API v2:")
-		diff = util.Difference(services, servicePkgNames)
-		for _, d := range diff {
-			log.Warnf("\t: %s", d)
-		}
-	*/
+	log.Warn("AWS generatedServices used by Terraform that are named differently in AWS API v2:")
+	diff = util.Difference(serviceNamesUsedByTerraform, servicePkgNames)
+	for _, d := range diff {
+		log.Warnf("\t: %s", d)
+	}
 
 	generatedServices := aws.GenerateListFunctions(outputPathAWS, services, resourceIDs, resourceTypesWithTags, apis)
 

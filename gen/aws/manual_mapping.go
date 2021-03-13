@@ -9,6 +9,31 @@ var excludeServices = map[string]struct{}{
 
 // some resource types are excluded as they need be handled slightly differently
 var ExcludedResourceTypes = map[string]bool{
+	// removed from AWS SDK?
+	"aws_simpledb_domain":                           true,
+	"aws_imagebuilder_component":                    true,
+	"aws_imagebuilder_distribution_configuration":   true,
+	"aws_imagebuilder_image":                        true,
+	"aws_imagebuilder_image_pipeline":               true,
+	"aws_imagebuilder_image_recipe":                 true,
+	"aws_imagebuilder_infrastructure_configuration": true,
+	"aws_kinesis_stream":                            true,
+	"aws_prometheus_workspace":                      true,
+	"aws_route53_resolver_dnssec_config":            true,
+	"aws_sagemaker_feature_group":                   true,
+	"aws_wafregional_byte_match_set":                true,
+	"aws_wafregional_geo_match_set":                 true,
+	"aws_wafregional_ipset":                         true,
+	"aws_wafregional_rate_based_rule":               true,
+	"aws_wafregional_regex_match_set":               true,
+	"aws_wafregional_regex_pattern_set":             true,
+	"aws_wafregional_rule":                          true,
+	"aws_wafregional_rule_group":                    true,
+	"aws_wafregional_size_constraint_set":           true,
+	"aws_wafregional_sql_injection_match_set":       true,
+	"aws_wafregional_web_acl":                       true,
+	"aws_wafregional_xss_match_set":                 true,
+
 	// not a resource
 	"aws_api_gateway_integration": true,
 	// is not a resource
@@ -122,4 +147,11 @@ OwnerIds: []string{"self"},
 	"aws_ami": `
 Owners: []string{"self"},
 `,
+}
+
+// AWSServicesV1toV2 is a mapping from service names in AWS API v1 (used by Terraform)
+// that have different names in v2 (used by this project in the generated code).
+var AWSServicesV1toV2 = map[string]string{
+	"elb":   "elasticloadbalancing",
+	"elbv2": "elasticloadbalancingv2",
 }

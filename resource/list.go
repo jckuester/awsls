@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"sync"
@@ -43,20 +44,20 @@ func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 
 		wg.Add(1)
 
-		go func(client aws.Client) {
+		go func(client *aws.Client) {
 			defer wg.Done()
 
 			// Acquire a semaphore so that we can limit concurrency
 			sem.Acquire()
 			defer sem.Release()
 
-			err := client.SetAccountID()
+			err := client.SetAccountID(context.Background())
 			if err != nil {
 				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
 				return
 			}
 
-			resources, err := awsls.ListResourcesByType(&client, rType)
+			resources, err := awsls.ListResourcesByType(context.Background(), client, rType)
 			if err != nil {
 				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
 				return
@@ -76,7 +77,7 @@ func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 			result.Lock()
 			result.Resources = append(result.Resources, resources...)
 			result.Unlock()
-		}(client)
+		}(&client)
 	}
 
 	// Wait until listing resources of this type completes for every account and region
