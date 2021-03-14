@@ -9,6 +9,7 @@ var excludeServices = map[string]struct{}{
 
 // some resource types are excluded as they need be handled slightly differently
 var ExcludedResourceTypes = map[string]bool{
+	"aws_route53_resolver_dnssec_config":      true,
 	"aws_prometheus_workspace":                true,
 	"aws_simpledb_domain":                     true,
 	"aws_wafregional_byte_match_set":          true,
@@ -104,27 +105,29 @@ var ManualMatchedOutputFields = map[string]string{
 }
 
 var ManualMatchedResourceID = map[string]string{
-	"aws_ami":                                       "ImageId",
-	"aws_autoscaling_group":                         "AutoScalingGroupName",
-	"aws_launch_configuration":                      "LaunchConfigurationName",
-	"aws_s3_bucket":                                 "Name",
-	"aws_elb":                                       "LoadBalancerName",
-	"aws_db_instance":                               "DBInstanceIdentifier",
-	"aws_route53_zone":                              "Id",
-	"aws_ses_email_identity":                        "EmailAddress",
-	"aws_ses_domain_identity":                       "Domain",
-	"aws_simpledb_domain":                           "DomainName",
-	"aws_workspaces_workspace":                      "WorkspaceId",
-	"aws_subnet":                                    "SubnetId",
-	"aws_imagebuilder_component":                    "Arn",
+	"aws_ami":                    "ImageId",
+	"aws_autoscaling_group":      "AutoScalingGroupName",
+	"aws_db_instance":            "DBInstanceIdentifier",
+	"aws_elb":                    "LoadBalancerName",
+	"aws_imagebuilder_component": "Arn",
 	"aws_imagebuilder_distribution_configuration":   "Arn",
-	"aws_imagebuilder_infrastructure_configuration": "Arn",
 	"aws_imagebuilder_image":                        "Arn",
 	"aws_imagebuilder_image_pipeline":               "Arn",
 	"aws_imagebuilder_image_recipe":                 "Arn",
-	"aws_workspaces_directory":                      "DirectoryId",
+	"aws_imagebuilder_infrastructure_configuration": "Arn",
+	"aws_launch_configuration":                      "LaunchConfigurationName",
+	"aws_networkfirewall_firewall_policy":           "Arn",
+	"aws_networkfirewall_rule_group":                "Arn",
 	"aws_rds_cluster":                               "DBClusterIdentifier",
 	"aws_rds_cluster_endpoint":                      "DBClusterEndpointIdentifier",
+	"aws_route53_zone":                              "Id",
+	"aws_s3_bucket":                                 "Name",
+	"aws_ses_domain_identity":                       "Domain",
+	"aws_ses_email_identity":                        "EmailAddress",
+	"aws_simpledb_domain":                           "DomainName",
+	"aws_subnet":                                    "SubnetId",
+	"aws_workspaces_directory":                      "DirectoryId",
+	"aws_workspaces_workspace":                      "WorkspaceId",
 }
 
 var Inputs = map[string]string{
