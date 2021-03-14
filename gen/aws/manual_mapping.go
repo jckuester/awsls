@@ -9,30 +9,20 @@ var excludeServices = map[string]struct{}{
 
 // some resource types are excluded as they need be handled slightly differently
 var ExcludedResourceTypes = map[string]bool{
-	// removed from AWS SDK?
-	"aws_simpledb_domain":                           true,
-	"aws_imagebuilder_component":                    true,
-	"aws_imagebuilder_distribution_configuration":   true,
-	"aws_imagebuilder_image":                        true,
-	"aws_imagebuilder_image_pipeline":               true,
-	"aws_imagebuilder_image_recipe":                 true,
-	"aws_imagebuilder_infrastructure_configuration": true,
-	"aws_kinesis_stream":                            true,
-	"aws_prometheus_workspace":                      true,
-	"aws_route53_resolver_dnssec_config":            true,
-	"aws_sagemaker_feature_group":                   true,
-	"aws_wafregional_byte_match_set":                true,
-	"aws_wafregional_geo_match_set":                 true,
-	"aws_wafregional_ipset":                         true,
-	"aws_wafregional_rate_based_rule":               true,
-	"aws_wafregional_regex_match_set":               true,
-	"aws_wafregional_regex_pattern_set":             true,
-	"aws_wafregional_rule":                          true,
-	"aws_wafregional_rule_group":                    true,
-	"aws_wafregional_size_constraint_set":           true,
-	"aws_wafregional_sql_injection_match_set":       true,
-	"aws_wafregional_web_acl":                       true,
-	"aws_wafregional_xss_match_set":                 true,
+	"aws_prometheus_workspace":                true,
+	"aws_simpledb_domain":                     true,
+	"aws_wafregional_byte_match_set":          true,
+	"aws_wafregional_geo_match_set":           true,
+	"aws_wafregional_ipset":                   true,
+	"aws_wafregional_rate_based_rule":         true,
+	"aws_wafregional_regex_match_set":         true,
+	"aws_wafregional_regex_pattern_set":       true,
+	"aws_wafregional_rule":                    true,
+	"aws_wafregional_rule_group":              true,
+	"aws_wafregional_size_constraint_set":     true,
+	"aws_wafregional_sql_injection_match_set": true,
+	"aws_wafregional_web_acl":                 true,
+	"aws_wafregional_xss_match_set":           true,
 
 	// not a resource
 	"aws_api_gateway_integration": true,
@@ -154,4 +144,18 @@ Owners: []string{"self"},
 var AWSServicesV1toV2 = map[string]string{
 	"elb":   "elasticloadbalancing",
 	"elbv2": "elasticloadbalancingv2",
+}
+
+// missingPaginatorAPI contains resource types for which pagination is possible,
+// but the paginator API is missing in the aws-sdk-go-v2 API.
+var missingPaginatorAPI = map[string]bool{
+	"aws_imagebuilder_component":                    true,
+	"aws_imagebuilder_distribution_configuration":   true,
+	"aws_imagebuilder_image":                        true,
+	"aws_imagebuilder_image_pipeline":               true,
+	"aws_imagebuilder_image_recipe":                 true,
+	"aws_imagebuilder_infrastructure_configuration": true,
+	"aws_kinesis_stream":                            true,
+	"aws_route53_resolver_dnssec_config":            true,
+	"aws_sagemaker_feature_group":                   true,
 }

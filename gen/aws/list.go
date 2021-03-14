@@ -101,6 +101,10 @@ func GenerateListFunctions(outputPath string, services []Service, resourceIDs ma
 			if ok {
 				op.Service = serviceV2
 			}
+			_, noPaginator := missingPaginatorAPI[rType.Name]
+			if noPaginator {
+				op.Paginator = nil
+			}
 			op.OutputFieldName = outputFieldName
 			op.OutputFieldType = outputFieldType
 			op.TerraformType = rType.Name
