@@ -29,7 +29,6 @@ func ListGlueCrawler(ctx context.Context, client *aws.Client) ([]terraform.Resou
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}

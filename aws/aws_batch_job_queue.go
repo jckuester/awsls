@@ -22,18 +22,12 @@ func ListBatchJobQueue(ctx context.Context, client *aws.Client) ([]terraform.Res
 
 		for _, r := range resp.JobQueues {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_batch_job_queue",
 				ID:        *r.JobQueueArn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

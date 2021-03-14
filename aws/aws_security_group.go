@@ -24,10 +24,6 @@ func ListSecurityGroup(ctx context.Context, client *aws.Client) ([]terraform.Res
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_security_group",
@@ -35,7 +31,6 @@ func ListSecurityGroup(ctx context.Context, client *aws.Client) ([]terraform.Res
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

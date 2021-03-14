@@ -25,7 +25,6 @@ func ListRoute53ResolverRule(ctx context.Context, client *aws.Client) ([]terrafo
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
-
 			t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.CreationTime)
 			if err != nil {
 				return nil, err
@@ -36,7 +35,6 @@ func ListRoute53ResolverRule(ctx context.Context, client *aws.Client) ([]terrafo
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}

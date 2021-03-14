@@ -22,18 +22,12 @@ func ListPlacementGroup(ctx context.Context, client *aws.Client) ([]terraform.Re
 
 		for _, r := range resp.PlacementGroups {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_placement_group",
 				ID:        *r.GroupName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

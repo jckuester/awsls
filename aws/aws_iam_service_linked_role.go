@@ -22,10 +22,6 @@ func ListIamServiceLinkedRole(ctx context.Context, client *aws.Client) ([]terraf
 
 		for _, r := range resp.Roles {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreateDate
 			result = append(result, terraform.Resource{
 				Type:      "aws_iam_service_linked_role",
@@ -33,7 +29,6 @@ func ListIamServiceLinkedRole(ctx context.Context, client *aws.Client) ([]terraf
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

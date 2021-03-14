@@ -22,18 +22,12 @@ func ListEip(ctx context.Context, client *aws.Client) ([]terraform.Resource, err
 
 		for _, r := range resp.Addresses {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_eip",
 				ID:        *r.AllocationId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

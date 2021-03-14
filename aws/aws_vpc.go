@@ -24,10 +24,6 @@ func ListVpc(ctx context.Context, client *aws.Client) ([]terraform.Resource, err
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_vpc",
@@ -35,7 +31,6 @@ func ListVpc(ctx context.Context, client *aws.Client) ([]terraform.Resource, err
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

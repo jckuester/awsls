@@ -29,7 +29,6 @@ func ListSagemakerModelPackageGroup(ctx context.Context, client *aws.Client) ([]
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}

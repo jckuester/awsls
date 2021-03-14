@@ -22,18 +22,12 @@ func ListVpcEndpointService(ctx context.Context, client *aws.Client) ([]terrafor
 
 		for _, r := range resp.ServiceDetails {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_vpc_endpoint_service",
 				ID:        *r.ServiceId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

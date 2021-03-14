@@ -22,18 +22,12 @@ func ListRedshiftSecurityGroup(ctx context.Context, client *aws.Client) ([]terra
 
 		for _, r := range resp.ClusterSecurityGroups {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_security_group",
 				ID:        *r.ClusterSecurityGroupName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

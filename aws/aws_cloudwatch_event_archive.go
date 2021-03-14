@@ -29,7 +29,6 @@ func ListCloudwatchEventArchive(ctx context.Context, client *aws.Client) ([]terr
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}

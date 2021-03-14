@@ -22,18 +22,12 @@ func ListApiGatewayUsagePlan(ctx context.Context, client *aws.Client) ([]terrafo
 
 		for _, r := range resp.Items {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_api_gateway_usage_plan",
 				ID:        *r.Id,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

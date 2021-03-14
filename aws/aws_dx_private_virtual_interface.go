@@ -22,18 +22,12 @@ func ListDxPrivateVirtualInterface(ctx context.Context, client *aws.Client) ([]t
 
 		for _, r := range resp.VirtualInterfaces {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_dx_private_virtual_interface",
 				ID:        *r.VirtualInterfaceId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

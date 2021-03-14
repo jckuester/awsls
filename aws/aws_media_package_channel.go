@@ -22,18 +22,12 @@ func ListMediaPackageChannel(ctx context.Context, client *aws.Client) ([]terrafo
 
 		for _, r := range resp.Channels {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_media_package_channel",
 				ID:        *r.Id,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

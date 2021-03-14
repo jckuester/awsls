@@ -22,18 +22,12 @@ func ListMqConfiguration(ctx context.Context, client *aws.Client) ([]terraform.R
 
 		for _, r := range resp.Configurations {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_mq_configuration",
 				ID:        *r.Id,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

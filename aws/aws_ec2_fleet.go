@@ -22,10 +22,6 @@ func ListEc2Fleet(ctx context.Context, client *aws.Client) ([]terraform.Resource
 
 		for _, r := range resp.Fleets {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreateTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_fleet",
@@ -33,7 +29,6 @@ func ListEc2Fleet(ctx context.Context, client *aws.Client) ([]terraform.Resource
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

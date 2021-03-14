@@ -22,18 +22,12 @@ func ListEc2TrafficMirrorFilter(ctx context.Context, client *aws.Client) ([]terr
 
 		for _, r := range resp.TrafficMirrorFilters {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_traffic_mirror_filter",
 				ID:        *r.TrafficMirrorFilterId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

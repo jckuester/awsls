@@ -22,10 +22,6 @@ func ListSpotFleetRequest(ctx context.Context, client *aws.Client) ([]terraform.
 
 		for _, r := range resp.SpotFleetRequestConfigs {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreateTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_spot_fleet_request",
@@ -33,7 +29,6 @@ func ListSpotFleetRequest(ctx context.Context, client *aws.Client) ([]terraform.
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

@@ -22,18 +22,12 @@ func ListVpcPeeringConnection(ctx context.Context, client *aws.Client) ([]terraf
 
 		for _, r := range resp.VpcPeeringConnections {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_vpc_peering_connection",
 				ID:        *r.VpcPeeringConnectionId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

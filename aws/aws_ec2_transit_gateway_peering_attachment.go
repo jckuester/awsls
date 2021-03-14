@@ -22,10 +22,6 @@ func ListEc2TransitGatewayPeeringAttachment(ctx context.Context, client *aws.Cli
 
 		for _, r := range resp.TransitGatewayPeeringAttachments {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_transit_gateway_peering_attachment",
@@ -33,7 +29,6 @@ func ListEc2TransitGatewayPeeringAttachment(ctx context.Context, client *aws.Cli
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

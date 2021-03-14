@@ -24,10 +24,6 @@ func ListVpcEndpoint(ctx context.Context, client *aws.Client) ([]terraform.Resou
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreationTimestamp
 			result = append(result, terraform.Resource{
 				Type:      "aws_vpc_endpoint",
@@ -35,7 +31,6 @@ func ListVpcEndpoint(ctx context.Context, client *aws.Client) ([]terraform.Resou
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

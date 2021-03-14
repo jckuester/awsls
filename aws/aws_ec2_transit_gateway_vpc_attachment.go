@@ -22,10 +22,6 @@ func ListEc2TransitGatewayVpcAttachment(ctx context.Context, client *aws.Client)
 
 		for _, r := range resp.TransitGatewayVpcAttachments {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_transit_gateway_vpc_attachment",
@@ -33,7 +29,6 @@ func ListEc2TransitGatewayVpcAttachment(ctx context.Context, client *aws.Client)
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

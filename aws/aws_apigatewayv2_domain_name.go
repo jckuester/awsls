@@ -22,18 +22,12 @@ func ListApigatewayv2DomainName(ctx context.Context, client *aws.Client) ([]terr
 
 		for _, r := range resp.Items {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_apigatewayv2_domain_name",
 				ID:        *r.DomainName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

@@ -7,7 +7,7 @@ A list command for AWS resources.
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
 awsls supports listing of [over 250 types of resources](#supported-resources)
-across 93 different AWS services. The goal is to code-generate a list function for
+across 95 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -96,7 +96,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 265 resource types across 93 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 273 resource types across 95 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -308,6 +308,13 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_iam_server_certificate |  |  |
 | aws_iam_service_linked_role |  |  x  |
 | aws_iam_user |  x  |  x  |
+| **imagebuilder** |
+| aws_imagebuilder_component |  x  |  |
+| aws_imagebuilder_distribution_configuration |  x  |  |
+| aws_imagebuilder_image |  x  |  |
+| aws_imagebuilder_image_pipeline |  x  |  |
+| aws_imagebuilder_image_recipe |  x  |  |
+| aws_imagebuilder_infrastructure_configuration |  x  |  |
 | **iot** |
 | aws_iot_certificate |  |  x  |
 | aws_iot_policy |  |  |
@@ -318,6 +325,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **kafka** |
 | aws_msk_cluster |  x  |  x  |
 | aws_msk_configuration |  |  x  |
+| **kinesis** |
+| aws_kinesis_stream |  x  |  |
 | **kinesisanalytics** |
 | aws_kinesis_analytics_application |  x  |  |
 | **kinesisanalyticsv2** |
@@ -397,6 +406,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_sagemaker_app_image_config |  |  x  |
 | aws_sagemaker_code_repository |  |  x  |
 | aws_sagemaker_endpoint |  x  |  x  |
+| aws_sagemaker_feature_group |  x  |  x  |
 | aws_sagemaker_model |  x  |  x  |
 | aws_sagemaker_model_package_group |  x  |  x  |
 | **secretsmanager** |

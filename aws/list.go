@@ -282,6 +282,18 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListIamServiceLinkedRole(ctx, client)
 	case "aws_iam_user":
 		return ListIamUser(ctx, client)
+	case "aws_imagebuilder_component":
+		return ListImagebuilderComponent(ctx, client)
+	case "aws_imagebuilder_distribution_configuration":
+		return ListImagebuilderDistributionConfiguration(ctx, client)
+	case "aws_imagebuilder_image":
+		return ListImagebuilderImage(ctx, client)
+	case "aws_imagebuilder_image_pipeline":
+		return ListImagebuilderImagePipeline(ctx, client)
+	case "aws_imagebuilder_image_recipe":
+		return ListImagebuilderImageRecipe(ctx, client)
+	case "aws_imagebuilder_infrastructure_configuration":
+		return ListImagebuilderInfrastructureConfiguration(ctx, client)
 	case "aws_instance":
 		return ListInstance(ctx, client)
 	case "aws_internet_gateway":
@@ -304,6 +316,8 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListKinesisAnalyticsApplication(ctx, client)
 	case "aws_kinesis_firehose_delivery_stream":
 		return ListKinesisFirehoseDeliveryStream(ctx, client)
+	case "aws_kinesis_stream":
+		return ListKinesisStream(ctx, client)
 	case "aws_kinesisanalyticsv2_application":
 		return ListKinesisanalyticsv2Application(ctx, client)
 	case "aws_kms_external_key":
@@ -424,6 +438,8 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListSagemakerCodeRepository(ctx, client)
 	case "aws_sagemaker_endpoint":
 		return ListSagemakerEndpoint(ctx, client)
+	case "aws_sagemaker_feature_group":
+		return ListSagemakerFeatureGroup(ctx, client)
 	case "aws_sagemaker_model":
 		return ListSagemakerModel(ctx, client)
 	case "aws_sagemaker_model_package_group":

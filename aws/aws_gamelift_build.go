@@ -29,7 +29,6 @@ func ListGameliftBuild(ctx context.Context, client *aws.Client) ([]terraform.Res
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}

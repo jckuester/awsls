@@ -22,18 +22,12 @@ func ListBatchJobDefinition(ctx context.Context, client *aws.Client) ([]terrafor
 
 		for _, r := range resp.JobDefinitions {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_batch_job_definition",
 				ID:        *r.JobDefinitionArn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

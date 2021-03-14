@@ -21,6 +21,7 @@ func ListIamInstanceProfile(ctx context.Context, client *aws.Client) ([]terrafor
 		}
 
 		for _, r := range resp.InstanceProfiles {
+
 			t := *r.CreateDate
 			result = append(result, terraform.Resource{
 				Type:      "aws_iam_instance_profile",

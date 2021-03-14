@@ -23,6 +23,7 @@ func ListIamPolicy(ctx context.Context, client *aws.Client) ([]terraform.Resourc
 		}
 
 		for _, r := range resp.Policies {
+
 			t := *r.CreateDate
 			result = append(result, terraform.Resource{
 				Type:      "aws_iam_policy",

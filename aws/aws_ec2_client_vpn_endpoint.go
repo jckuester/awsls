@@ -23,10 +23,6 @@ func ListEc2ClientVpnEndpoint(ctx context.Context, client *aws.Client) ([]terraf
 
 		for _, r := range resp.ClientVpnEndpoints {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.CreationTime)
 			if err != nil {
 				return nil, err
@@ -37,7 +33,6 @@ func ListEc2ClientVpnEndpoint(ctx context.Context, client *aws.Client) ([]terraf
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

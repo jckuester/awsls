@@ -24,10 +24,6 @@ func ListEc2CapacityReservation(ctx context.Context, client *aws.Client) ([]terr
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreateDate
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_capacity_reservation",
@@ -35,7 +31,6 @@ func ListEc2CapacityReservation(ctx context.Context, client *aws.Client) ([]terr
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

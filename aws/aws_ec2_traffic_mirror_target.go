@@ -24,10 +24,6 @@ func ListEc2TrafficMirrorTarget(ctx context.Context, client *aws.Client) ([]terr
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_traffic_mirror_target",
@@ -35,7 +31,6 @@ func ListEc2TrafficMirrorTarget(ctx context.Context, client *aws.Client) ([]terr
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

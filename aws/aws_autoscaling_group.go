@@ -22,10 +22,6 @@ func ListAutoscalingGroup(ctx context.Context, client *aws.Client) ([]terraform.
 
 		for _, r := range resp.AutoScalingGroups {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreatedTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_autoscaling_group",
@@ -33,7 +29,6 @@ func ListAutoscalingGroup(ctx context.Context, client *aws.Client) ([]terraform.
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
