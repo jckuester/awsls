@@ -36,5 +36,5 @@ func readmeCode(services []Service, numOfResourceTypes int) string {
 		panic(err)
 	}
 
-	return strings.TrimSpace(buf.String())
+	return strings.TrimSpace(buf.String()) + "\n"
 }
