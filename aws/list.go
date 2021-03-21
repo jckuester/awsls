@@ -472,6 +472,10 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListSfnActivity(ctx, client)
 	case "aws_sfn_state_machine":
 		return ListSfnStateMachine(ctx, client)
+	case "aws_signer_signing_job":
+		return ListSignerSigningJob(ctx, client)
+	case "aws_signer_signing_profile":
+		return ListSignerSigningProfile(ctx, client)
 	case "aws_sns_platform_application":
 		return ListSnsPlatformApplication(ctx, client)
 	case "aws_sns_topic":

@@ -234,6 +234,8 @@ var SupportedTypes = []string{
 	"aws_ses_template",
 	"aws_sfn_activity",
 	"aws_sfn_state_machine",
+	"aws_signer_signing_job",
+	"aws_signer_signing_profile",
 	"aws_sns_platform_application",
 	"aws_sns_topic",
 	"aws_sns_topic_subscription",

@@ -10,21 +10,21 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSignerSigningProfile(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
+func ListSignerSigningJob(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := signer.NewListSigningProfilesPaginator(client.Signerconn, &signer.ListSigningProfilesInput{})
+	p := signer.NewListSigningJobsPaginator(client.Signerconn, &signer.ListSigningJobsInput{})
 	for p.HasMorePages() {
 		resp, err := p.NextPage(ctx)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, r := range resp.Profiles {
+		for _, r := range resp.Jobs {
 
 			result = append(result, terraform.Resource{
-				Type:      "aws_signer_signing_profile",
-				ID:        *r.ProfileName,
+				Type:      "aws_signer_signing_job",
+				ID:        *r.JobId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,

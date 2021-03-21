@@ -637,6 +637,8 @@ github.com/jckuester/awsls v0.8.2/go.mod h1:yn+/A3rsO+71qjLZ/9A0yYa7Jw34zLLpBEqH
 github.com/jckuester/awsls v0.8.3/go.mod h1:U0clHlW/c05kB1Cb4qO5pwGjxtR1CeHpgUzHhhI93CE=
 github.com/jckuester/awstools-lib v0.0.0-20210215194522-14607cce3470/go.mod h1:71+ozVxBDbhfKZH5ybJVxWo+mO1SVfpGiLfwXU5qD/w=
 github.com/jckuester/awstools-lib v0.0.0-20210220131009-cbbff634aac8/go.mod h1:VnXw3pHiRaNKPzypiBk+814DUarSyNBExo5D4y77G7o=
+github.com/jckuester/awstools-lib v0.0.0-20210314122842-b6f221fc8c37 h1:YzJKHz6vX6YhtLCCZ5ikwQpGoqZntwm902MMfE2pVOs=
+github.com/jckuester/awstools-lib v0.0.0-20210314122842-b6f221fc8c37/go.mod h1:WB3xSDoDMDY5PEhlaw+XwiwjwiYWtJ7G0RYWhIdbxTc=
 github.com/jckuester/terradozer v0.1.3 h1:xrRxr+L58QAVz5Kwq2fyWCNiK1NWOuKo8g5Q2664WZ4=
 github.com/jckuester/terradozer v0.1.3/go.mod h1:ER3EJojZmO2u6lfcdgnmC+Nrg/TV2T2bacY5FZpqgks=
 github.com/jckuester/terradozer v0.1.4-0.20210411111420-d43446e05adb h1:mpml6nISHmYGBTGW8fFN6Og7PJGAMS0iusvdoXQ0kS4=

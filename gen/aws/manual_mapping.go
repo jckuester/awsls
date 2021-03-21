@@ -124,6 +124,8 @@ var ManualMatchedResourceID = map[string]string{
 	"aws_s3_bucket":                                 "Name",
 	"aws_ses_domain_identity":                       "Domain",
 	"aws_ses_email_identity":                        "EmailAddress",
+	"aws_signer_signing_job":                        "JobId",
+	"aws_signer_signing_profile":                    "ProfileName",
 	"aws_simpledb_domain":                           "DomainName",
 	"aws_subnet":                                    "SubnetId",
 	"aws_workspaces_directory":                      "DirectoryId",
