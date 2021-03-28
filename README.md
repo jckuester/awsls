@@ -7,7 +7,7 @@ A list command for AWS resources.
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
 awsls supports listing of [over 250 types of resources](#supported-resources)
-across 96 different AWS services. The goal is to code-generate a list function for
+across 97 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -96,7 +96,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 275 resource types across 96 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 287 resource types across 97 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -466,6 +466,19 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_waf_sql_injection_match_set |  |  |
 | aws_waf_web_acl |  x  |  |
 | aws_waf_xss_match_set |  |  |
+| **wafregional** |
+| aws_wafregional_byte_match_set |  |  |
+| aws_wafregional_geo_match_set |  |  |
+| aws_wafregional_ipset |  |  |
+| aws_wafregional_rate_based_rule |  x  |  |
+| aws_wafregional_regex_match_set |  |  |
+| aws_wafregional_regex_pattern_set |  |  |
+| aws_wafregional_rule |  x  |  |
+| aws_wafregional_rule_group |  x  |  |
+| aws_wafregional_size_constraint_set |  |  |
+| aws_wafregional_sql_injection_match_set |  |  |
+| aws_wafregional_web_acl |  x  |  |
+| aws_wafregional_xss_match_set |  |  |
 | **wafv2** |
 | aws_wafv2_web_acl_logging_configuration |  |  |
 | **worklink** |

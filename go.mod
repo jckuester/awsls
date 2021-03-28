@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/apex/log v1.9.0
-	github.com/aws/aws-sdk-go v1.37.30
+	github.com/aws/aws-sdk-go v1.38.7
 	github.com/aws/aws-sdk-go-v2 v1.2.1
 	github.com/aws/aws-sdk-go-v2/service/accessanalyzer v1.1.1
 	github.com/aws/aws-sdk-go-v2/service/acm v1.1.1
@@ -98,6 +98,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/synthetics v1.1.1
 	github.com/aws/aws-sdk-go-v2/service/transfer v1.1.1
 	github.com/aws/aws-sdk-go-v2/service/waf v1.1.1
+	github.com/aws/aws-sdk-go-v2/service/wafregional v1.1.1
 	github.com/aws/aws-sdk-go-v2/service/wafv2 v1.1.1
 	github.com/aws/aws-sdk-go-v2/service/worklink v1.1.1
 	github.com/aws/aws-sdk-go-v2/service/workspaces v1.1.1
@@ -108,6 +109,7 @@ require (
 	github.com/gruntwork-io/terratest v0.23.0
 	github.com/jckuester/awstools-lib v0.0.0-20210220131009-cbbff634aac8
 	github.com/jckuester/terradozer v0.1.4-0.20210411111420-d43446e05adb
+>>>>>>> 57e768a (Repair generator for wafregional resources)
 	github.com/onsi/gomega v1.9.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/pflag v1.0.3

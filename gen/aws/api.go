@@ -20,7 +20,6 @@ func APIs(awsSdkRepoPath string) (api.APIs, error) {
 	modelPaths, _ = api.TrimModelServiceVersions(modelPaths)
 
 	loader := api.Loader{
-		//BaseImport:          outputPath,
 		IgnoreUnsupportedAPIs: false,
 	}
 

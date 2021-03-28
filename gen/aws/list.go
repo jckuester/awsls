@@ -255,14 +255,14 @@ func {{.OpName}}(ctx context.Context, client *aws.Client) ([]terraform.Resource,
 	var result []terraform.Resource
 
 	{{ if .Paginator }}
-    p := {{ .Service }}.New{{ $pagerType }}(client.{{ .Service | Title }}conn, &{{ .Service }}.{{ .InputRef.GoTypeElem }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
+    p := {{ .Service }}.New{{ $pagerType }}(client.{{ .Service | Title }}conn, &{{ .Service }}.{{ .InputRef.ShapeName }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
 	for p.HasMorePages() {
 		resp, err := p.NextPage(ctx)
 		if err != nil {
 			return nil, err
 		}
 	{{ else }}
-    resp, err := client.{{ .Service | Title }}conn.{{ .ExportedName }}(ctx, &{{ .Service }}.{{ .InputRef.GoTypeElem }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
+    resp, err := client.{{ .Service | Title }}conn.{{ .ExportedName }}(ctx, &{{ .Service }}.{{ .InputRef.ShapeName }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
 	if err != nil {
 		return nil, err
 	}

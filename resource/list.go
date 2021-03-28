@@ -25,7 +25,7 @@ type UpdatedResources struct {
 
 // ListInMultipleAccountsAndRegions lists resources of a given resource type in parallel for multiple accounts and
 // regions and updates the resources' Terraform state.
-func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
+func ListInMultipleAccountsAndRegions(ctx context.Context, rType string, hasAttrs map[string]bool,
 	clients map[aws.ClientKey]aws.Client, providers map[aws.ClientKey]provider.TerraformProvider) UpdatedResources {
 	var wg sync.WaitGroup
 	sem := internal.NewSemaphore(10)
@@ -51,13 +51,13 @@ func ListInMultipleAccountsAndRegions(rType string, hasAttrs map[string]bool,
 			sem.Acquire()
 			defer sem.Release()
 
-			err := client.SetAccountID(context.Background())
+			err := client.SetAccountID(ctx)
 			if err != nil {
 				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
 				return
 			}
 
-			resources, err := awsls.ListResourcesByType(context.Background(), client, rType)
+			resources, err := awsls.ListResourcesByType(ctx, client, rType)
 			if err != nil {
 				fmt.Fprint(os.Stderr, color.RedString("Error %s: %s\n", rType, err))
 				return

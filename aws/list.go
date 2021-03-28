@@ -550,6 +550,30 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListWafWebAcl(ctx, client)
 	case "aws_waf_xss_match_set":
 		return ListWafXssMatchSet(ctx, client)
+	case "aws_wafregional_byte_match_set":
+		return ListWafregionalByteMatchSet(ctx, client)
+	case "aws_wafregional_geo_match_set":
+		return ListWafregionalGeoMatchSet(ctx, client)
+	case "aws_wafregional_ipset":
+		return ListWafregionalIpset(ctx, client)
+	case "aws_wafregional_rate_based_rule":
+		return ListWafregionalRateBasedRule(ctx, client)
+	case "aws_wafregional_regex_match_set":
+		return ListWafregionalRegexMatchSet(ctx, client)
+	case "aws_wafregional_regex_pattern_set":
+		return ListWafregionalRegexPatternSet(ctx, client)
+	case "aws_wafregional_rule":
+		return ListWafregionalRule(ctx, client)
+	case "aws_wafregional_rule_group":
+		return ListWafregionalRuleGroup(ctx, client)
+	case "aws_wafregional_size_constraint_set":
+		return ListWafregionalSizeConstraintSet(ctx, client)
+	case "aws_wafregional_sql_injection_match_set":
+		return ListWafregionalSqlInjectionMatchSet(ctx, client)
+	case "aws_wafregional_web_acl":
+		return ListWafregionalWebAcl(ctx, client)
+	case "aws_wafregional_xss_match_set":
+		return ListWafregionalXssMatchSet(ctx, client)
 	case "aws_wafv2_web_acl_logging_configuration":
 		return ListWafv2WebAclLoggingConfiguration(ctx, client)
 	case "aws_worklink_fleet":
