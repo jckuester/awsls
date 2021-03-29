@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -53,6 +54,55 @@ func PrintResources(resources []terraform.Resource, hasAttrs map[string]bool, at
 
 	w.Flush()
 	fmt.Println()
+}
+
+func PrintResourcesAsJSON(resources []terraform.Resource, hasAttrs map[string]bool, attributes []string) {
+	results := make([]map[string]string, 0)
+
+	for _, r := range resources {
+		profile := `N/A`
+		if r.Profile != "" {
+			profile = r.Profile
+		}
+
+		res := map[string]string{}
+		res["type"] = r.Type
+		res["id"] = r.ID
+		res["profile"] = profile
+		res["region"] = r.Region
+
+		if r.CreatedAt != nil {
+			res["created_at"] = r.CreatedAt.Format("2006-01-02 15:04:05")
+		} else {
+			res["created_at"] = "N/A"
+		}
+
+		for _, attr := range attributes {
+			v := "N/A"
+
+			_, ok := hasAttrs[attr]
+			if ok {
+				var err error
+				v, err = GetAttribute(attr, &r)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"type": r.Type,
+						"id":   r.ID}).WithError(err).Debug("failed to get attribute")
+					v = "error"
+				}
+			}
+
+			res[strings.ToLower(attr)] = v
+		}
+
+		results = append(results, res)
+	}
+
+	jsonStream, err := json.Marshal(results)
+	if err != nil {
+		log.WithError(err).Debug("failed to marshal")
+	}
+	fmt.Println(string(jsonStream))
 }
 
 func printHeader(w *tabwriter.Writer, attributes []string) {

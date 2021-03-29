@@ -33,6 +33,7 @@ func mainExitCode() int {
 	var regions internal.CommaSeparatedListFlag
 	var attributes internal.CommaSeparatedListFlag
 	var version bool
+	var jsonOutput bool
 
 	flags := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 
@@ -46,6 +47,7 @@ func mainExitCode() int {
 	flags.VarP(&regions, "regions", "r", "Comma-separated list of regions to list resources in")
 	flags.VarP(&attributes, "attributes", "a", "Comma-separated list of attributes to show for each resource")
 	flags.BoolVar(&version, "version", false, "Show application version")
+	flags.BoolVar(&jsonOutput, "json", false, "Show output as json")
 
 	_ = flags.Parse(os.Args[1:])
 	args := flags.Args()
@@ -205,7 +207,11 @@ func mainExitCode() int {
 			continue
 		}
 
-		resource.PrintResources(resources, hasAttrs, attributes)
+		if jsonOutput {
+			resource.PrintResourcesAsJSON(resources, hasAttrs, attributes)
+		} else {
+			resource.PrintResources(resources, hasAttrs, attributes)
+		}
 	}
 
 	return 0
