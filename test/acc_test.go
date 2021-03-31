@@ -1,5 +1,4 @@
 package test
-
 import (
 	"bytes"
 	"fmt"
@@ -365,6 +364,68 @@ built at: ?
 using: %s`, runtime.Version()))
 
 	fmt.Println(actualLogs)
+}
+
+func TestAcc_Json(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping acceptance test.")
+	}
+
+	testVars := Init(t)
+
+	terraformDir := "./test-fixtures/multiple-resource-types"
+
+	terraformOptions := GetTerraformOptions(terraformDir, testVars)
+
+	defer terraform.Destroy(t, terraformOptions)
+
+	terraform.InitAndApply(t, terraformOptions)
+
+	actualVpcID := terraform.Output(t, terraformOptions, "vpc_id")
+	actualSubnetID := terraform.Output(t, terraformOptions, "subnet_id")
+
+	tests := []struct {
+		name         string
+		args         []string
+		expectedLogs []string
+	}{
+		{
+			name: "without aws_prefix",
+			args: []string{
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "vpc"},
+			expectedLogs: []string{
+				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","type":"aws_vpc"}`,
+					actualVpcID, testVars.AWSProfile1, testVars.AWSRegion1),
+			},
+		},
+		{
+			name: "multiple resource types",
+			args: []string{
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "{vpc,subnet}"},
+			expectedLogs: []string{
+				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","type":"aws_vpc"}`,
+					actualVpcID, testVars.AWSProfile1, testVars.AWSRegion1),
+				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","type":"aws_subnet"}`,
+					actualSubnetID, testVars.AWSProfile1, testVars.AWSRegion1),
+			},
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+
+			logBuffer, err := runBinary(t, tc.args...)
+			fmt.Println(err)
+			require.NoError(t, err)
+
+			actualLogs := logBuffer.String()
+
+			for _, expectedLogEntry := range tc.expectedLogs {
+				assert.Regexp(t, regexp.MustCompile(expectedLogEntry), actualLogs)
+			}
+
+			fmt.Println(actualLogs)
+		})
+	}
 }
 
 func runBinary(t *testing.T, args ...string) (*bytes.Buffer, error) {
