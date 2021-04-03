@@ -367,6 +367,77 @@ using: %s`, runtime.Version()))
 	fmt.Println(actualLogs)
 }
 
+func TestAcc_JsonOutput(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping acceptance test.")
+	}
+
+	testVars := Init(t)
+
+	terraformDir := "./test-fixtures/tag-attributes"
+
+	terraformOptions := GetTerraformOptions(terraformDir, testVars)
+
+	defer terraform.Destroy(t, terraformOptions)
+
+	terraform.InitAndApply(t, terraformOptions)
+
+	actualVpcIDSingleTag := terraform.Output(t, terraformOptions, "vpc_id_single_tag")
+	AssertVpcExists(t, actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1)
+
+	actualVpcIDMultipleTags := terraform.Output(t, terraformOptions, "vpc_id_multiple_tags")
+	AssertVpcExists(t, actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1)
+
+	tests := []struct {
+		name         string
+		args         []string
+		expectedLogs []string
+	}{
+		{
+			name: "without attributes",
+			args: []string{
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "vpc"},
+			expectedLogs: []string{
+				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","type":"aws_vpc"}`,
+					actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1),
+			},
+		},
+		{
+			name: "map attribute",
+			args: []string{
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "-a", "tags", "aws_vpc"},
+			expectedLogs: []string{
+				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","tags":"%s","type":"aws_vpc"}`,
+					actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1, "bar=baz,foo=bar"),
+			},
+		},
+		{
+			name: "multiple attributes",
+			args: []string{
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "-a", "tags,cidr_block", "aws_vpc"},
+			expectedLogs: []string{
+				fmt.Sprintf(`{"cidr_block":"%s","created_at":"N/A","id":"%s","profile":"%s","region":"%s","tags":"%s","type":"aws_vpc"}`,
+					"10.0.0.0/16", actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1, "foo=bar"),
+			},
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+
+			logBuffer, err := runBinary(t, tc.args...)
+			require.NoError(t, err)
+
+			actualLogs := logBuffer.String()
+
+			for _, expectedLogEntry := range tc.expectedLogs {
+				assert.Regexp(t, regexp.MustCompile(expectedLogEntry), actualLogs)
+			}
+
+			fmt.Println(actualLogs)
+		})
+	}
+}
+
 func runBinary(t *testing.T, args ...string) (*bytes.Buffer, error) {
 	defer gexec.CleanupBuildArtifacts()
 
