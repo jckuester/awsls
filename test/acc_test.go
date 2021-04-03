@@ -1,4 +1,5 @@
 package test
+
 import (
 	"bytes"
 	"fmt"
@@ -366,14 +367,14 @@ using: %s`, runtime.Version()))
 	fmt.Println(actualLogs)
 }
 
-func TestAcc_Json(t *testing.T) {
+func TestAcc_JsonOutput(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping acceptance test.")
 	}
 
 	testVars := Init(t)
 
-	terraformDir := "./test-fixtures/multiple-resource-types"
+	terraformDir := "./test-fixtures/tag-attributes"
 
 	terraformOptions := GetTerraformOptions(terraformDir, testVars)
 
@@ -381,8 +382,11 @@ func TestAcc_Json(t *testing.T) {
 
 	terraform.InitAndApply(t, terraformOptions)
 
-	actualVpcID := terraform.Output(t, terraformOptions, "vpc_id")
-	actualSubnetID := terraform.Output(t, terraformOptions, "subnet_id")
+	actualVpcIDSingleTag := terraform.Output(t, terraformOptions, "vpc_id_single_tag")
+	AssertVpcExists(t, actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1)
+
+	actualVpcIDMultipleTags := terraform.Output(t, terraformOptions, "vpc_id_multiple_tags")
+	AssertVpcExists(t, actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1)
 
 	tests := []struct {
 		name         string
@@ -390,23 +394,30 @@ func TestAcc_Json(t *testing.T) {
 		expectedLogs []string
 	}{
 		{
-			name: "without aws_prefix",
+			name: "without attributes",
 			args: []string{
 				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "vpc"},
 			expectedLogs: []string{
 				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","type":"aws_vpc"}`,
-					actualVpcID, testVars.AWSProfile1, testVars.AWSRegion1),
+					actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1),
 			},
 		},
 		{
-			name: "multiple resource types",
+			name: "map attribute",
 			args: []string{
-				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "{vpc,subnet}"},
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "-a", "tags", "aws_vpc"},
 			expectedLogs: []string{
-				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","type":"aws_vpc"}`,
-					actualVpcID, testVars.AWSProfile1, testVars.AWSRegion1),
-				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","type":"aws_subnet"}`,
-					actualSubnetID, testVars.AWSProfile1, testVars.AWSRegion1),
+				fmt.Sprintf(`{"created_at":"N/A","id":"%s","profile":"%s","region":"%s","tags":"%s","type":"aws_vpc"}`,
+					actualVpcIDMultipleTags, testVars.AWSProfile1, testVars.AWSRegion1, "bar=baz,foo=bar"),
+			},
+		},
+		{
+			name: "multiple attributes",
+			args: []string{
+				"-p", testVars.AWSProfile1, "-r", testVars.AWSRegion1, "--json", "-a", "tags,cidr_block", "aws_vpc"},
+			expectedLogs: []string{
+				fmt.Sprintf(`{"cidr_block":"%s","created_at":"N/A","id":"%s","profile":"%s","region":"%s","tags":"%s","type":"aws_vpc"}`,
+					"10.0.0.0/16", actualVpcIDSingleTag, testVars.AWSProfile1, testVars.AWSRegion1, "foo=bar"),
 			},
 		},
 	}
@@ -414,7 +425,6 @@ func TestAcc_Json(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 
 			logBuffer, err := runBinary(t, tc.args...)
-			fmt.Println(err)
 			require.NoError(t, err)
 
 			actualLogs := logBuffer.String()
