@@ -100,8 +100,9 @@ func PrintResourcesAsJSON(resources []terraform.Resource, hasAttrs map[string]bo
 
 	jsonStream, err := json.Marshal(results)
 	if err != nil {
-		log.WithError(err).Debug("failed to marshal")
+		log.WithError(err).Debug("failed to marshal output to JSON")
 	}
+
 	fmt.Println(string(jsonStream))
 }
 
