@@ -107,9 +107,8 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/gobwas/glob v0.2.3
 	github.com/gruntwork-io/terratest v0.23.0
-	github.com/jckuester/awstools-lib v0.0.0-20210220131009-cbbff634aac8
+	github.com/jckuester/awstools-lib v0.0.0-20210411200154-5b8a784826d0
 	github.com/jckuester/terradozer v0.1.4-0.20210411111420-d43446e05adb
->>>>>>> 57e768a (Repair generator for wafregional resources)
 	github.com/onsi/gomega v1.9.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/pflag v1.0.3
