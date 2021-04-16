@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"sync"
-	"time"
 
 	"github.com/apex/log"
 	"github.com/fatih/color"
@@ -39,7 +38,6 @@ func ListInMultipleAccountsAndRegions(ctx context.Context, rType string, hasAttr
 			"type":    rType,
 			"region":  key.Region,
 			"profile": key.Profile,
-			"time":    time.Now().Format("04:05.000"),
 		}).Debugf("start listing resources")
 
 		wg.Add(1)
