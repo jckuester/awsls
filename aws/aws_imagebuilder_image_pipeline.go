@@ -10,21 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListImagebuilderImagePipeline(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Imagebuilderconn.ListImagePipelinesRequest(&imagebuilder.ListImagePipelinesInput{})
-
+func ListImagebuilderImagePipeline(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := imagebuilder.NewListImagePipelinesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	resp, err := client.Imagebuilderconn.ListImagePipelines(ctx, &imagebuilder.ListImagePipelinesInput{})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.ImagePipelineList) > 0 {
 
 		for _, r := range resp.ImagePipelineList {
-
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_image_pipeline",
@@ -32,13 +28,8 @@ func ListImagebuilderImagePipeline(client *aws.Client) ([]terraform.Resource, er
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

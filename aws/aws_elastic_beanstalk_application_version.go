@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListElasticBeanstalkApplicationVersion(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Elasticbeanstalkconn.DescribeApplicationVersionsRequest(&elasticbeanstalk.DescribeApplicationVersionsInput{})
-
+func ListElasticBeanstalkApplicationVersion(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Elasticbeanstalkconn.DescribeApplicationVersions(ctx, &elasticbeanstalk.DescribeApplicationVersionsInput{})
 	if err != nil {
 		return nil, err
 	}

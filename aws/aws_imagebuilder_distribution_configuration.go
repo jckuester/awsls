@@ -10,21 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListImagebuilderDistributionConfiguration(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Imagebuilderconn.ListDistributionConfigurationsRequest(&imagebuilder.ListDistributionConfigurationsInput{})
-
+func ListImagebuilderDistributionConfiguration(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := imagebuilder.NewListDistributionConfigurationsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	resp, err := client.Imagebuilderconn.ListDistributionConfigurations(ctx, &imagebuilder.ListDistributionConfigurationsInput{})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.DistributionConfigurationSummaryList) > 0 {
 
 		for _, r := range resp.DistributionConfigurationSummaryList {
-
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_distribution_configuration",
@@ -32,13 +28,8 @@ func ListImagebuilderDistributionConfiguration(client *aws.Client) ([]terraform.
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRdsClusterEndpoint(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Rdsconn.DescribeDBClusterEndpointsRequest(&rds.DescribeDBClusterEndpointsInput{})
-
+func ListRdsClusterEndpoint(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := rds.NewDescribeDBClusterEndpointsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := rds.NewDescribeDBClusterEndpointsPaginator(client.Rdsconn, &rds.DescribeDBClusterEndpointsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.DBClusterEndpoints {
 
@@ -29,10 +30,6 @@ func ListRdsClusterEndpoint(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

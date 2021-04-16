@@ -10,21 +10,18 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudformationStack(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Cloudformationconn.DescribeStacksRequest(&cloudformation.DescribeStacksInput{})
-
+func ListCloudformationStack(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := cloudformation.NewDescribeStacksPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := cloudformation.NewDescribeStacksPaginator(client.Cloudformationconn, &cloudformation.DescribeStacksInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Stacks {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_cloudformation_stack",
@@ -32,14 +29,9 @@ func ListCloudformationStack(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

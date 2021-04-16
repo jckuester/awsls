@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAthenaWorkgroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Athenaconn.ListWorkGroupsRequest(&athena.ListWorkGroupsInput{})
-
+func ListAthenaWorkgroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := athena.NewListWorkGroupsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := athena.NewListWorkGroupsPaginator(client.Athenaconn, &athena.ListWorkGroupsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.WorkGroups {
 
@@ -28,14 +29,9 @@ func ListAthenaWorkgroup(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

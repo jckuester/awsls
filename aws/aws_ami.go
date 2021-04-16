@@ -11,14 +11,12 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAmi(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeImagesRequest(&ec2.DescribeImagesInput{
-		Owners: []string{"self"},
-	})
-
+func ListAmi(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Ec2conn.DescribeImages(ctx, &ec2.DescribeImagesInput{
+		Owners: []string{"self"},
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -28,10 +26,6 @@ func ListAmi(client *aws.Client) ([]terraform.Resource, error) {
 		for _, r := range resp.Images {
 			if *r.OwnerId != client.AccountID {
 				continue
-			}
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
 			}
 			t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.CreationDate)
 			if err != nil {
@@ -43,7 +37,6 @@ func ListAmi(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

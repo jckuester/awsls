@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSagemakerModel(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Sagemakerconn.ListModelsRequest(&sagemaker.ListModelsInput{})
-
+func ListSagemakerModel(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := sagemaker.NewListModelsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := sagemaker.NewListModelsPaginator(client.Sagemakerconn, &sagemaker.ListModelsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Models {
 
@@ -28,14 +29,9 @@ func ListSagemakerModel(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAppsyncGraphqlApi(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Appsyncconn.ListGraphqlApisRequest(&appsync.ListGraphqlApisInput{})
-
+func ListAppsyncGraphqlApi(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Appsyncconn.ListGraphqlApis(ctx, &appsync.ListGraphqlApisInput{})
 	if err != nil {
 		return nil, err
 	}
@@ -24,18 +22,12 @@ func ListAppsyncGraphqlApi(client *aws.Client) ([]terraform.Resource, error) {
 
 		for _, r := range resp.GraphqlApis {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_appsync_graphql_api",
 				ID:        *r.ApiId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

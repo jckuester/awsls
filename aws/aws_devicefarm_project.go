@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDevicefarmProject(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Devicefarmconn.ListProjectsRequest(&devicefarm.ListProjectsInput{})
-
+func ListDevicefarmProject(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := devicefarm.NewListProjectsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := devicefarm.NewListProjectsPaginator(client.Devicefarmconn, &devicefarm.ListProjectsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Projects {
 
@@ -29,10 +30,6 @@ func ListDevicefarmProject(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

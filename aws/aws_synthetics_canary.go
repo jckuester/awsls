@@ -10,21 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSyntheticsCanary(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Syntheticsconn.DescribeCanariesRequest(&synthetics.DescribeCanariesInput{})
-
+func ListSyntheticsCanary(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := synthetics.NewDescribeCanariesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := synthetics.NewDescribeCanariesPaginator(client.Syntheticsconn, &synthetics.DescribeCanariesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Canaries {
-
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_synthetics_canary",
@@ -32,13 +28,8 @@ func ListSyntheticsCanary(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

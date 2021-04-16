@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListIotThingType(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Iotconn.ListThingTypesRequest(&iot.ListThingTypesInput{})
-
+func ListIotThingType(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.ThingTypes) > 0 {
+	p := iot.NewListThingTypesPaginator(client.Iotconn, &iot.ListThingTypesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ThingTypes {
 

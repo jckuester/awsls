@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListAppmeshMesh(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Appmeshconn.ListMeshesRequest(&appmesh.ListMeshesInput{})
-
+func ListAppmeshMesh(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := appmesh.NewListMeshesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := appmesh.NewListMeshesPaginator(client.Appmeshconn, &appmesh.ListMeshesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Meshes {
 
@@ -29,10 +30,6 @@ func ListAppmeshMesh(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListElasticacheReplicationGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Elasticacheconn.DescribeReplicationGroupsRequest(&elasticache.DescribeReplicationGroupsInput{})
-
+func ListElasticacheReplicationGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := elasticache.NewDescribeReplicationGroupsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := elasticache.NewDescribeReplicationGroupsPaginator(client.Elasticacheconn, &elasticache.DescribeReplicationGroupsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ReplicationGroups {
 
@@ -29,10 +30,6 @@ func ListElasticacheReplicationGroup(client *aws.Client) ([]terraform.Resource, 
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

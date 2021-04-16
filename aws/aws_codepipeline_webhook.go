@@ -10,21 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCodepipelineWebhook(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Codepipelineconn.ListWebhooksRequest(&codepipeline.ListWebhooksInput{})
-
+func ListCodepipelineWebhook(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := codepipeline.NewListWebhooksPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := codepipeline.NewListWebhooksPaginator(client.Codepipelineconn, &codepipeline.ListWebhooksInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Webhooks {
-
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_codepipeline_webhook",
@@ -32,13 +28,8 @@ func ListCodepipelineWebhook(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

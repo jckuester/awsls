@@ -7,7 +7,7 @@ A list command for AWS resources.
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
 awsls supports listing of [over 250 types of resources](#supported-resources)
-across 95 different AWS services. The goal is to code-generate a list function for
+across 97 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -96,7 +96,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 271 resource types across 95 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 287 resource types across 97 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -147,6 +147,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **cloudwatch** |
 | aws_cloudwatch_dashboard |  |  |
 | **cloudwatchevents** |
+| aws_cloudwatch_event_archive |  |  x  |
 | aws_cloudwatch_event_bus |  x  |  |
 | **cloudwatchlogs** |
 | aws_cloudwatch_log_destination |  |  x  |
@@ -208,9 +209,10 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_ebs_snapshot |  x  |  x  | x |
 | aws_ebs_volume |  x  |  x  |
 | aws_ec2_capacity_reservation |  x  |  x  | x |
+| aws_ec2_carrier_gateway |  x  |  | x |
 | aws_ec2_client_vpn_endpoint |  x  |  x  |
 | aws_ec2_fleet |  x  |  x  |
-| aws_ec2_local_gateway_route_table_vpc_association |  x  |  |
+| aws_ec2_local_gateway_route_table_vpc_association |  x  |  | x |
 | aws_ec2_managed_prefix_list |  x  |  | x |
 | aws_ec2_traffic_mirror_filter |  x  |  |
 | aws_ec2_traffic_mirror_session |  x  |  | x |
@@ -242,6 +244,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_vpn_gateway |  x  |  |
 | **ecr** |
 | aws_ecr_repository |  x  |  |
+| **ecrpublic** |
+| aws_ecrpublic_repository |  |  |
 | **ecs** |
 | aws_ecs_cluster |  x  |  |
 | aws_ecs_task_definition |  x  |  |
@@ -257,15 +261,15 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_elastic_beanstalk_application |  x  |  |
 | aws_elastic_beanstalk_application_version |  x  |  |
 | aws_elastic_beanstalk_environment |  x  |  |
-| **elasticloadbalancing** |
-| aws_elb |  x  |  x  |
-| **elasticloadbalancingv2** |
-| aws_alb_target_group |  x  |  |
-| aws_lb |  x  |  x  |
-| aws_lb_target_group |  x  |  |
 | **elastictranscoder** |
 | aws_elastictranscoder_pipeline |  |  |
 | aws_elastictranscoder_preset |  |  |
+| **elb** |
+| aws_elb |  x  |  x  |
+| **elbv2** |
+| aws_alb_target_group |  x  |  |
+| aws_lb |  x  |  x  |
+| aws_lb_target_group |  x  |  |
 | **emr** |
 | aws_emr_security_configuration |  |  |
 | **firehose** |
@@ -287,6 +291,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_glue_dev_endpoint |  x  |  |
 | aws_glue_job |  x  |  |
 | aws_glue_ml_transform |  x  |  |
+| aws_glue_registry |  x  |  x  |
+| aws_glue_schema |  x  |  x  |
 | aws_glue_security_configuration |  |  |
 | aws_glue_trigger |  x  |  |
 | aws_glue_workflow |  x  |  |
@@ -329,6 +335,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_kms_external_key |  x  |  |
 | aws_kms_key |  x  |  |
 | **lambda** |
+| aws_lambda_code_signing_config |  |  |
 | aws_lambda_event_source_mapping |  |  |
 | aws_lambda_function |  x  |  |
 | **lexmodelbuildingservice** |
@@ -353,6 +360,10 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_mq_configuration |  x  |  |
 | **neptune** |
 | aws_neptune_event_subscription |  x  |  |
+| **networkfirewall** |
+| aws_networkfirewall_firewall |  x  |  |
+| aws_networkfirewall_firewall_policy |  x  |  |
+| aws_networkfirewall_rule_group |  x  |  |
 | **opsworks** |
 | aws_opsworks_stack |  x  |  |
 | aws_opsworks_user_profile |  |  |
@@ -383,14 +394,21 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_route53_zone |  x  |  |
 | **route53resolver** |
 | aws_route53_resolver_endpoint |  x  |  x  |
-| aws_route53_resolver_rule |  x  |  | x |
+| aws_route53_resolver_query_log_config |  x  |  x  | x |
+| aws_route53_resolver_query_log_config_association |  |  x  |
+| aws_route53_resolver_rule |  x  |  x  | x |
 | aws_route53_resolver_rule_association |  |  |
 | **s3** |
 | aws_s3_bucket |  x  |  x  |
+| **s3outposts** |
+| aws_s3outposts_endpoint |  |  x  |
 | **sagemaker** |
+| aws_sagemaker_app_image_config |  |  x  |
 | aws_sagemaker_code_repository |  |  x  |
 | aws_sagemaker_endpoint |  x  |  x  |
+| aws_sagemaker_feature_group |  x  |  x  |
 | aws_sagemaker_model |  x  |  x  |
+| aws_sagemaker_model_package_group |  x  |  x  |
 | **secretsmanager** |
 | aws_secretsmanager_secret |  x  |  |
 | **securityhub** |
@@ -411,9 +429,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_sfn_activity |  x  |  x  |
 | aws_sfn_state_machine |  x  |  x  |
 | **signer** |
+| aws_signer_signing_job |  |  |
 | aws_signer_signing_profile |  x  |  |
-| **simpledb** |
-| aws_simpledb_domain |  |  |
 | **sns** |
 | aws_sns_platform_application |  |  |
 | aws_sns_topic |  x  |  |
@@ -431,6 +448,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_ssm_resource_data_sync |  |  |
 | **storagegateway** |
 | aws_storagegateway_gateway |  x  |  |
+| aws_storagegateway_tape_pool |  x  |  |
 | **synthetics** |
 | aws_synthetics_canary |  x  |  |
 | **transfer** |

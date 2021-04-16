@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLambdaEventSourceMapping(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Lambdaconn.ListEventSourceMappingsRequest(&lambda.ListEventSourceMappingsInput{})
-
+func ListLambdaEventSourceMapping(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := lambda.NewListEventSourceMappingsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := lambda.NewListEventSourceMappingsPaginator(client.Lambdaconn, &lambda.ListEventSourceMappingsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.EventSourceMappings {
 
@@ -29,10 +30,6 @@ func ListLambdaEventSourceMapping(client *aws.Client) ([]terraform.Resource, err
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

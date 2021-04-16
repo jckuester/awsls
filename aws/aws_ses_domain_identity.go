@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSesDomainIdentity(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Sesconn.ListIdentitiesRequest(&ses.ListIdentitiesInput{})
-
+func ListSesDomainIdentity(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ses.NewListIdentitiesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ses.NewListIdentitiesPaginator(client.Sesconn, &ses.ListIdentitiesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Identities {
 
@@ -29,10 +30,6 @@ func ListSesDomainIdentity(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

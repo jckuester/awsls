@@ -10,21 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2TrafficMirrorFilter(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeTrafficMirrorFiltersRequest(&ec2.DescribeTrafficMirrorFiltersInput{})
-
+func ListEc2TrafficMirrorFilter(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeTrafficMirrorFiltersPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeTrafficMirrorFiltersPaginator(client.Ec2conn, &ec2.DescribeTrafficMirrorFiltersInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.TrafficMirrorFilters {
-
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_traffic_mirror_filter",
@@ -32,13 +28,8 @@ func ListEc2TrafficMirrorFilter(client *aws.Client) ([]terraform.Resource, error
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

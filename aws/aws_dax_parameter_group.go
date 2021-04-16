@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDaxParameterGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Daxconn.DescribeParameterGroupsRequest(&dax.DescribeParameterGroupsInput{})
-
+func ListDaxParameterGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Daxconn.DescribeParameterGroups(ctx, &dax.DescribeParameterGroupsInput{})
 	if err != nil {
 		return nil, err
 	}

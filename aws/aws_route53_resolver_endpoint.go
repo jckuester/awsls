@@ -11,14 +11,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRoute53ResolverEndpoint(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Route53resolverconn.ListResolverEndpointsRequest(&route53resolver.ListResolverEndpointsInput{})
-
+func ListRoute53ResolverEndpoint(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := route53resolver.NewListResolverEndpointsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := route53resolver.NewListResolverEndpointsPaginator(client.Route53resolverconn, &route53resolver.ListResolverEndpointsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ResolverEndpoints {
 
@@ -32,14 +33,9 @@ func ListRoute53ResolverEndpoint(client *aws.Client) ([]terraform.Resource, erro
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListImagebuilderComponent(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Imagebuilderconn.ListComponentsRequest(&imagebuilder.ListComponentsInput{})
-
+func ListImagebuilderComponent(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := imagebuilder.NewListComponentsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	resp, err := client.Imagebuilderconn.ListComponents(ctx, &imagebuilder.ListComponentsInput{})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.ComponentVersionList) > 0 {
 
 		for _, r := range resp.ComponentVersionList {
 
@@ -29,10 +30,6 @@ func ListImagebuilderComponent(client *aws.Client) ([]terraform.Resource, error)
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

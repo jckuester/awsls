@@ -10,21 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListImagebuilderImageRecipe(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Imagebuilderconn.ListImageRecipesRequest(&imagebuilder.ListImageRecipesInput{})
-
+func ListImagebuilderImageRecipe(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := imagebuilder.NewListImageRecipesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	resp, err := client.Imagebuilderconn.ListImageRecipes(ctx, &imagebuilder.ListImageRecipesInput{})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.ImageRecipeSummaryList) > 0 {
 
 		for _, r := range resp.ImageRecipeSummaryList {
-
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_image_recipe",
@@ -32,13 +28,8 @@ func ListImagebuilderImageRecipe(client *aws.Client) ([]terraform.Resource, erro
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

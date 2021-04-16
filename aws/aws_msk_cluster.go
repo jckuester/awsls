@@ -10,21 +10,18 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListMskCluster(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Kafkaconn.ListClustersRequest(&kafka.ListClustersInput{})
-
+func ListMskCluster(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := kafka.NewListClustersPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := kafka.NewListClustersPaginator(client.Kafkaconn, &kafka.ListClustersInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ClusterInfoList {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_msk_cluster",
@@ -32,14 +29,9 @@ func ListMskCluster(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

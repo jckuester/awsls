@@ -10,21 +10,18 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2TransitGatewayPeeringAttachment(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeTransitGatewayPeeringAttachmentsRequest(&ec2.DescribeTransitGatewayPeeringAttachmentsInput{})
-
+func ListEc2TransitGatewayPeeringAttachment(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeTransitGatewayPeeringAttachmentsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeTransitGatewayPeeringAttachmentsPaginator(client.Ec2conn, &ec2.DescribeTransitGatewayPeeringAttachmentsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.TransitGatewayPeeringAttachments {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_transit_gateway_peering_attachment",
@@ -32,14 +29,9 @@ func ListEc2TransitGatewayPeeringAttachment(client *aws.Client) ([]terraform.Res
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

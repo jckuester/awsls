@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCodestarnotificationsNotificationRule(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Codestarnotificationsconn.ListNotificationRulesRequest(&codestarnotifications.ListNotificationRulesInput{})
-
+func ListCodestarnotificationsNotificationRule(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := codestarnotifications.NewListNotificationRulesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := codestarnotifications.NewListNotificationRulesPaginator(client.Codestarnotificationsconn, &codestarnotifications.ListNotificationRulesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.NotificationRules {
 
@@ -29,10 +30,6 @@ func ListCodestarnotificationsNotificationRule(client *aws.Client) ([]terraform.
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafRateBasedRule(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafconn.ListRateBasedRulesRequest(&waf.ListRateBasedRulesInput{})
-
+func ListWafRateBasedRule(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafconn.ListRateBasedRules(ctx, &waf.ListRateBasedRulesInput{})
 	if err != nil {
 		return nil, err
 	}

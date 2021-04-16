@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalIpset(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafregionalconn.ListIPSetsRequest(&wafregional.ListIPSetsInput{})
-
+func ListWafregionalIpset(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafregionalconn.ListIPSets(ctx, &wafregional.ListIPSetsInput{})
 	if err != nil {
 		return nil, err
 	}

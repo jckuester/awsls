@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSesTemplate(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Sesconn.ListTemplatesRequest(&ses.ListTemplatesInput{})
-
+func ListSesTemplate(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Sesconn.ListTemplates(ctx, &ses.ListTemplatesInput{})
 	if err != nil {
 		return nil, err
 	}

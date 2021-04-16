@@ -10,7 +10,7 @@ import (
 	"text/template"
 
 	"github.com/apex/log"
-	"github.com/aws/aws-sdk-go-v2/private/model/api"
+	"github.com/aws/aws-sdk-go/private/model/api"
 	"github.com/jckuester/awsls/gen/util"
 )
 
@@ -96,6 +96,15 @@ func GenerateListFunctions(outputPath string, services []Service, resourceIDs ma
 				}
 			}
 
+			op.Service = op.API.PackageName()
+			serviceV2, ok := AWSServicesV1toV2[service.Name]
+			if ok {
+				op.Service = serviceV2
+			}
+			_, noPaginator := missingPaginatorAPI[rType.Name]
+			if noPaginator {
+				op.Paginator = nil
+			}
 			op.OutputFieldName = outputFieldName
 			op.OutputFieldType = outputFieldType
 			op.TerraformType = rType.Name
@@ -150,6 +159,7 @@ func writeListFunction(outputPath string, op *ListOperation) {
 type ListOperation struct {
 	api.Operation
 
+	Service         string
 	TerraformType   string
 	ResourceID      string
 	OutputListName  string
@@ -167,34 +177,6 @@ func (o *ListOperation) GoCode() string {
 	}
 
 	return strings.TrimSpace(buf.String())
-}
-
-func (o ListOperation) GetTagsGoCode() string {
-	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
-
-	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
-		if k == "Tags" {
-			if v.Shape.Type == "list" {
-				return `tags := map[string]string{}
-						for _, t := range r.Tags {
-							tags[*t.Key] = *t.Value
-						}`
-			}
-
-			if v.Shape.Type == "map" {
-				return `tags := map[string]string{}
-						for k, v := range r.Tags {
-							tags[k] = v
-						}`
-			}
-		}
-
-		if strings.Contains(k, "Tag") {
-			log.Infof("tags: %s %s", k, v.Shape.Type)
-		}
-	}
-
-	return ""
 }
 
 func (o ListOperation) GetCreationTimeGoCode() string {
@@ -263,23 +245,24 @@ import(
 	"context"
 
 	"github.com/jckuester/awstools-lib/aws"
-	"github.com/aws/aws-sdk-go-v2/service/{{ .API.PackageName }}"
+	"github.com/jckuester/awstools-lib/terraform"
+	"github.com/aws/aws-sdk-go-v2/service/{{ .Service }}"
 )
 
-{{ $reqType := printf "%sRequest" .ExportedName -}}
 {{ $pagerType := printf "%sPaginator" .ExportedName -}}
 
-func  {{.OpName}}(client *aws.Client) ([]terraform.Resource, error) {
-    req := client.{{ .API.PackageName | Title }}conn.{{ $reqType }}(&{{ .API.PackageName }}.{{ .InputRef.GoTypeElem }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
-
+func {{.OpName}}(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
 	{{ if .Paginator }}
-    p := {{ .API.PackageName }}.New{{ $pagerType }}(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+    p := {{ .Service }}.New{{ $pagerType }}(client.{{ .Service | Title }}conn, &{{ .Service }}.{{ .InputRef.ShapeName }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 	{{ else }}
-    resp, err := req.Send(context.Background())
+    resp, err := client.{{ .Service | Title }}conn.{{ .ExportedName }}(ctx, &{{ .Service }}.{{ .InputRef.ShapeName }}{ {{ if ne .Inputs "" }}{{ .Inputs }}{{ end }} })
 	if err != nil {
 		return nil, err
 	}
@@ -288,7 +271,6 @@ func  {{.OpName}}(client *aws.Client) ([]terraform.Resource, error) {
 	{{ end }}
 		for _, r := range resp.{{ .OutputListName }}{
 			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
-			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
 			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
 			result = append(result, terraform.Resource{
 				Type: "{{ .TerraformType }}",
@@ -296,17 +278,10 @@ func  {{.OpName}}(client *aws.Client) ([]terraform.Resource, error) {
 				Profile: client.Profile,
 				Region: client.Region,
 				AccountID: client.AccountID,
-				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
 				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
 			})
 		}
 	}
-
-	{{ if .Paginator }}
-	if err := p.Err(); err != nil {
-		return nil, err
-	}
-	{{ end }}
 
 	return result, nil
 }

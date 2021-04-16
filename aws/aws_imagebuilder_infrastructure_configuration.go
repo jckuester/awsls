@@ -10,21 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListImagebuilderInfrastructureConfiguration(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Imagebuilderconn.ListInfrastructureConfigurationsRequest(&imagebuilder.ListInfrastructureConfigurationsInput{})
-
+func ListImagebuilderInfrastructureConfiguration(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := imagebuilder.NewListInfrastructureConfigurationsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	resp, err := client.Imagebuilderconn.ListInfrastructureConfigurations(ctx, &imagebuilder.ListInfrastructureConfigurationsInput{})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.InfrastructureConfigurationSummaryList) > 0 {
 
 		for _, r := range resp.InfrastructureConfigurationSummaryList {
-
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_infrastructure_configuration",
@@ -32,13 +28,8 @@ func ListImagebuilderInfrastructureConfiguration(client *aws.Client) ([]terrafor
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

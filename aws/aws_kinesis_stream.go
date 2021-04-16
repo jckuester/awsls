@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListKinesisStream(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Kinesisconn.ListStreamsRequest(&kinesis.ListStreamsInput{})
-
+func ListKinesisStream(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := kinesis.NewListStreamsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	resp, err := client.Kinesisconn.ListStreams(ctx, &kinesis.ListStreamsInput{})
+	if err != nil {
+		return nil, err
+	}
+
+	if len(resp.StreamNames) > 0 {
 
 		for _, r := range resp.StreamNames {
 
@@ -29,10 +30,6 @@ func ListKinesisStream(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListKinesisAnalyticsApplication(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Kinesisanalyticsconn.ListApplicationsRequest(&kinesisanalytics.ListApplicationsInput{})
-
+func ListKinesisAnalyticsApplication(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Kinesisanalyticsconn.ListApplications(ctx, &kinesisanalytics.ListApplicationsInput{})
 	if err != nil {
 		return nil, err
 	}

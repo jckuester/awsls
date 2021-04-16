@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSesReceiptFilter(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Sesconn.ListReceiptFiltersRequest(&ses.ListReceiptFiltersInput{})
-
+func ListSesReceiptFilter(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Sesconn.ListReceiptFilters(ctx, &ses.ListReceiptFiltersInput{})
 	if err != nil {
 		return nil, err
 	}

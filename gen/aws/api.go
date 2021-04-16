@@ -5,9 +5,8 @@ package aws
 import (
 	"fmt"
 
+	"github.com/aws/aws-sdk-go/private/model/api"
 	"github.com/pkg/errors"
-
-	"github.com/aws/aws-sdk-go-v2/private/model/api"
 )
 
 // APIs returns the AWS API models loaded by API package name.
@@ -21,8 +20,7 @@ func APIs(awsSdkRepoPath string) (api.APIs, error) {
 	modelPaths, _ = api.TrimModelServiceVersions(modelPaths)
 
 	loader := api.Loader{
-		//BaseImport:          outputPath,
-		KeepUnsupportedAPIs: false,
+		IgnoreUnsupportedAPIs: false,
 	}
 
 	apis, err := loader.Load(modelPaths)

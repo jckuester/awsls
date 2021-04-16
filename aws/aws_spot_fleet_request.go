@@ -10,21 +10,18 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSpotFleetRequest(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeSpotFleetRequestsRequest(&ec2.DescribeSpotFleetRequestsInput{})
-
+func ListSpotFleetRequest(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeSpotFleetRequestsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeSpotFleetRequestsPaginator(client.Ec2conn, &ec2.DescribeSpotFleetRequestsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.SpotFleetRequestConfigs {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 			t := *r.CreateTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_spot_fleet_request",
@@ -32,14 +29,9 @@ func ListSpotFleetRequest(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListCloudtrail(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Cloudtrailconn.DescribeTrailsRequest(&cloudtrail.DescribeTrailsInput{})
-
+func ListCloudtrail(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Cloudtrailconn.DescribeTrails(ctx, &cloudtrail.DescribeTrailsInput{})
 	if err != nil {
 		return nil, err
 	}

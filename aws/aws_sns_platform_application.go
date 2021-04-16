@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSnsPlatformApplication(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Snsconn.ListPlatformApplicationsRequest(&sns.ListPlatformApplicationsInput{})
-
+func ListSnsPlatformApplication(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := sns.NewListPlatformApplicationsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := sns.NewListPlatformApplicationsPaginator(client.Snsconn, &sns.ListPlatformApplicationsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.PlatformApplications {
 
@@ -29,10 +30,6 @@ func ListSnsPlatformApplication(client *aws.Client) ([]terraform.Resource, error
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

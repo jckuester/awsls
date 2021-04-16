@@ -10,22 +10,19 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2CapacityReservation(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeCapacityReservationsRequest(&ec2.DescribeCapacityReservationsInput{})
-
+func ListEc2CapacityReservation(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeCapacityReservationsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeCapacityReservationsPaginator(client.Ec2conn, &ec2.DescribeCapacityReservationsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.CapacityReservations {
 			if *r.OwnerId != client.AccountID {
 				continue
-			}
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreateDate
 			result = append(result, terraform.Resource{
@@ -34,14 +31,9 @@ func ListEc2CapacityReservation(client *aws.Client) ([]terraform.Resource, error
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

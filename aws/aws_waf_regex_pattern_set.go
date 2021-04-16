@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafRegexPatternSet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafconn.ListRegexPatternSetsRequest(&waf.ListRegexPatternSetsInput{})
-
+func ListWafRegexPatternSet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafconn.ListRegexPatternSets(ctx, &waf.ListRegexPatternSetsInput{})
 	if err != nil {
 		return nil, err
 	}

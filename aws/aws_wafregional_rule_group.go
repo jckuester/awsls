@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalRuleGroup(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafregionalconn.ListRuleGroupsRequest(&wafregional.ListRuleGroupsInput{})
-
+func ListWafregionalRuleGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafregionalconn.ListRuleGroups(ctx, &wafregional.ListRuleGroupsInput{})
 	if err != nil {
 		return nil, err
 	}

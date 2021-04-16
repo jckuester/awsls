@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalByteMatchSet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafregionalconn.ListByteMatchSetsRequest(&wafregional.ListByteMatchSetsInput{})
-
+func ListWafregionalByteMatchSet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafregionalconn.ListByteMatchSets(ctx, &wafregional.ListByteMatchSetsInput{})
 	if err != nil {
 		return nil, err
 	}

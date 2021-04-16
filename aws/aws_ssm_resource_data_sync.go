@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSsmResourceDataSync(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ssmconn.ListResourceDataSyncRequest(&ssm.ListResourceDataSyncInput{})
-
+func ListSsmResourceDataSync(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.ResourceDataSyncItems) > 0 {
+	p := ssm.NewListResourceDataSyncPaginator(client.Ssmconn, &ssm.ListResourceDataSyncInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ResourceDataSyncItems {
 

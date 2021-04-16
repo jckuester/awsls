@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDxConnection(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Directconnectconn.DescribeConnectionsRequest(&directconnect.DescribeConnectionsInput{})
-
+func ListDxConnection(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Directconnectconn.DescribeConnections(ctx, &directconnect.DescribeConnectionsInput{})
 	if err != nil {
 		return nil, err
 	}
@@ -24,18 +22,12 @@ func ListDxConnection(client *aws.Client) ([]terraform.Resource, error) {
 
 		for _, r := range resp.Connections {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_dx_connection",
 				ID:        *r.ConnectionId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

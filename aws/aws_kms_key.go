@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListKmsKey(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Kmsconn.ListKeysRequest(&kms.ListKeysInput{})
-
+func ListKmsKey(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := kms.NewListKeysPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := kms.NewListKeysPaginator(client.Kmsconn, &kms.ListKeysInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Keys {
 
@@ -29,10 +30,6 @@ func ListKmsKey(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

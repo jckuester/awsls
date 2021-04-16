@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListLightsailInstance(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Lightsailconn.GetInstancesRequest(&lightsail.GetInstancesInput{})
-
+func ListLightsailInstance(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Lightsailconn.GetInstances(ctx, &lightsail.GetInstancesInput{})
 	if err != nil {
 		return nil, err
 	}
@@ -24,18 +22,12 @@ func ListLightsailInstance(client *aws.Client) ([]terraform.Resource, error) {
 
 		for _, r := range resp.Instances {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_lightsail_instance",
 				ID:        *r.Name,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

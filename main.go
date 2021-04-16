@@ -124,7 +124,9 @@ func mainExitCode() int {
 		profiles = profilesFromConfig
 	}
 
-	clients, err := aws.NewClientPool(profiles, regions)
+	ctx := context.Background()
+
+	clients, err := aws.NewClientPool(ctx, profiles, regions)
 	if err != nil {
 		fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
 
@@ -138,8 +140,6 @@ func mainExitCode() int {
 	for k := range clients {
 		clientKeys = append(clientKeys, k)
 	}
-
-	ctx := context.Background()
 
 	// trap Ctrl+C and call cancel on the context
 	ctx, cancel := context.WithCancel(ctx)
@@ -191,7 +191,9 @@ func mainExitCode() int {
 		var resources []terraform.Resource
 
 		resourcesCh := make(chan resource.UpdatedResources, 1)
-		go func() { resourcesCh <- resource.ListInMultipleAccountsAndRegions(rType, hasAttrs, clients, providers) }()
+		go func() {
+			resourcesCh <- resource.ListInMultipleAccountsAndRegions(context.Background(), rType, hasAttrs, clients, providers)
+		}()
 		select {
 		case <-ctx.Done():
 			return 1

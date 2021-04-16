@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalXssMatchSet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafregionalconn.ListXssMatchSetsRequest(&wafregional.ListXssMatchSetsInput{})
-
+func ListWafregionalXssMatchSet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafregionalconn.ListXssMatchSets(ctx, &wafregional.ListXssMatchSetsInput{})
 	if err != nil {
 		return nil, err
 	}

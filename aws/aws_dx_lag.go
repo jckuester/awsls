@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDxLag(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Directconnectconn.DescribeLagsRequest(&directconnect.DescribeLagsInput{})
-
+func ListDxLag(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Directconnectconn.DescribeLags(ctx, &directconnect.DescribeLagsInput{})
 	if err != nil {
 		return nil, err
 	}
@@ -24,18 +22,12 @@ func ListDxLag(client *aws.Client) ([]terraform.Resource, error) {
 
 		for _, r := range resp.Lags {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_dx_lag",
 				ID:        *r.LagId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

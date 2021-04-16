@@ -10,20 +10,19 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEc2LocalGatewayRouteTableVpcAssociation(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeLocalGatewayRouteTableVpcAssociationsRequest(&ec2.DescribeLocalGatewayRouteTableVpcAssociationsInput{})
-
+func ListEc2LocalGatewayRouteTableVpcAssociation(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeLocalGatewayRouteTableVpcAssociationsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeLocalGatewayRouteTableVpcAssociationsPaginator(client.Ec2conn, &ec2.DescribeLocalGatewayRouteTableVpcAssociationsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.LocalGatewayRouteTableVpcAssociations {
-
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
+			if *r.OwnerId != client.AccountID {
+				continue
 			}
 
 			result = append(result, terraform.Resource{
@@ -32,13 +31,8 @@ func ListEc2LocalGatewayRouteTableVpcAssociation(client *aws.Client) ([]terrafor
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

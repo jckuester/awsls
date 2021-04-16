@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListRoute53Zone(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Route53conn.ListHostedZonesRequest(&route53.ListHostedZonesInput{})
-
+func ListRoute53Zone(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := route53.NewListHostedZonesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := route53.NewListHostedZonesPaginator(client.Route53conn, &route53.ListHostedZonesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.HostedZones {
 
@@ -29,10 +30,6 @@ func ListRoute53Zone(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

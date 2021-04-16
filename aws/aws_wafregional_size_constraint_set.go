@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalSizeConstraintSet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafregionalconn.ListSizeConstraintSetsRequest(&wafregional.ListSizeConstraintSetsInput{})
-
+func ListWafregionalSizeConstraintSet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafregionalconn.ListSizeConstraintSets(ctx, &wafregional.ListSizeConstraintSetsInput{})
 	if err != nil {
 		return nil, err
 	}

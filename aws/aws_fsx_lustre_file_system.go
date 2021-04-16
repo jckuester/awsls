@@ -10,22 +10,19 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListFsxLustreFileSystem(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Fsxconn.DescribeFileSystemsRequest(&fsx.DescribeFileSystemsInput{})
-
+func ListFsxLustreFileSystem(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := fsx.NewDescribeFileSystemsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := fsx.NewDescribeFileSystemsPaginator(client.Fsxconn, &fsx.DescribeFileSystemsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.FileSystems {
 			if *r.OwnerId != client.AccountID {
 				continue
-			}
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
 			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
@@ -34,14 +31,9 @@ func ListFsxLustreFileSystem(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

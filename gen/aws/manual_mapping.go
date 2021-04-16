@@ -7,8 +7,11 @@ var excludeServices = map[string]struct{}{
 	"importexport": {},
 }
 
-// some resource types are excluded as they need be handled slightly differently
+// ExcludedResourceTypes are resource types excluded from generation as they need be handled slightly differently.
 var ExcludedResourceTypes = map[string]bool{
+	"aws_route53_resolver_dnssec_config": true,
+	"aws_prometheus_workspace":           true,
+	"aws_simpledb_domain":                true,
 	// not a resource
 	"aws_api_gateway_integration": true,
 	// is not a resource
@@ -57,7 +60,7 @@ var ExcludedResourceTypes = map[string]bool{
 	"aws_rds_cluster_instance": true,
 }
 
-// manualMatchedListOps are list operations that could not be matched automatically
+// ManualMatchedListOps are list operations that could not be matched automatically.
 var ManualMatchedListOps = map[string]string{
 	"aws_appautoscaling_target":           "DescribeScalableTargets",
 	"aws_appautoscaling_policy":           "DescribeScalingPolicies",
@@ -89,27 +92,31 @@ var ManualMatchedOutputFields = map[string]string{
 }
 
 var ManualMatchedResourceID = map[string]string{
-	"aws_ami":                                       "ImageId",
-	"aws_autoscaling_group":                         "AutoScalingGroupName",
-	"aws_launch_configuration":                      "LaunchConfigurationName",
-	"aws_s3_bucket":                                 "Name",
-	"aws_elb":                                       "LoadBalancerName",
-	"aws_db_instance":                               "DBInstanceIdentifier",
-	"aws_route53_zone":                              "Id",
-	"aws_ses_email_identity":                        "EmailAddress",
-	"aws_ses_domain_identity":                       "Domain",
-	"aws_simpledb_domain":                           "DomainName",
-	"aws_workspaces_workspace":                      "WorkspaceId",
-	"aws_subnet":                                    "SubnetId",
-	"aws_imagebuilder_component":                    "Arn",
+	"aws_ami":                    "ImageId",
+	"aws_autoscaling_group":      "AutoScalingGroupName",
+	"aws_db_instance":            "DBInstanceIdentifier",
+	"aws_elb":                    "LoadBalancerName",
+	"aws_imagebuilder_component": "Arn",
 	"aws_imagebuilder_distribution_configuration":   "Arn",
-	"aws_imagebuilder_infrastructure_configuration": "Arn",
 	"aws_imagebuilder_image":                        "Arn",
 	"aws_imagebuilder_image_pipeline":               "Arn",
 	"aws_imagebuilder_image_recipe":                 "Arn",
-	"aws_workspaces_directory":                      "DirectoryId",
+	"aws_imagebuilder_infrastructure_configuration": "Arn",
+	"aws_launch_configuration":                      "LaunchConfigurationName",
+	"aws_networkfirewall_firewall_policy":           "Arn",
+	"aws_networkfirewall_rule_group":                "Arn",
 	"aws_rds_cluster":                               "DBClusterIdentifier",
 	"aws_rds_cluster_endpoint":                      "DBClusterEndpointIdentifier",
+	"aws_route53_zone":                              "Id",
+	"aws_s3_bucket":                                 "Name",
+	"aws_ses_domain_identity":                       "Domain",
+	"aws_ses_email_identity":                        "EmailAddress",
+	"aws_signer_signing_job":                        "JobId",
+	"aws_signer_signing_profile":                    "ProfileName",
+	"aws_simpledb_domain":                           "DomainName",
+	"aws_subnet":                                    "SubnetId",
+	"aws_workspaces_directory":                      "DirectoryId",
+	"aws_workspaces_workspace":                      "WorkspaceId",
 }
 
 var Inputs = map[string]string{
@@ -122,4 +129,25 @@ OwnerIds: []string{"self"},
 	"aws_ami": `
 Owners: []string{"self"},
 `,
+}
+
+// AWSServicesV1toV2 contains mappings from service names in AWS API v1 (used by Terraform)
+// to names in v2 (used by this project in the generated code), if the names differ.
+var AWSServicesV1toV2 = map[string]string{
+	"elb":   "elasticloadbalancing",
+	"elbv2": "elasticloadbalancingv2",
+}
+
+// missingPaginatorAPI contains resource types for which pagination is possible,
+// but the paginator API is missing in the aws-sdk-go-v2 API.
+var missingPaginatorAPI = map[string]bool{
+	"aws_imagebuilder_component":                    true,
+	"aws_imagebuilder_distribution_configuration":   true,
+	"aws_imagebuilder_image":                        true,
+	"aws_imagebuilder_image_pipeline":               true,
+	"aws_imagebuilder_image_recipe":                 true,
+	"aws_imagebuilder_infrastructure_configuration": true,
+	"aws_kinesis_stream":                            true,
+	"aws_route53_resolver_dnssec_config":            true,
+	"aws_sagemaker_feature_group":                   true,
 }

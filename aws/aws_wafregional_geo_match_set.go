@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWafregionalGeoMatchSet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Wafregionalconn.ListGeoMatchSetsRequest(&wafregional.ListGeoMatchSetsInput{})
-
+func ListWafregionalGeoMatchSet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Wafregionalconn.ListGeoMatchSets(ctx, &wafregional.ListGeoMatchSetsInput{})
 	if err != nil {
 		return nil, err
 	}

@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListMqConfiguration(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Mqconn.ListConfigurationsRequest(&mq.ListConfigurationsInput{})
-
+func ListMqConfiguration(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Mqconn.ListConfigurations(ctx, &mq.ListConfigurationsInput{})
 	if err != nil {
 		return nil, err
 	}
@@ -24,18 +22,12 @@ func ListMqConfiguration(client *aws.Client) ([]terraform.Resource, error) {
 
 		for _, r := range resp.Configurations {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_mq_configuration",
 				ID:        *r.Id,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListBatchComputeEnvironment(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Batchconn.DescribeComputeEnvironmentsRequest(&batch.DescribeComputeEnvironmentsInput{})
-
+func ListBatchComputeEnvironment(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := batch.NewDescribeComputeEnvironmentsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := batch.NewDescribeComputeEnvironmentsPaginator(client.Batchconn, &batch.DescribeComputeEnvironmentsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.ComputeEnvironments {
 
@@ -29,10 +30,6 @@ func ListBatchComputeEnvironment(client *aws.Client) ([]terraform.Resource, erro
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

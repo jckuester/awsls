@@ -10,21 +10,18 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListWorklinkFleet(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Worklinkconn.ListFleetsRequest(&worklink.ListFleetsInput{})
-
+func ListWorklinkFleet(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := worklink.NewListFleetsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := worklink.NewListFleetsPaginator(client.Worklinkconn, &worklink.ListFleetsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.FleetSummaryList {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
 			t := *r.CreatedTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_worklink_fleet",
@@ -32,14 +29,9 @@ func ListWorklinkFleet(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

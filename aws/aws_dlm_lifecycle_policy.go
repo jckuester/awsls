@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDlmLifecyclePolicy(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Dlmconn.GetLifecyclePoliciesRequest(&dlm.GetLifecyclePoliciesInput{})
-
+func ListDlmLifecyclePolicy(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Dlmconn.GetLifecyclePolicies(ctx, &dlm.GetLifecyclePoliciesInput{})
 	if err != nil {
 		return nil, err
 	}
@@ -24,18 +22,12 @@ func ListDlmLifecyclePolicy(client *aws.Client) ([]terraform.Resource, error) {
 
 		for _, r := range resp.Policies {
 
-			tags := map[string]string{}
-			for k, v := range r.Tags {
-				tags[k] = v
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_dlm_lifecycle_policy",
 				ID:        *r.PolicyId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

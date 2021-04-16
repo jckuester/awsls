@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSagemakerCodeRepository(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Sagemakerconn.ListCodeRepositoriesRequest(&sagemaker.ListCodeRepositoriesInput{})
-
+func ListSagemakerCodeRepository(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := sagemaker.NewListCodeRepositoriesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := sagemaker.NewListCodeRepositoriesPaginator(client.Sagemakerconn, &sagemaker.ListCodeRepositoriesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.CodeRepositorySummaryList {
 
@@ -28,14 +29,9 @@ func ListSagemakerCodeRepository(client *aws.Client) ([]terraform.Resource, erro
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDbSnapshot(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Rdsconn.DescribeDBSnapshotsRequest(&rds.DescribeDBSnapshotsInput{})
-
+func ListDbSnapshot(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := rds.NewDescribeDBSnapshotsPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := rds.NewDescribeDBSnapshotsPaginator(client.Rdsconn, &rds.DescribeDBSnapshotsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.DBSnapshots {
 
@@ -28,14 +29,9 @@ func ListDbSnapshot(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

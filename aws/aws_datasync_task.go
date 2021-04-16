@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDatasyncTask(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Datasyncconn.ListTasksRequest(&datasync.ListTasksInput{})
-
+func ListDatasyncTask(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := datasync.NewListTasksPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := datasync.NewListTasksPaginator(client.Datasyncconn, &datasync.ListTasksInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Tasks {
 
@@ -29,10 +30,6 @@ func ListDatasyncTask(client *aws.Client) ([]terraform.Resource, error) {
 				AccountID: client.AccountID,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,14 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListSfnActivity(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Sfnconn.ListActivitiesRequest(&sfn.ListActivitiesInput{})
-
+func ListSfnActivity(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := sfn.NewListActivitiesPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := sfn.NewListActivitiesPaginator(client.Sfnconn, &sfn.ListActivitiesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Activities {
 
@@ -28,14 +29,9 @@ func ListSfnActivity(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListConfigConformancePack(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Configserviceconn.DescribeConformancePacksRequest(&configservice.DescribeConformancePacksInput{})
-
+func ListConfigConformancePack(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Configserviceconn.DescribeConformancePacks(ctx, &configservice.DescribeConformancePacksInput{})
 	if err != nil {
 		return nil, err
 	}

@@ -10,21 +10,17 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListEgressOnlyInternetGateway(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Ec2conn.DescribeEgressOnlyInternetGatewaysRequest(&ec2.DescribeEgressOnlyInternetGatewaysInput{})
-
+func ListEgressOnlyInternetGateway(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	p := ec2.NewDescribeEgressOnlyInternetGatewaysPaginator(req)
-	for p.Next(context.Background()) {
-		resp := p.CurrentPage()
+	p := ec2.NewDescribeEgressOnlyInternetGatewaysPaginator(client.Ec2conn, &ec2.DescribeEgressOnlyInternetGatewaysInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.EgressOnlyInternetGateways {
-
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_egress_only_internet_gateway",
@@ -32,13 +28,8 @@ func ListEgressOnlyInternetGateway(client *aws.Client) ([]terraform.Resource, er
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
-	}
-
-	if err := p.Err(); err != nil {
-		return nil, err
 	}
 
 	return result, nil

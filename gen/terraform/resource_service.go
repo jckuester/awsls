@@ -71,11 +71,6 @@ func resourceService(providerRepoPath, resourceType, resourceFileName string) (s
 	if len(serviceCandidates) == 1 {
 		service := serviceCandidates[0]
 
-		serviceV2, ok := AWSServicesV1toV2[service]
-		if ok {
-			service = serviceV2
-		}
-
 		return service, nil
 	}
 

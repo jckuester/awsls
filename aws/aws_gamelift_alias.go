@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListGameliftAlias(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Gameliftconn.ListAliasesRequest(&gamelift.ListAliasesInput{})
-
+func ListGameliftAlias(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.Aliases) > 0 {
+	p := gamelift.NewListAliasesPaginator(client.Gameliftconn, &gamelift.ListAliasesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Aliases {
 
@@ -31,7 +29,6 @@ func ListGameliftAlias(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}

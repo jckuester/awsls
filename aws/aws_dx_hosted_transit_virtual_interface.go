@@ -10,12 +10,10 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListDxHostedTransitVirtualInterface(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Directconnectconn.DescribeVirtualInterfacesRequest(&directconnect.DescribeVirtualInterfacesInput{})
-
+func ListDxHostedTransitVirtualInterface(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
+	resp, err := client.Directconnectconn.DescribeVirtualInterfaces(ctx, &directconnect.DescribeVirtualInterfacesInput{})
 	if err != nil {
 		return nil, err
 	}
@@ -24,18 +22,12 @@ func ListDxHostedTransitVirtualInterface(client *aws.Client) ([]terraform.Resour
 
 		for _, r := range resp.VirtualInterfaces {
 
-			tags := map[string]string{}
-			for _, t := range r.Tags {
-				tags[*t.Key] = *t.Value
-			}
-
 			result = append(result, terraform.Resource{
 				Type:      "aws_dx_hosted_transit_virtual_interface",
 				ID:        *r.VirtualInterfaceId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-				Tags:      tags,
 			})
 		}
 	}

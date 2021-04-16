@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListIotCertificate(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Iotconn.ListCertificatesRequest(&iot.ListCertificatesInput{})
-
+func ListIotCertificate(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.Certificates) > 0 {
+	p := iot.NewListCertificatesPaginator(client.Iotconn, &iot.ListCertificatesInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Certificates {
 
@@ -31,7 +29,6 @@ func ListIotCertificate(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}

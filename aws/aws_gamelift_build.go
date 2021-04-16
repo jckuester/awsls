@@ -10,17 +10,15 @@ import (
 	"github.com/jckuester/awstools-lib/terraform"
 )
 
-func ListGameliftBuild(client *aws.Client) ([]terraform.Resource, error) {
-	req := client.Gameliftconn.ListBuildsRequest(&gamelift.ListBuildsInput{})
-
+func ListGameliftBuild(ctx context.Context, client *aws.Client) ([]terraform.Resource, error) {
 	var result []terraform.Resource
 
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.Builds) > 0 {
+	p := gamelift.NewListBuildsPaginator(client.Gameliftconn, &gamelift.ListBuildsInput{})
+	for p.HasMorePages() {
+		resp, err := p.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
 
 		for _, r := range resp.Builds {
 
@@ -31,7 +29,6 @@ func ListGameliftBuild(client *aws.Client) ([]terraform.Resource, error) {
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
-
 				CreatedAt: &t,
 			})
 		}
