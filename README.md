@@ -7,7 +7,7 @@ A list command for AWS resources.
 [![Travis](https://img.shields.io/travis/jckuester/awsls/master.svg?style=for-the-badge)](https://travis-ci.org/jckuester/awsls)
 
 awsls supports listing of [over 250 types of resources](#supported-resources)
-across 97 different AWS services. The goal is to code-generate a list function for
+across 100 different AWS services. The goal is to code-generate a list function for
 every AWS resource that is covered by the Terraform AWS Provider (currently over 500). If you want to contribute,
 [the generator is here](./gen).
 
@@ -96,7 +96,7 @@ The `--all-profiles` flag will use all profiles from `~/.aws/config`, or if `AWS
 
 ## Supported resources
 
-Currently, all 287 resource types across 97 services in the table below can be listed with awsls. The `Tags` column shows if a resource
+Currently, all 297 resource types across 100 services in the table below can be listed with awsls. The `Tags` column shows if a resource
 supports displaying tags, the `Creation Time` column if a resource has a creation timestamp, and the `Owner` column if
 resources are pre-filtered belonging to the account owner.
 
@@ -136,10 +136,10 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **batch** |
 | aws_batch_compute_environment |  x  |  |
 | aws_batch_job_definition |  x  |  |
-| aws_batch_job_queue |  x  |  |
 | **cloudformation** |
 | aws_cloudformation_stack |  x  |  x  |
 | aws_cloudformation_stack_set |  x  |  |
+| aws_cloudformation_type |  |  |
 | **cloudhsmv2** |
 | aws_cloudhsm_v2_cluster |  x  |  |
 | **cloudtrail** |
@@ -153,6 +153,7 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_cloudwatch_log_destination |  |  x  |
 | aws_cloudwatch_log_group |  x  |  x  |
 | aws_cloudwatch_log_resource_policy |  |  |
+| aws_cloudwatch_query_definition |  |  |
 | **codeartifact** |
 | aws_codeartifact_domain |  x  |  x  |
 | aws_codeartifact_repository |  x  |  |
@@ -168,10 +169,12 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_codepipeline_webhook |  x  |  |
 | **codestarconnections** |
 | aws_codestarconnections_connection |  x  |  |
+| aws_codestarconnections_host |  |  |
 | **codestarnotifications** |
 | aws_codestarnotifications_notification_rule |  x  |  |
 | **configservice** |
 | aws_config_config_rule |  x  |  |
+| aws_config_configuration_aggregator |  x  |  x  |
 | aws_config_configuration_recorder |  |  |
 | aws_config_conformance_pack |  |  |
 | aws_config_delivery_channel |  |  |
@@ -302,10 +305,10 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_iam_access_key |  |  x  |
 | aws_iam_account_alias |  |  |
 | aws_iam_group |  |  x  |
-| aws_iam_instance_profile |  |  x  |
-| aws_iam_policy |  |  x  |
+| aws_iam_instance_profile |  x  |  x  |
+| aws_iam_policy |  x  |  x  |
 | aws_iam_role |  x  |  x  |
-| aws_iam_server_certificate |  |  |
+| aws_iam_server_certificate |  x  |  |
 | aws_iam_service_linked_role |  |  x  |
 | aws_iam_user |  x  |  x  |
 | **imagebuilder** |
@@ -349,6 +352,10 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_lightsail_instance |  x  |  |
 | aws_lightsail_key_pair |  |  |
 | aws_lightsail_static_ip |  |  |
+| **macie2** |
+| aws_macie2_classification_job |  x  |  |
+| aws_macie2_custom_data_identifier |  x  |  |
+| aws_macie2_findings_filter |  x  |  |
 | **mediaconvert** |
 | aws_media_convert_queue |  x  |  |
 | **mediapackage** |
@@ -358,6 +365,8 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | **mq** |
 | aws_mq_broker |  x  |  |
 | aws_mq_configuration |  x  |  |
+| **mwaa** |
+| aws_mwaa_environment |  x  |  |
 | **neptune** |
 | aws_neptune_event_subscription |  x  |  |
 | **networkfirewall** |
@@ -413,8 +422,11 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_secretsmanager_secret |  x  |  |
 | **securityhub** |
 | aws_securityhub_action_target |  |  |
+| aws_securityhub_insight |  |  |
 | **servicecatalog** |
 | aws_servicecatalog_portfolio |  x  |  x  |
+| aws_servicecatalog_service_action |  |  |
+| aws_servicecatalog_tag_option |  |  |
 | **servicediscovery** |
 | aws_service_discovery_service |  x  |  x  |
 | **ses** |
@@ -444,13 +456,14 @@ Note: the prefix `aws_` for resource types is now optional. This means, for exam
 | aws_ssm_maintenance_window |  x  |  |
 | aws_ssm_parameter |  x  |  |
 | aws_ssm_patch_baseline |  x  |  |
-| aws_ssm_patch_group |  |  |
 | aws_ssm_resource_data_sync |  |  |
 | **storagegateway** |
 | aws_storagegateway_gateway |  x  |  |
 | aws_storagegateway_tape_pool |  x  |  |
 | **synthetics** |
 | aws_synthetics_canary |  x  |  |
+| **timestreamwrite** |
+| aws_timestreamwrite_database |  x  |  x  |
 | **transfer** |
 | aws_transfer_server |  x  |  |
 | **waf** |
