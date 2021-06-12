@@ -56,12 +56,12 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListBatchComputeEnvironment(ctx, client)
 	case "aws_batch_job_definition":
 		return ListBatchJobDefinition(ctx, client)
-	case "aws_batch_job_queue":
-		return ListBatchJobQueue(ctx, client)
 	case "aws_cloudformation_stack":
 		return ListCloudformationStack(ctx, client)
 	case "aws_cloudformation_stack_set":
 		return ListCloudformationStackSet(ctx, client)
+	case "aws_cloudformation_type":
+		return ListCloudformationType(ctx, client)
 	case "aws_cloudhsm_v2_cluster":
 		return ListCloudhsmV2Cluster(ctx, client)
 	case "aws_cloudtrail":
@@ -78,6 +78,8 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListCloudwatchLogGroup(ctx, client)
 	case "aws_cloudwatch_log_resource_policy":
 		return ListCloudwatchLogResourcePolicy(ctx, client)
+	case "aws_cloudwatch_query_definition":
+		return ListCloudwatchQueryDefinition(ctx, client)
 	case "aws_codeartifact_domain":
 		return ListCodeartifactDomain(ctx, client)
 	case "aws_codeartifact_repository":
@@ -96,10 +98,14 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListCodepipelineWebhook(ctx, client)
 	case "aws_codestarconnections_connection":
 		return ListCodestarconnectionsConnection(ctx, client)
+	case "aws_codestarconnections_host":
+		return ListCodestarconnectionsHost(ctx, client)
 	case "aws_codestarnotifications_notification_rule":
 		return ListCodestarnotificationsNotificationRule(ctx, client)
 	case "aws_config_config_rule":
 		return ListConfigConfigRule(ctx, client)
+	case "aws_config_configuration_aggregator":
+		return ListConfigConfigurationAggregator(ctx, client)
 	case "aws_config_configuration_recorder":
 		return ListConfigConfigurationRecorder(ctx, client)
 	case "aws_config_conformance_pack":
@@ -354,6 +360,12 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListLightsailKeyPair(ctx, client)
 	case "aws_lightsail_static_ip":
 		return ListLightsailStaticIp(ctx, client)
+	case "aws_macie2_classification_job":
+		return ListMacie2ClassificationJob(ctx, client)
+	case "aws_macie2_custom_data_identifier":
+		return ListMacie2CustomDataIdentifier(ctx, client)
+	case "aws_macie2_findings_filter":
+		return ListMacie2FindingsFilter(ctx, client)
 	case "aws_media_convert_queue":
 		return ListMediaConvertQueue(ctx, client)
 	case "aws_media_package_channel":
@@ -368,6 +380,8 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListMskCluster(ctx, client)
 	case "aws_msk_configuration":
 		return ListMskConfiguration(ctx, client)
+	case "aws_mwaa_environment":
+		return ListMwaaEnvironment(ctx, client)
 	case "aws_nat_gateway":
 		return ListNatGateway(ctx, client)
 	case "aws_neptune_event_subscription":
@@ -450,10 +464,16 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListSecurityGroup(ctx, client)
 	case "aws_securityhub_action_target":
 		return ListSecurityhubActionTarget(ctx, client)
+	case "aws_securityhub_insight":
+		return ListSecurityhubInsight(ctx, client)
 	case "aws_service_discovery_service":
 		return ListServiceDiscoveryService(ctx, client)
 	case "aws_servicecatalog_portfolio":
 		return ListServicecatalogPortfolio(ctx, client)
+	case "aws_servicecatalog_service_action":
+		return ListServicecatalogServiceAction(ctx, client)
+	case "aws_servicecatalog_tag_option":
+		return ListServicecatalogTagOption(ctx, client)
 	case "aws_ses_active_receipt_rule_set":
 		return ListSesActiveReceiptRuleSet(ctx, client)
 	case "aws_ses_configuration_set":
@@ -500,8 +520,6 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListSsmParameter(ctx, client)
 	case "aws_ssm_patch_baseline":
 		return ListSsmPatchBaseline(ctx, client)
-	case "aws_ssm_patch_group":
-		return ListSsmPatchGroup(ctx, client)
 	case "aws_ssm_resource_data_sync":
 		return ListSsmResourceDataSync(ctx, client)
 	case "aws_storagegateway_gateway":
@@ -512,6 +530,8 @@ func ListResourcesByType(ctx context.Context, client *aws.Client, resourceType s
 		return ListSubnet(ctx, client)
 	case "aws_synthetics_canary":
 		return ListSyntheticsCanary(ctx, client)
+	case "aws_timestreamwrite_database":
+		return ListTimestreamwriteDatabase(ctx, client)
 	case "aws_transfer_server":
 		return ListTransferServer(ctx, client)
 	case "aws_vpc":

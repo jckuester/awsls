@@ -27,7 +27,7 @@ func GenerateResourceTypesWithTagsList(resourceTypes []string, outputPath string
 	}
 
 	providers, err := terraform.NewProviderPool(context.Background(),
-		[]aws.ClientKey{awsClientKey}, "3.31.0", "~/.awsls", 10*time.Second)
+		[]aws.ClientKey{awsClientKey}, "3.42.0", "~/.awsls", 10*time.Second)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize Terraform AWS provider: %s", err)
 	}
