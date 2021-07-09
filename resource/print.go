@@ -37,7 +37,7 @@ func PrintResources(resources []terraform.Resource, hasAttrs map[string]bool, at
 			_, ok := hasAttrs[attr]
 			if ok {
 				var err error
-				v, err = GetAttribute(attr, &r)
+				v, err = GetAttribute(attr, r.State())
 				if err != nil {
 					log.WithFields(log.Fields{
 						"type": r.Type,
@@ -83,7 +83,7 @@ func PrintResourcesAsJSON(resources []terraform.Resource, hasAttrs map[string]bo
 			_, ok := hasAttrs[attr]
 			if ok {
 				var err error
-				v, err = GetAttribute(attr, &r)
+				v, err = GetAttribute(attr, r.State())
 				if err != nil {
 					log.WithFields(log.Fields{
 						"type": r.Type,
