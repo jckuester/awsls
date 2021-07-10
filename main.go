@@ -2,14 +2,12 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	stdlog "log"
 	"os"
 	"os/signal"
 	"strings"
-	"time"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
@@ -19,6 +17,7 @@ import (
 	"github.com/jckuester/awsls/resource"
 	"github.com/jckuester/awstools-lib/aws"
 	"github.com/jckuester/awstools-lib/terraform"
+	"github.com/jckuester/awstools-lib/terraform/provider"
 	flag "github.com/spf13/pflag"
 )
 
@@ -163,25 +162,16 @@ func mainExitCode() int {
 		log.SetLevel(log.DebugLevel)
 	}
 
-	// initialize a Terraform AWS provider for each AWS client with a matching config
-	providers, err := terraform.NewProviderPool(ctx, clientKeys, "v3.42.0", "~/.awsls", 10*time.Second)
+	providerInfo, err := provider.Install("aws", "v3.42.0", "~/.awsls")
 	if err != nil {
-		if !errors.Is(err, context.Canceled) {
-			fmt.Fprint(os.Stderr, color.RedString("\nError: %s\n", err))
-		}
+		fmt.Fprint(os.Stderr, color.RedString("Error: failed to install provider: %s\n",
+			err))
 		return 1
 	}
-	defer func() {
-		for _, p := range providers {
-			_ = p.Close()
-		}
-	}()
 
 	for _, rType := range matchedTypes {
-		// any provider here is sufficient to check if a resource type has attributes
-		p := providers[clientKeys[0]]
-
-		hasAttrs, err := resource.HasAttributes(attributes, rType, &p)
+		hasAttrs, err := resource.HasAttributes(attributes, rType, providerInfo.Path, clientKeys[0].Profile,
+			clientKeys[0].Region)
 		if err != nil {
 			fmt.Fprint(os.Stderr, color.RedString("Error: failed to check if resource type has attribute: %s\n",
 				err))
@@ -192,7 +182,7 @@ func mainExitCode() int {
 
 		resourcesCh := make(chan resource.UpdatedResources, 1)
 		go func() {
-			resourcesCh <- resource.ListInMultipleAccountsAndRegions(context.Background(), rType, hasAttrs, clients, providers)
+			resourcesCh <- resource.ListInMultipleAccountsAndRegions(ctx, rType, hasAttrs, clients, providerInfo.Path)
 		}()
 		select {
 		case <-ctx.Done():

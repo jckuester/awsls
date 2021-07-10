@@ -5,11 +5,11 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/apex/log"
 	"github.com/gobwas/glob"
-	"github.com/jckuester/awstools-lib/terraform"
-	"github.com/jckuester/terradozer/pkg/provider"
+	"github.com/jckuester/awstools-lib/terraform/provider"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 )
@@ -36,7 +36,7 @@ func IsSupportedType(s string) bool {
 	return false
 }
 
-// MatchResourceTypes returns all by awsls supported resource types that match the given glob pattern.
+// MatchSupportedTypes returns all by awsls supported resource types that match the given glob pattern.
 func MatchSupportedTypes(globPattern string) ([]string, error) {
 	var result []string
 
@@ -75,8 +75,19 @@ func SupportsTags(s string) bool {
 
 // HasAttributes returns only the attributes that the given Terraform resource type supports out of a given
 // list of attributes.
-func HasAttributes(attributes []string, terraformType string, provider *provider.TerraformProvider) (map[string]bool, error) {
-	schema, err := provider.GetSchemaForResource(terraformType)
+func HasAttributes(attributes []string, terraformType string, providerPath, profile, region string) (map[string]bool, error) {
+	p, err := provider.Launch(providerPath, 1*time.Minute)
+	if err != nil {
+		return nil, err
+	}
+	defer p.Close()
+
+	err = p.Configure(provider.AwsProviderConfig(profile, region))
+	if err != nil {
+		return nil, err
+	}
+
+	schema, err := p.GetSchemaForResource(terraformType)
 	if err != nil {
 		return nil, err
 	}
@@ -93,14 +104,9 @@ func HasAttributes(attributes []string, terraformType string, provider *provider
 	return result, nil
 }
 
-// GetAttribute returns any Terraform attribute of a resource by name.
-func GetAttribute(name string, r *terraform.Resource) (string, error) {
-	if r.UpdatableResource == nil {
-		return "", fmt.Errorf("resource is nil")
-	}
-
-	state := r.State()
-
+// GetAttribute gets an Terraform attribute from a resource's state and
+// returns it as string.
+func GetAttribute(name string, state *cty.Value) (string, error) {
 	if state == nil {
 		return "", fmt.Errorf("state is nil")
 	}
@@ -118,7 +124,7 @@ func GetAttribute(name string, r *terraform.Resource) (string, error) {
 	}
 
 	if !state.CanIterateElements() {
-		return "", fmt.Errorf("cannot iterate: %s", *state)
+		return "", fmt.Errorf("cannot iterate: %s", state)
 	}
 
 	attrValue, ok := state.AsValueMap()[name]

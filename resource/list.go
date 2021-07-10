@@ -12,7 +12,6 @@ import (
 	"github.com/jckuester/awsls/internal"
 	"github.com/jckuester/awstools-lib/aws"
 	"github.com/jckuester/awstools-lib/terraform"
-	"github.com/jckuester/terradozer/pkg/provider"
 )
 
 // UpdatedResources contains resources which Terraform state
@@ -25,7 +24,7 @@ type UpdatedResources struct {
 // ListInMultipleAccountsAndRegions lists resources of a given resource type in parallel for multiple accounts and
 // regions and updates the resources' Terraform state.
 func ListInMultipleAccountsAndRegions(ctx context.Context, rType string, hasAttrs map[string]bool,
-	clients map[aws.ClientKey]aws.Client, providers map[aws.ClientKey]provider.TerraformProvider) UpdatedResources {
+	clients map[aws.ClientKey]aws.Client, providerPath string) UpdatedResources {
 	var wg sync.WaitGroup
 	sem := internal.NewSemaphore(10)
 
@@ -64,7 +63,7 @@ func ListInMultipleAccountsAndRegions(ctx context.Context, rType string, hasAttr
 			if len(hasAttrs) > 0 {
 				// for performance reasons:
 				// only fetch state if some attributes need to be displayed for this resource type
-				updatesResources, errs := terraform.UpdateStates(resources, providers, 10, true)
+				updatesResources, errs := terraform.UpdateStates(resources, providerPath, 10, true)
 				resources = updatesResources
 
 				result.Lock()
