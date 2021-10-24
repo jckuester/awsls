@@ -22,12 +22,18 @@ func ListImagebuilderImageRecipe(ctx context.Context, client *aws.Client) ([]ter
 
 		for _, r := range resp.ImageRecipeSummaryList {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_image_recipe",
 				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

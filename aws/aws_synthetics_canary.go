@@ -22,12 +22,18 @@ func ListSyntheticsCanary(ctx context.Context, client *aws.Client) ([]terraform.
 
 		for _, r := range resp.Canaries {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_synthetics_canary",
 				ID:        *r.Name,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

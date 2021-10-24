@@ -22,12 +22,18 @@ func ListRedshiftSubnetGroup(ctx context.Context, client *aws.Client) ([]terrafo
 
 		for _, r := range resp.ClusterSubnetGroups {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_subnet_group",
 				ID:        *r.ClusterSubnetGroupName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

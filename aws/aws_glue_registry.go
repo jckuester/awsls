@@ -33,6 +33,7 @@ func ListGlueRegistry(ctx context.Context, client *aws.Client) ([]terraform.Reso
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+
 				CreatedAt: &t,
 			})
 		}

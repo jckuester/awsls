@@ -30,6 +30,7 @@ func ListCloudwatchLogGroup(ctx context.Context, client *aws.Client) ([]terrafor
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+
 				CreatedAt: &t,
 			})
 		}

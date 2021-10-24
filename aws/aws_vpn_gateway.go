@@ -22,12 +22,18 @@ func ListVpnGateway(ctx context.Context, client *aws.Client) ([]terraform.Resour
 
 		for _, r := range resp.VpnGateways {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_vpn_gateway",
 				ID:        *r.VpnGatewayId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

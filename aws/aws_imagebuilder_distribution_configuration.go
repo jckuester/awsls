@@ -22,12 +22,18 @@ func ListImagebuilderDistributionConfiguration(ctx context.Context, client *aws.
 
 		for _, r := range resp.DistributionConfigurationSummaryList {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_distribution_configuration",
 				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

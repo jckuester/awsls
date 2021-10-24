@@ -22,12 +22,18 @@ func ListMacie2FindingsFilter(ctx context.Context, client *aws.Client) ([]terraf
 
 		for _, r := range resp.FindingsFilterListItems {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_macie2_findings_filter",
 				ID:        *r.Id,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

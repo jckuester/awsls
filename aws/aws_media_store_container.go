@@ -29,6 +29,7 @@ func ListMediaStoreContainer(ctx context.Context, client *aws.Client) ([]terrafo
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+
 				CreatedAt: &t,
 			})
 		}

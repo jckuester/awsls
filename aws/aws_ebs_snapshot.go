@@ -26,6 +26,10 @@ func ListEbsSnapshot(ctx context.Context, client *aws.Client) ([]terraform.Resou
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 			t := *r.StartTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_ebs_snapshot",
@@ -33,6 +37,7 @@ func ListEbsSnapshot(ctx context.Context, client *aws.Client) ([]terraform.Resou
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

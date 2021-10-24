@@ -24,6 +24,10 @@ func ListEc2TrafficMirrorSession(ctx context.Context, client *aws.Client) ([]ter
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_traffic_mirror_session",
@@ -31,6 +35,7 @@ func ListEc2TrafficMirrorSession(ctx context.Context, client *aws.Client) ([]ter
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

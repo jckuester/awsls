@@ -24,6 +24,10 @@ func ListFsxWindowsFileSystem(ctx context.Context, client *aws.Client) ([]terraf
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_fsx_windows_file_system",
@@ -31,6 +35,7 @@ func ListFsxWindowsFileSystem(ctx context.Context, client *aws.Client) ([]terraf
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

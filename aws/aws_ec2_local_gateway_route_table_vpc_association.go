@@ -24,6 +24,10 @@ func ListEc2LocalGatewayRouteTableVpcAssociation(ctx context.Context, client *aw
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_local_gateway_route_table_vpc_association",
@@ -31,6 +35,7 @@ func ListEc2LocalGatewayRouteTableVpcAssociation(ctx context.Context, client *aw
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

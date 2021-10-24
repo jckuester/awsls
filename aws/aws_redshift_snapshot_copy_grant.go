@@ -22,12 +22,18 @@ func ListRedshiftSnapshotCopyGrant(ctx context.Context, client *aws.Client) ([]t
 
 		for _, r := range resp.SnapshotCopyGrants {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_snapshot_copy_grant",
 				ID:        *r.SnapshotCopyGrantName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

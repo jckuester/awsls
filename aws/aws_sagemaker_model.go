@@ -29,6 +29,7 @@ func ListSagemakerModel(ctx context.Context, client *aws.Client) ([]terraform.Re
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+
 				CreatedAt: &t,
 			})
 		}

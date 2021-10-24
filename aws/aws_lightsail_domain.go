@@ -22,12 +22,18 @@ func ListLightsailDomain(ctx context.Context, client *aws.Client) ([]terraform.R
 
 		for _, r := range resp.Domains {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_lightsail_domain",
 				ID:        *r.Name,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

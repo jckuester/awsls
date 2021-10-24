@@ -22,12 +22,18 @@ func ListApiGatewayRestApi(ctx context.Context, client *aws.Client) ([]terraform
 
 		for _, r := range resp.Items {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_api_gateway_rest_api",
 				ID:        *r.Id,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

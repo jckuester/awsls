@@ -33,6 +33,7 @@ func ListRoute53ResolverEndpoint(ctx context.Context, client *aws.Client) ([]ter
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+
 				CreatedAt: &t,
 			})
 		}

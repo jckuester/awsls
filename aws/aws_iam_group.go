@@ -29,6 +29,7 @@ func ListIamGroup(ctx context.Context, client *aws.Client) ([]terraform.Resource
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+
 				CreatedAt: &t,
 			})
 		}

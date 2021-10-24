@@ -22,12 +22,18 @@ func ListKeyPair(ctx context.Context, client *aws.Client) ([]terraform.Resource,
 
 		for _, r := range resp.KeyPairs {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_key_pair",
 				ID:        *r.KeyName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

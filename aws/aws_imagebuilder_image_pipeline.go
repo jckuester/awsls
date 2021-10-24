@@ -22,12 +22,18 @@ func ListImagebuilderImagePipeline(ctx context.Context, client *aws.Client) ([]t
 
 		for _, r := range resp.ImagePipelineList {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_image_pipeline",
 				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

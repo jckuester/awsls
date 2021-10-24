@@ -29,6 +29,7 @@ func ListSagemakerFeatureGroup(ctx context.Context, client *aws.Client) ([]terra
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+
 				CreatedAt: &t,
 			})
 		}

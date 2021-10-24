@@ -220,6 +220,34 @@ func (o ListOperation) GetCreationTimeGoCode() string {
 	return ""
 }
 
+func (o ListOperation) GetTagsGoCode() string {
+	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
+
+	for k, v := range outputField.Shape.MemberRef.Shape.MemberRefs {
+		if k == "Tags" {
+			if v.Shape.Type == "list" {
+				return `tags := map[string]string{}
+						for _, t := range r.Tags {
+							tags[*t.Key] = *t.Value
+						}`
+			}
+
+			if v.Shape.Type == "map" {
+				return `tags := map[string]string{}
+						for k, v := range r.Tags {
+							tags[k] = v
+						}`
+			}
+		}
+
+		if strings.Contains(k, "Tag") {
+			log.Infof("tags: %s %s", k, v.Shape.Type)
+		}
+	}
+
+	return ""
+}
+
 func (o ListOperation) GetOwnerGoCode() string {
 	outputField := o.OutputRef.Shape.MemberRefs[o.OutputFieldName]
 
@@ -271,6 +299,7 @@ func {{.OpName}}(ctx context.Context, client *aws.Client) ([]terraform.Resource,
 	{{ end }}
 		for _, r := range resp.{{ .OutputListName }}{
 			{{ if ne .GetOwnerGoCode "" }}{{ .GetOwnerGoCode }}{{ end }}
+			{{ if ne .GetTagsGoCode "" }}{{ .GetTagsGoCode }}{{ end }}
 			{{ if ne .GetCreationTimeGoCode "" }}{{ .GetCreationTimeGoCode }}{{ end }}
 			result = append(result, terraform.Resource{
 				Type: "{{ .TerraformType }}",
@@ -278,6 +307,7 @@ func {{.OpName}}(ctx context.Context, client *aws.Client) ([]terraform.Resource,
 				Profile: client.Profile,
 				Region: client.Region,
 				AccountID: client.AccountID,
+				{{ if ne .GetTagsGoCode "" }}Tags: tags,{{ end }}
 				{{ if ne .GetCreationTimeGoCode "" }}CreatedAt: &t,{{ end }}
 			})
 		}

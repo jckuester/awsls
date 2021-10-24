@@ -22,6 +22,10 @@ func ListWorklinkFleet(ctx context.Context, client *aws.Client) ([]terraform.Res
 
 		for _, r := range resp.FleetSummaryList {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
 			t := *r.CreatedTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_worklink_fleet",
@@ -29,6 +33,7 @@ func ListWorklinkFleet(ctx context.Context, client *aws.Client) ([]terraform.Res
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

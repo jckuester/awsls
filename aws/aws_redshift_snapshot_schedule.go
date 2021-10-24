@@ -22,12 +22,18 @@ func ListRedshiftSnapshotSchedule(ctx context.Context, client *aws.Client) ([]te
 
 		for _, r := range resp.SnapshotSchedules {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_snapshot_schedule",
 				ID:        *r.ScheduleIdentifier,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

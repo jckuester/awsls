@@ -22,12 +22,18 @@ func ListAppsyncGraphqlApi(ctx context.Context, client *aws.Client) ([]terraform
 
 		for _, r := range resp.GraphqlApis {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_appsync_graphql_api",
 				ID:        *r.ApiId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

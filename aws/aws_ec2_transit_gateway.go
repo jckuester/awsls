@@ -24,6 +24,10 @@ func ListEc2TransitGateway(ctx context.Context, client *aws.Client) ([]terraform
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_ec2_transit_gateway",
@@ -31,6 +35,7 @@ func ListEc2TransitGateway(ctx context.Context, client *aws.Client) ([]terraform
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

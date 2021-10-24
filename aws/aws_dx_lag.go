@@ -22,12 +22,18 @@ func ListDxLag(ctx context.Context, client *aws.Client) ([]terraform.Resource, e
 
 		for _, r := range resp.Lags {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_dx_lag",
 				ID:        *r.LagId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

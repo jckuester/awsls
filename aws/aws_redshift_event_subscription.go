@@ -22,12 +22,18 @@ func ListRedshiftEventSubscription(ctx context.Context, client *aws.Client) ([]t
 
 		for _, r := range resp.EventSubscriptionsList {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_event_subscription",
 				ID:        *r.CustSubscriptionId,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

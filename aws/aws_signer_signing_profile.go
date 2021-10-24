@@ -22,12 +22,18 @@ func ListSignerSigningProfile(ctx context.Context, client *aws.Client) ([]terraf
 
 		for _, r := range resp.Profiles {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_signer_signing_profile",
 				ID:        *r.ProfileName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

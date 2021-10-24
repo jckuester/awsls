@@ -22,6 +22,10 @@ func ListSpotInstanceRequest(ctx context.Context, client *aws.Client) ([]terrafo
 
 		for _, r := range resp.SpotInstanceRequests {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 			t := *r.CreateTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_spot_instance_request",
@@ -29,6 +33,7 @@ func ListSpotInstanceRequest(ctx context.Context, client *aws.Client) ([]terrafo
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

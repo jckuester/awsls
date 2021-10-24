@@ -22,12 +22,18 @@ func ListBatchComputeEnvironment(ctx context.Context, client *aws.Client) ([]ter
 
 		for _, r := range resp.ComputeEnvironments {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_batch_compute_environment",
 				ID:        *r.ComputeEnvironmentName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

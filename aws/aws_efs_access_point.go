@@ -24,6 +24,10 @@ func ListEfsAccessPoint(ctx context.Context, client *aws.Client) ([]terraform.Re
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_efs_access_point",
@@ -31,6 +35,7 @@ func ListEfsAccessPoint(ctx context.Context, client *aws.Client) ([]terraform.Re
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

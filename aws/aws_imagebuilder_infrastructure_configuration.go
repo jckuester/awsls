@@ -22,12 +22,18 @@ func ListImagebuilderInfrastructureConfiguration(ctx context.Context, client *aw
 
 		for _, r := range resp.InfrastructureConfigurationSummaryList {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_imagebuilder_infrastructure_configuration",
 				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

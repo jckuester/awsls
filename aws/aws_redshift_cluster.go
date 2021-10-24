@@ -22,12 +22,18 @@ func ListRedshiftCluster(ctx context.Context, client *aws.Client) ([]terraform.R
 
 		for _, r := range resp.Clusters {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_cluster",
 				ID:        *r.ClusterIdentifier,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

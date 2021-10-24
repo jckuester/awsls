@@ -22,12 +22,18 @@ func ListCodepipelineWebhook(ctx context.Context, client *aws.Client) ([]terrafo
 
 		for _, r := range resp.Webhooks {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_codepipeline_webhook",
 				ID:        *r.Arn,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

@@ -22,6 +22,10 @@ func ListMskCluster(ctx context.Context, client *aws.Client) ([]terraform.Resour
 
 		for _, r := range resp.ClusterInfoList {
 
+			tags := map[string]string{}
+			for k, v := range r.Tags {
+				tags[k] = v
+			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_msk_cluster",
@@ -29,6 +33,7 @@ func ListMskCluster(ctx context.Context, client *aws.Client) ([]terraform.Resour
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

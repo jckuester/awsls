@@ -33,6 +33,7 @@ func ListRoute53ResolverQueryLogConfigAssociation(ctx context.Context, client *a
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+
 				CreatedAt: &t,
 			})
 		}

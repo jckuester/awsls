@@ -22,12 +22,18 @@ func ListRedshiftParameterGroup(ctx context.Context, client *aws.Client) ([]terr
 
 		for _, r := range resp.ParameterGroups {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
+
 			result = append(result, terraform.Resource{
 				Type:      "aws_redshift_parameter_group",
 				ID:        *r.ParameterGroupName,
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

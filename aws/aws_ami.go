@@ -27,6 +27,10 @@ func ListAmi(ctx context.Context, client *aws.Client) ([]terraform.Resource, err
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 			t, err := time.Parse("2006-01-02T15:04:05.000Z0700", *r.CreationDate)
 			if err != nil {
 				return nil, err
@@ -37,6 +41,7 @@ func ListAmi(ctx context.Context, client *aws.Client) ([]terraform.Resource, err
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

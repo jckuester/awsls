@@ -24,6 +24,10 @@ func ListRouteTable(ctx context.Context, client *aws.Client) ([]terraform.Resour
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 
 			result = append(result, terraform.Resource{
 				Type:      "aws_route_table",
@@ -31,6 +35,7 @@ func ListRouteTable(ctx context.Context, client *aws.Client) ([]terraform.Resour
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 			})
 		}
 	}

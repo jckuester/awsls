@@ -22,6 +22,10 @@ func ListCloudformationStack(ctx context.Context, client *aws.Client) ([]terrafo
 
 		for _, r := range resp.Stacks {
 
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_cloudformation_stack",
@@ -29,6 +33,7 @@ func ListCloudformationStack(ctx context.Context, client *aws.Client) ([]terrafo
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}

@@ -24,6 +24,10 @@ func ListFsxLustreFileSystem(ctx context.Context, client *aws.Client) ([]terrafo
 			if *r.OwnerId != client.AccountID {
 				continue
 			}
+			tags := map[string]string{}
+			for _, t := range r.Tags {
+				tags[*t.Key] = *t.Value
+			}
 			t := *r.CreationTime
 			result = append(result, terraform.Resource{
 				Type:      "aws_fsx_lustre_file_system",
@@ -31,6 +35,7 @@ func ListFsxLustreFileSystem(ctx context.Context, client *aws.Client) ([]terrafo
 				Profile:   client.Profile,
 				Region:    client.Region,
 				AccountID: client.AccountID,
+				Tags:      tags,
 				CreatedAt: &t,
 			})
 		}
