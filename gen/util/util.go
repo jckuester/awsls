@@ -1,4 +1,4 @@
-// +build codegen
+//go:build codegen
 
 package util
 

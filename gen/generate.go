@@ -1,4 +1,4 @@
-// +build codegen
+//go:build codegen
 
 //go:generate go run -tags codegen generate.go
 //go:generate gofmt -s -w ../resource ../aws

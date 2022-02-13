@@ -12,7 +12,7 @@ import (
 	"github.com/jckuester/awsls/internal"
 	"github.com/jckuester/awstools-lib/aws"
 	"github.com/jckuester/awstools-lib/terraform"
-	"github.com/jckuester/terradozer/pkg/provider"
+	"github.com/jckuester/awstools-lib/terraform/provider"
 )
 
 // UpdatedResources contains resources which Terraform state

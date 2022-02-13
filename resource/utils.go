@@ -9,7 +9,7 @@ import (
 	"github.com/apex/log"
 	"github.com/gobwas/glob"
 	"github.com/jckuester/awstools-lib/terraform"
-	"github.com/jckuester/terradozer/pkg/provider"
+	"github.com/jckuester/awstools-lib/terraform/provider"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 )
@@ -36,7 +36,7 @@ func IsSupportedType(s string) bool {
 	return false
 }
 
-// MatchResourceTypes returns all by awsls supported resource types that match the given glob pattern.
+// MatchSupportedTypes returns all by awsls supported resource types that match the given glob pattern.
 func MatchSupportedTypes(globPattern string) ([]string, error) {
 	var result []string
 
@@ -95,11 +95,7 @@ func HasAttributes(attributes []string, terraformType string, provider *provider
 
 // GetAttribute returns any Terraform attribute of a resource by name.
 func GetAttribute(name string, r *terraform.Resource) (string, error) {
-	if r.UpdatableResource == nil {
-		return "", fmt.Errorf("resource is nil")
-	}
-
-	state := r.State()
+	state := r.State
 
 	if state == nil {
 		return "", fmt.Errorf("state is nil")

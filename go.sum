@@ -258,8 +258,8 @@ github.com/aws/aws-sdk-go-v2/service/lightsail v1.1.1 h1:ubI8DMTlDoZBJhlhMyjGZUX
 github.com/aws/aws-sdk-go-v2/service/lightsail v1.1.1/go.mod h1:4zEDHc/kp4Kz7oC+hP31CxB1jcFiJ045885y4G4o7YY=
 github.com/aws/aws-sdk-go-v2/service/macie v1.1.1 h1:lBw8rXj+WAGjYhMxG8DUnvBQ84QpjZH2W/zSj/3jGTk=
 github.com/aws/aws-sdk-go-v2/service/macie v1.1.1/go.mod h1:wShNz65nSc26u4VzUR0UJsY2Sp/+StqKkjZxNAfwnL4=
-github.com/aws/aws-sdk-go-v2/service/macie2 v1.6.0 h1:mxfEPcsWx9BlX6zoU5L3LHd61rCufadU8Vy1aQEK6g4=
-github.com/aws/aws-sdk-go-v2/service/macie2 v1.6.0/go.mod h1:EGdrZY8wsQFiB4bPJ4JwrZxFUyYISQtklUjTugamvPo=
+github.com/aws/aws-sdk-go-v2/service/macie2 v1.7.0 h1:Z0fB/AqLS/mH8R7IR/H8B2nv1we5uUaV7I2mnrq+WQc=
+github.com/aws/aws-sdk-go-v2/service/macie2 v1.7.0/go.mod h1:EGdrZY8wsQFiB4bPJ4JwrZxFUyYISQtklUjTugamvPo=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.1.1 h1:N5EacoWJNZBqDIyfkfrpHhISvy9ApHwpil14Sbj0VYg=
 github.com/aws/aws-sdk-go-v2/service/mediaconvert v1.1.1/go.mod h1:jdhflUs3e4/RM61qKAjdhT6IN2VfvwXqCcsfAC5lKp8=
 github.com/aws/aws-sdk-go-v2/service/mediapackage v1.1.1 h1:lIftsFn6TsByMl+v32Y4ztGLIz/C4Rq7gat5AihCpdw=
@@ -268,8 +268,8 @@ github.com/aws/aws-sdk-go-v2/service/mediastore v1.1.1 h1:tl/58Fn+6E9VTEmconNpPq
 github.com/aws/aws-sdk-go-v2/service/mediastore v1.1.1/go.mod h1:gevnsX8qzzxtNcZoSab72+PNtrfFmgb1n1Z4GKbgkxU=
 github.com/aws/aws-sdk-go-v2/service/mq v1.1.1 h1:T9PcYfzFG33LJii/wyJlj1nzfIVpqueOgTENyy/q95I=
 github.com/aws/aws-sdk-go-v2/service/mq v1.1.1/go.mod h1:iSRXUUOLM4VuytHZnGAPZ29PJi/iHdw8s0sUkuVVp4I=
-github.com/aws/aws-sdk-go-v2/service/mwaa v1.1.1 h1:pria2VJhXGqosk53HS8cXBDX0FGsyszgacr7OQ2Zl4U=
-github.com/aws/aws-sdk-go-v2/service/mwaa v1.1.1/go.mod h1:J+Os4wwJULmwDOFjaGu+19yi2ZLZV0gK3PlIqcPWqtw=
+github.com/aws/aws-sdk-go-v2/service/mwaa v1.2.0 h1:3M3p8rRyVAr7vSS1RzVOMaDAvcH2D0+SL5Rqawl9+GI=
+github.com/aws/aws-sdk-go-v2/service/mwaa v1.2.0/go.mod h1:J+Os4wwJULmwDOFjaGu+19yi2ZLZV0gK3PlIqcPWqtw=
 github.com/aws/aws-sdk-go-v2/service/neptune v1.1.1 h1:PRjfY//opNv6mCnOCEwdQMEzgecUSfsA0Ga21BU2Bkg=
 github.com/aws/aws-sdk-go-v2/service/neptune v1.1.1/go.mod h1:pL8Iwl7KIr67Y40UIpO7KBOR6FFn+91zrXKsFEX7Ek8=
 github.com/aws/aws-sdk-go-v2/service/networkfirewall v1.1.2 h1:EpwPWHqEO6wvjUiiOoFdQwiB2PNZCoxx4LDfgjYFM6g=
@@ -538,12 +538,9 @@ github.com/jckuester/awsls v0.8.2/go.mod h1:yn+/A3rsO+71qjLZ/9A0yYa7Jw34zLLpBEqH
 github.com/jckuester/awsls v0.8.3/go.mod h1:U0clHlW/c05kB1Cb4qO5pwGjxtR1CeHpgUzHhhI93CE=
 github.com/jckuester/awstools-lib v0.0.0-20210215194522-14607cce3470/go.mod h1:71+ozVxBDbhfKZH5ybJVxWo+mO1SVfpGiLfwXU5qD/w=
 github.com/jckuester/awstools-lib v0.0.0-20210220131009-cbbff634aac8/go.mod h1:VnXw3pHiRaNKPzypiBk+814DUarSyNBExo5D4y77G7o=
-github.com/jckuester/awstools-lib v0.0.0-20210524191941-23f0e367139d h1:ZG0iMdTi2ofFcAZ/IYLYsNe5/vqUaxmRkA35MbY3Fnw=
-github.com/jckuester/awstools-lib v0.0.0-20210524191941-23f0e367139d/go.mod h1:183IKDoURr0g8Sg/7mcz50KlJt0S/0TEFqK7RXV3giM=
+github.com/jckuester/awstools-lib v0.0.0-20220213052046-75c6b3af770f h1:qUemt6JazGATBpoXx35kXn31KIuU2ZngpIfiCM3EYvg=
+github.com/jckuester/awstools-lib v0.0.0-20220213052046-75c6b3af770f/go.mod h1:5Uomaj3Mkb/RhgrlGhk/7074Efxf9hc5pBW1oTklyMc=
 github.com/jckuester/terradozer v0.1.3/go.mod h1:ER3EJojZmO2u6lfcdgnmC+Nrg/TV2T2bacY5FZpqgks=
-github.com/jckuester/terradozer v0.1.4-0.20210524132110-395dc12d3bf5/go.mod h1:KqjvtGWVGzRw5yFdbcO9c74s5hlKjU6IMqfFd7PhOr4=
-github.com/jckuester/terradozer v0.1.4-0.20210524190016-3e6d42479316 h1:Zm8WQUYMxmcSU0I7TpxropiArVT2BhX9T1XtGhQoPts=
-github.com/jckuester/terradozer v0.1.4-0.20210524190016-3e6d42479316/go.mod h1:KqjvtGWVGzRw5yFdbcO9c74s5hlKjU6IMqfFd7PhOr4=
 github.com/jhump/protoreflect v1.6.0 h1:h5jfMVslIg6l29nsMs0D8Wj17RDVdNYti0vDN/PZZoE=
 github.com/jhump/protoreflect v1.6.0/go.mod h1:eaTn3RZAmMBcV0fifFvlm6VHNz3wSkYyXYWUh7ymB74=
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
